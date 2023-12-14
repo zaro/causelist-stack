@@ -1,0 +1,26 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "parse:path",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/causelist-api/src/commands/cli.ts",
+      "args": [
+        "parse:files",
+        "Chief Magistrates Court",
+        "--md5",
+        "ee58d91e8c6514a24193a1fbeddfd4ed"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/causelist-api/dist/**/*.js"
+      ]
+    }
+  ]
+}

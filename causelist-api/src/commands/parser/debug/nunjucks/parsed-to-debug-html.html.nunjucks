@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <style>
+      h1 { text-align: center }
+      h2 { text-align: center }
+      h3 { text-align: center }
+      table.with-border {
+        border: 1px solid grey;
+      }
+      table.with-border th {
+        border: 1px solid grey;
+        text-align: left;
+      }
+      table.with-border td {
+        border: 1px solid grey;
+        text-align: left;
+      }
+      .thick {
+        font-weight: bold;
+      }
+    </style>
+    <h2>{{ fileName }}</h2>
+    <h2>Parsed content follows</h2>
+    <hr>
+    {% for doc in documents %}
+    <table class="with-border">
+      <tr>
+        <th>Court</th> <td>{{ doc.header.court | join(', ' )}}</td>
+      </tr>
+      <tr>
+        <th>Date</th> <td>{{ doc.header.date | date }}</td>
+      </tr>
+      <tr>
+        <th>Judge</th> <td>{{ doc.header.judge}}</td>
+      </tr>
+      <tr>
+        <th>Court Room</th> <td>{{ doc.header.courtRoom}}</td>
+      </tr>
+      <tr>
+        <th>URL</th> <td>{{ doc.header.url}}</td>
+      </tr>
+      <tr>
+        <th>Email</th> <td>{{ doc.header.email}}</td>
+      </tr>
+      <tr>
+        <th>Phone</th> <td>{{ doc.header.phone}}</td>
+      </tr>
+    </table>
+    <ul>
+      {% for section in doc.sections %}
+      <li>
+        {% if section.dateTime %}<b>{{ section.dateTime | date('hh:mm aa') }}</b><br>{% endif %}
+        <b>{{ section.section }}</b>
+        <ul>
+          {% for l in section.causelist %}
+            <li>{% if l.num %}{{ l.num }}.{% endif %} <i>{{ l.additionalNumber | default('')}}</i> <b>{{ l.caseNumber | default('???')}}</b> {% if l.description %}{{ l.description }}{% else %}{{ l.partyA}} <b>VS</b> {{ l.partyB }}{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+    <hr>
+    {% endfor %}
+    <details>
+      <summary>
+        Document plain text
+        <span class="icon">👇</span>
+      </summary>
+      <pre>
+        <b>Parsing stopped on line {{ currentLine }}</b>
+        <table>
+          {% for l in numberedLines %}
+          <tr {% if l.current %}class="thick"{% endif %}>
+            <td style="text-align: right;">{{ l.n }}</td>
+            <td>{{ l.l }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        <pre>
+    </details>
+  </body>
+</html>

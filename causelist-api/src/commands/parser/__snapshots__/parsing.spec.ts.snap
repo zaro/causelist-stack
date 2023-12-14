@@ -1,0 +1,2845 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1c6514bdaa167254bc7461473 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-29T22:00:00.000Z,
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://urlshortner.org/LAYN7",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/412/2018",
+              "description": "In The Estate Of Walter Eshirisia Lutta",
+              "num": "1",
+            },
+            {
+              "caseNumber": "MCELC/39/2019",
+              "num": "2",
+              "partyA": "Erick Timothy Balongo",
+              "partyB": "Edwin Wayunda Mutuba",
+            },
+            {
+              "caseNumber": "MCSUCC/12/2019",
+              "description": "In The Estate Of Wilberforce Orata Mulama",
+              "num": "3",
+            },
+            {
+              "caseNumber": "MCELC/28/2020",
+              "num": "4",
+              "partyA": "Fredrick Ngode Oneya",
+              "partyB": "Ministry Of Lands And Physical Planning And Eric Odhiambo Oketch  And 2 Others",
+            },
+            {
+              "caseNumber": "MCELC/24/2020",
+              "num": "5",
+              "partyA": "Javan Ombayo Washika",
+              "partyB": "Ramadhan Amin Okutoyi",
+            },
+            {
+              "caseNumber": "MCELC/E044/2022",
+              "num": "6",
+              "partyA": "Evelyn Ondiso Ochieng And Christin Onduso Katibi  And 3 Others",
+              "partyB": "Michael Hezekiah Netia And Kepha Aseka Netia  And 4 Others",
+            },
+            {
+              "caseNumber": "MCSUCC/E068/2022",
+              "description": "In The Estate Of Albert Nandwa Mashere",
+              "num": "7",
+            },
+          ],
+          "dateTime": 2023-11-30T07:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E004/2021",
+              "description": "In The Estate Of Morris Akali Omukubaakali Mukuba",
+              "num": "8",
+            },
+            {
+              "caseNumber": "MCELC/E018/2022",
+              "num": "9",
+              "partyA": "Faresi Liaboya Otsimi",
+              "partyB": "Raphael Anzaya Onyango And David Mikoye Okwemba",
+            },
+            {
+              "caseNumber": "MCELC/E032/2023",
+              "num": "10",
+              "partyA": "Apolo Namayi Ouna",
+              "partyB": "Helen Kanini Auma And Sussy Beletina Ayako",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "SUBMISSIONS",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E048/2022",
+              "num": "11",
+              "partyA": "Rose Otemba And Charles Mbinji Achero",
+              "partyB": "Martin Mbayi Osongo",
+            },
+            {
+              "caseNumber": "MCELC/E031/2022",
+              "num": "12",
+              "partyA": "Joshua Davis Pamba",
+              "partyB": "Edinah Ayako Shikanda And Victoria Odongo Nyawate  And 1 Others",
+            },
+            {
+              "caseNumber": "MCELC/E037/2023",
+              "num": "13",
+              "partyA": "Livingstone Wetende Namayi",
+              "partyB": "Silas Ambayi Ochami",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "PRE-TRIAL CONFERENCE",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E030/2021",
+              "num": "14",
+              "partyA": "Rebecca Aswani Shamwata",
+              "partyB": "Tom Mboya Akhamali And Land Registrar Kakamega",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "DEFENSE HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/34/2020",
+              "description": "In The Estate Of Joseph Neondo Otinga",
+              "num": "15",
+            },
+            {
+              "caseNumber": "MCSUCC/E146/2022",
+              "description": "In The Estate Of Musa Omusi Akhusama",
+              "num": "16",
+            },
+            {
+              "caseNumber": "MCSUCC/E225/2022",
+              "description": "In The Estate Of Joseph Omulama Wanga",
+              "num": "17",
+            },
+            {
+              "caseNumber": "MCSUCC/E025/2023",
+              "description": "In The Estate Of Richard Amukonyole Ngota",
+              "num": "18",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING- APPLICATION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E023/2021",
+              "num": "19",
+              "partyA": "James Matendechere Waswa",
+              "partyB": "Ernest Ongaro Waswa And David Indakwa",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E045/2022",
+              "num": "20",
+              "partyA": "Gladiys Awinja Shiundu",
+              "partyB": "Emmanuel Ngala Anzaya",
+            },
+            {
+              "caseNumber": "MCCC/E045/2022",
+              "num": "21",
+              "partyA": "Charles Kweyu Emitekho",
+              "partyB": "Joseph Mandela And Nayab Motors Limited",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "RULING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: 93cd8455e2dbd4415566c1c07177449c 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 2",
+        "date": 2023-11-29T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON.O.J MUTHONI",
+        "phone": undefined,
+        "url": "https://bit.ly/3JlrCuO",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/258/2019",
+              "description": "In The Estate Of Amulabu Indumuli",
+              "num": "1",
+            },
+            {
+              "caseNumber": "MCSUCC/238/2019",
+              "description": "In The Estate Of Richard Watiti Okusimba",
+              "num": "2",
+            },
+            {
+              "caseNumber": "MCSUCC/125/2020",
+              "description": "In The Estate Of Atomia Liyengwa",
+              "num": "3",
+            },
+            {
+              "caseNumber": "MCSUCCMISC/E057/2023",
+              "description": "Daniel Amoke Wabuko And Beatrice Atieno Waswa  And 1 Others  Vs",
+              "num": "4",
+            },
+          ],
+          "dateTime": 2023-11-30T07:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E056/2023",
+              "description": "In The Estate Of Meshack Mbendo Osienyo",
+              "num": "5",
+            },
+            {
+              "caseNumber": "MCSUCC/E075/2023",
+              "description": "In The Estate Of Fanuel Wandenje Wandai",
+              "num": "6",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING- APPLICATION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/74/2019",
+              "num": "7",
+              "partyA": "Roseliah Olumasayi Oyoya",
+              "partyB": "Channan Agricultural Contractors Company Limited And Mohammed Makokha Kassim  And 2 Others",
+            },
+            {
+              "caseNumber": "MCCC/73/2019",
+              "num": "8",
+              "partyA": "Razia Ndindi Mukoya",
+              "partyB": "Channan Agricultural Contractors Company Limited And Mohammed Makokha Kassim  And 2 Others",
+            },
+            {
+              "caseNumber": "MCCC/27/2022",
+              "num": "9",
+              "partyA": "Wilfred Onyachi Oyako",
+              "partyB": "Cac Limited Company And Mohammed Makokha Kassim",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "ASSESSMENT OF COSTS",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E177/2021",
+              "description": "",
+              "num": "1",
+            },
+            {
+              "caseNumber": "MCSUCC/E026/2022",
+              "description": "In The Estate Of Wycliffe Liboyi Shiomunda",
+              "num": "2",
+            },
+            {
+              "caseNumber": "MCCC/E041/2022",
+              "num": "3",
+              "partyA": "Everlyne Achando Omusi",
+              "partyB": "Kenya Revenue Authority",
+            },
+            {
+              "caseNumber": "MCCC/E009/2022",
+              "num": "4",
+              "partyA": "Nickson Mukuna Otwoma",
+              "partyB": "County Government Of Kakamega",
+            },
+            {
+              "caseNumber": "MCCC/E013/2023",
+              "num": "5",
+              "partyA": "Sirilla Fumwa Nyongesa",
+              "partyB": "Wisdom Nina Kachila",
+            },
+            {
+              "caseNumber": "MCELC/E026/2023",
+              "num": "6",
+              "partyA": "Shadrack Oyando Oruko",
+              "partyB": "Kakamega County Land Registrar And The Regional Surveyor - Western Region  And 2 Others",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1959c3e06e5055b20e59e2875 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-20T22:00:00.000Z,
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://shorturl.at/yPZ35",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/76/2018",
+              "num": "1",
+              "partyA": "Donald Mumia Salisi",
+              "partyB": "Priscila Nyarunda Ochieng And Asman Harambee Kweyu  And 1 Others",
+            },
+          ],
+          "dateTime": 2023-11-21T07:00:00.000Z,
+          "section": "DIRECTIONS",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E194/2021",
+              "description": "In The Estate Of Anyanje Ashira",
+              "num": "2",
+            },
+            {
+              "caseNumber": "MCSUCC/E078/2022",
+              "description": "In The Estate Of Jackson Atsole Amboka",
+              "num": "3",
+            },
+            {
+              "caseNumber": "MCCHCC/E001/2023",
+              "num": "4",
+              "partyA": "Belinder Atieno Ochieng",
+              "partyB": "Oliver Cheruiyot Korir",
+            },
+            {
+              "caseNumber": "MCELC/E014/2023",
+              "num": "5",
+              "partyA": "Alice Abuko Makale",
+              "partyB": "Ezekiel Shikanda Saya And Arthur Okola Shikanda",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/61/2018",
+              "num": "6",
+              "partyA": "Ernest Waka Ojango",
+              "partyB": "Molyn Creditors Limited And Stanley Shihundu Amukaya",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "SUBMISSIONS",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/E052/2021",
+              "num": "7",
+              "partyA": "Omukoko Sechere",
+              "partyB": "(office Of Attorney General) And Principal Secretary Correctional Services  And 1 Others",
+            },
+            {
+              "caseNumber": "MCCC/E053/2021",
+              "num": "8",
+              "partyA": "Helani Khachema",
+              "partyB": "(office Of Attorney General) And Principal Secretary Correctional Services  And 1 Others",
+            },
+            {
+              "caseNumber": "MCDC/E002/2023",
+              "num": "9",
+              "partyA": "Shisia Aswani Charles",
+              "partyB": "Perpetua Thuiya Ng'ang'a",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "DEFENSE HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/84/2017",
+              "num": "10",
+              "partyA": "Immaculate Achieng",
+              "partyB": "Jared Omollo Odoyo And Goerge Onyango Okumu",
+            },
+            {
+              "caseNumber": "MCELC/E022/2022",
+              "num": "11",
+              "partyA": "Wycliffe Mutoko Majimbo",
+              "partyB": "State Law And Ministry Of Lands And Physical Planning  And 1 Others",
+            },
+            {
+              "caseNumber": "MCSUCC/E076/2022",
+              "description": "In The Estate Of Yohana Olwochi Andabwa",
+              "num": "12",
+            },
+            {
+              "caseNumber": "MCELC/E024/2023",
+              "num": "13",
+              "partyA": "Selina Omwatia",
+              "partyB": "Fredrick Chibole Amwalo",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING- APPLICATION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E010/2021",
+              "num": "14",
+              "partyA": "Fredrick Ezekiel Namayi Inyangala",
+              "partyB": "Eliseba Waka Linyerera And Joseph Mbaya Linyerera",
+            },
+            {
+              "caseNumber": "MCSUCC/E003/2021",
+              "description": "In The Estate Of Simeo Wandanje Ombetalias Simeo Wandanje Ombeti",
+              "num": "15",
+            },
+            {
+              "caseNumber": "MCELC/E027/2022",
+              "num": "16",
+              "partyA": "Apollo Ngote Eshiboko",
+              "partyB": "Ministry Of Lands And Physical Planning And Sammy Were Edward",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/99/2022",
+              "description": "In The Estate Of Joseph Maloba Wanyonje",
+              "num": "17",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "RULING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/42/2018",
+              "num": "18",
+              "partyA": "Alfred Kweyu",
+              "partyB": "Ministry Of Lands And Physical Planning And Ministry Of Lands And Physical Planning  And 1 Others",
+            },
+            {
+              "caseNumber": "MCCC/E033/2022",
+              "num": "19",
+              "partyA": "Joseph Ayuku Kamano",
+              "partyB": "Ima Hauliers Limited",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "JUDGMENT",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: 8258f2dbfdddd690a1ef011be81c4699 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "ENDAU MOBILE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 4",
+        "date": 2023-07-10T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. FELISTUS NEKESA",
+        "phone": undefined,
+        "url": "TINYURL.COM/YFYN257N",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E021/2022",
+              "num": "1",
+              "partyA": "405/31/2022",
+              "partyB": "KIMANGU MUTISYA",
+            },
+            {
+              "caseNumber": "MCCR/E009/2022",
+              "num": "2",
+              "partyA": "405/74/2022",
+              "partyB": "BENSON MUUSYA",
+            },
+            {
+              "caseNumber": "MCCR/E008/2023",
+              "num": "3",
+              "partyA": "405/54/2023",
+              "partyB": "MWENDWA KATAMBU",
+            },
+            {
+              "caseNumber": "MCCR/E006/2023",
+              "num": "4",
+              "partyA": "405/40/2023",
+              "partyB": "KITHOME MWASYA AND KAMANDO MUSAVA",
+            },
+            {
+              "caseNumber": "MCCR/E007/2023",
+              "num": "5",
+              "partyA": "405/48/2023",
+              "partyB": "MWANIKI MUTINDA",
+            },
+          ],
+          "dateTime": 2023-07-11T06:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E007/2022",
+              "num": "6",
+              "partyA": "405/61/22",
+              "partyB": "MUTUA MUTUNGA",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "ENDAU MOBILE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 4",
+        "date": 2023-07-11T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. FELISTUS NEKESA",
+        "phone": undefined,
+        "url": "TINYURL.COM/YFYN257N",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/29/2017",
+              "num": "1",
+              "partyA": "405/40/2017",
+              "partyB": "DANIEL MUSEMBI MUTIA",
+            },
+            {
+              "caseNumber": "MCSO/17/2019",
+              "num": "2",
+              "partyA": "405/40/2019",
+              "partyB": "STEVE KIMANTHI NZILU",
+            },
+            {
+              "caseNumber": "MCCR/E248/2021",
+              "num": "3",
+              "partyA": "405/20/2021",
+              "partyB": "MUSYILI MUTEMI NDUTO AKA KASANGA",
+            },
+            {
+              "caseNumber": "MCCR/E008/2022",
+              "num": "4",
+              "partyA": "405/65/22",
+              "partyB": "MWALIMU NGOLO, MUVISI NZAMULI, MUTISYA NGULI AND MUTIA NGULI",
+            },
+            {
+              "caseNumber": "MCCR/E005/2023",
+              "num": "5",
+              "partyA": "405/39/2023",
+              "partyB": "STEPHEN MUTHOKA KITHIKII",
+            },
+            {
+              "caseNumber": "MCCR/E003/2023",
+              "num": "6",
+              "partyA": "405/30/2023",
+              "partyB": "JANET MULI",
+            },
+            {
+              "caseNumber": "MCCR/E004/2023",
+              "num": "7",
+              "partyA": "405/31/2023",
+              "partyB": "LUCIA MULWA, MUTHASYE MULWA AND EMMA MULWA",
+            },
+          ],
+          "dateTime": 2023-07-12T06:00:00.000Z,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E006/2022",
+              "num": "8",
+              "partyA": "405/62/22",
+              "partyB": "MUSYA MUTEI",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "JUDGMENT",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "ENDAU MOBILE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 4",
+        "date": 2023-07-12T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. FELISTUS NEKESA",
+        "phone": undefined,
+        "url": "TINYURL.COM/YFYN257N",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E028/2021",
+              "num": "1",
+              "partyA": "405/48/2021",
+              "partyB": "DANIEL MUNYASIA MUMBUA",
+            },
+            {
+              "caseNumber": "MCCR/E010/2022",
+              "num": "2",
+              "partyA": "405/75/22",
+              "partyB": "CHRISTINE WAMBUA",
+            },
+          ],
+          "dateTime": 2023-07-13T06:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: 8984da5a1be2ee9ef08b822ec55348fd 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "MAVOKO MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT NO. 3",
+        "date": 2023-11-14T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. E. K. SUTER – PM",
+        "phone": undefined,
+        "url": "https://meet.google.com/qtc-vbyk-ira",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCHCC/E043/2023",
+              "num": "1",
+              "partyA": "Esther Ndinda (suing As Next Friend And Mother To E.c)",
+              "partyB": "Simon Odhiambo",
+            },
+          ],
+          "dateTime": 2023-11-15T06:45:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MAVOKO MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-14T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. BARBARA OJOO",
+        "phone": undefined,
+        "url": "https://bit.ly/3IQUREv",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/E707/2023",
+              "num": "1",
+              "partyA": "Martin Mutua Nyamai",
+              "partyB": "Winny Mwende And Advent Valuers Limited",
+            },
+            {
+              "caseNumber": "MCCC/E725/2023",
+              "num": "2",
+              "partyA": "Michael Mwangi Wanjiru",
+              "partyB": "Winnie Mwende And Alpha Movers. Kenya",
+            },
+            {
+              "caseNumber": "MCCC/E468/2023",
+              "num": "3",
+              "partyA": "Catherine Ndunge Ngayai",
+              "partyB": "Tobias Wanjala Kalenda",
+            },
+            {
+              "caseNumber": "MCCC/1082/2018",
+              "num": "4",
+              "partyA": "Elvis Ochieng Otieno",
+              "partyB": "Arvind Engineering Ltd",
+            },
+            {
+              "caseNumber": "MCELCMISC/E012/2023",
+              "num": "5",
+              "partyA": "Rashid Ali Omar",
+              "partyB": "Yamin Construction Company Limted Vs  Flora Kagendo",
+            },
+          ],
+          "dateTime": 2023-11-15T07:00:00.000Z,
+          "section": "DIRECTIONS",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: 9027e5d98741748b93f321ff26d8343a 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "BUSIA HIGH COURT",
+          "SMALL CLAIMS COURT",
+        ],
+        "courtRoom": undefined,
+        "date": 2023-11-16T22:00:00.000Z,
+        "email": undefined,
+        "judge": "Hon. Kassim Akida",
+        "phone": undefined,
+        "url": "https://shorturl.at/fisxM",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "SCCC/E001/2023",
+              "num": "1",
+              "partyA": "Kakai Wanyama Juma",
+              "partyB": "Simon Omondi Wasonga And Ayan Automobiles Ltd",
+            },
+            {
+              "caseNumber": "SCCC/E002/2023",
+              "num": "2",
+              "partyA": "Pascal Ouma Otieno",
+              "partyB": "Kenya Medical Research Institute",
+            },
+            {
+              "caseNumber": "SCCC/E003/2023",
+              "num": "3",
+              "partyA": "Joseph Juma Okiya",
+              "partyB": "Kenya Medical Research Institute",
+            },
+            {
+              "caseNumber": "SCCC/E004/2023",
+              "num": "4",
+              "partyA": "Francis Ouma",
+              "partyB": "Kenya Medical Research Institute",
+            },
+            {
+              "caseNumber": "SCCCOMM/E001/2023",
+              "num": "5",
+              "partyA": "Elizabeth Anindo Mwanza",
+              "partyB": "Sylus Nalyanya",
+            },
+            {
+              "caseNumber": "SCCCOMM/E002/2023",
+              "num": "6",
+              "partyA": "Elly Omondi",
+              "partyB": "Vincent Oduori",
+            },
+            {
+              "caseNumber": "SCCCOMM/E003/2023",
+              "num": "7",
+              "partyA": "Mary Nabwire Barasa",
+              "partyB": "St John Baptist Mabale Sec School",
+            },
+          ],
+          "dateTime": 2023-11-17T07:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6d4079473de80f64b6b85a86d 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "TINDERET MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-09-03T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. BONFACE W. WACHIRA (SRM)",
+        "phone": undefined,
+        "url": "shorturl.at/btOPY",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E003/2023",
+              "num": "1",
+              "partyA": "Simion Kipkosgei Bett",
+              "partyB": "James Chirchir Kiteru",
+            },
+          ],
+          "dateTime": 2023-09-04T06:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E054/2022",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Allan Kigun",
+            },
+            {
+              "caseNumber": "MCCR/E095/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Geoffrey Kipsang Koech",
+            },
+            {
+              "caseNumber": "MCCR/E103/2023",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Benard Kipkemoi",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "DEFENSE HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E143/2023",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "Shadrack Tenai",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "TINDERET MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-09-04T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. BONFACE W. WACHIRA (SRM)",
+        "phone": undefined,
+        "url": "shorturl.at/btOPY",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E149/2023",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Michael Odhiambo Opudo And Wycliffe Ombui Okinyi  And 3 Others",
+            },
+          ],
+          "dateTime": 2023-09-05T06:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E051/2022",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Eliud Kibet Chepkwony",
+            },
+            {
+              "caseNumber": "MCCR/E144/2022",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Ezra Meli And Stephen Kipnyango  And 1 Others",
+            },
+            {
+              "caseNumber": "MCCR/E070/2022",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Geoffrey Arusei",
+            },
+            {
+              "caseNumber": "MCCR/E086/2022",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "Paul Kipngetich Koech",
+            },
+            {
+              "caseNumber": "MCCR/E131/2023",
+              "num": "6",
+              "partyA": "The Republic",
+              "partyB": "George Tenai",
+            },
+            {
+              "caseNumber": "MCCR/E104/2023",
+              "num": "7",
+              "partyA": "The Republic",
+              "partyB": "Jeremiah Kiptoo Tanui",
+            },
+            {
+              "caseNumber": "MCCR/E097/2023",
+              "num": "8",
+              "partyA": "The Republic",
+              "partyB": "Derick Kiplangat",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "TINDERET MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-09-05T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. BONFACE W. WACHIRA (SRM)",
+        "phone": undefined,
+        "url": "shorturl.at/btOPY",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E045/2022",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Celestine Chepchumba",
+            },
+            {
+              "caseNumber": "MCCR/E038/2022",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Kennedy Kipruto Tabut And Sammy Koech  And 3 Others",
+            },
+            {
+              "caseNumber": "MCSO/E014/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Timothy Kibet Rop",
+            },
+            {
+              "caseNumber": "MCCR/E158/2023",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Emmanuel Kipchirchir",
+            },
+            {
+              "caseNumber": "MCCR/E161/2023",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "William Kiptoo Kirui And Faith Cheruto",
+            },
+            {
+              "caseNumber": "MCCR/E152/2023",
+              "num": "6",
+              "partyA": "The Republic",
+              "partyB": "Godffrey Okoth",
+            },
+          ],
+          "dateTime": 2023-09-06T06:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E042/2022",
+              "num": "7",
+              "partyA": "The Republic",
+              "partyB": "Stanley Koros",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "DEFENSE HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E044/2022",
+              "num": "8",
+              "partyA": "The Republic",
+              "partyB": "Vincent Kipkosgei Rop",
+            },
+            {
+              "caseNumber": "MCSO/E038/2022",
+              "num": "9",
+              "partyA": "The Republic",
+              "partyB": "Geoffrey Mutai",
+            },
+            {
+              "caseNumber": "MCCR/E157/2023",
+              "num": "10",
+              "partyA": "The Republic",
+              "partyB": "Josphat Kipkemei And Pius      Kiplagat",
+            },
+            {
+              "caseNumber": "MCSO/E015/2023",
+              "num": "11",
+              "partyA": "The Republic",
+              "partyB": "Dominic Kimutai",
+            },
+            {
+              "caseNumber": "MCCR/E159/2023",
+              "num": "12",
+              "partyA": "The Republic",
+              "partyB": "Valentine Cherotich",
+            },
+            {
+              "caseNumber": "MCCR/E151/2023",
+              "num": "13",
+              "partyA": "The Republic",
+              "partyB": "Joseph Kipkoech Agui",
+            },
+            {
+              "caseNumber": "MCCR/E160/2023",
+              "num": "14",
+              "partyA": "The Republic",
+              "partyB": "Valentine Cherotich And Linah Simotwo  And 1 Others",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "TINDERET MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-09-06T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. BONFACE W. WACHIRA (SRM)",
+        "phone": undefined,
+        "url": "shorturl.at/btOPY",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E023/2022",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Humprey Kiplimo Lagat",
+            },
+            {
+              "caseNumber": "MCSO/E007/2023",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Joshua Nyandieka",
+            },
+          ],
+          "dateTime": 2023-09-07T06:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E009/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Abraham Kibet Kemboi",
+            },
+            {
+              "caseNumber": "MCCR/E148/2023",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Emmanuel Kibet Tanui",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "DEFENSE HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E019/2022",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "Emmanuel Kipkoech",
+            },
+            {
+              "caseNumber": "MCCR/E111/2022",
+              "num": "6",
+              "partyA": "The Republic (formerly Cr E159/2022)",
+              "partyB": "David Mabwai",
+            },
+            {
+              "caseNumber": "MCSO/E058/2022",
+              "num": "7",
+              "partyA": "The Republic",
+              "partyB": "Zakayo Kiplagat",
+            },
+            {
+              "caseNumber": "MCSO/E040/2022",
+              "num": "8",
+              "partyA": "The Republic",
+              "partyB": "Lackson Kiptanui Too",
+            },
+            {
+              "caseNumber": "MCCR/E162/2023",
+              "num": "9",
+              "partyA": "The Republic",
+              "partyB": "Henry Maswai",
+            },
+            {
+              "caseNumber": "MCCR/E153/2023",
+              "num": "10",
+              "partyA": "The Republic",
+              "partyB": "Kevin Kipchirchir",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E096/2022",
+              "num": "11",
+              "partyA": "The Republic",
+              "partyB": "Julias Chirchir Kipketer",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "SENTENCING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: ade312b4f89a0643c96a3d9e0b04e15b 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "ENDAU MOBILE COURT UNDER KITUI MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 5",
+        "date": 2023-10-10T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. MAUREEN KIMANI",
+        "phone": undefined,
+        "url": "https://tinyurl.com/yhqecybr",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E010/2020",
+              "num": "1",
+              "partyA": "405/70/2020",
+              "partyB": "MWINZI NGUTA AND MWEMA MWINZI",
+            },
+            {
+              "caseNumber": "MCCR/E028/2021",
+              "num": "2",
+              "partyA": "405/48/2021",
+              "partyB": "DANIEL MUNYASIA MUMBUA",
+            },
+            {
+              "caseNumber": "MCCR/E004/2023",
+              "num": "3",
+              "partyA": "405/31/2023",
+              "partyB": "LUCIA MULWA AND MUTHASYE MULWA AND 1 OTHERS",
+            },
+            {
+              "caseNumber": "MCCR/E011/2023",
+              "num": "4",
+              "partyA": "405/72/23",
+              "partyB": "MUTATI MAVUSYU",
+            },
+          ],
+          "dateTime": 2023-10-11T06:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E003/2023",
+              "num": "5",
+              "partyA": "405/30/2023",
+              "partyB": "JANET MULI",
+            },
+            {
+              "caseNumber": "MCCR/E844/2022",
+              "num": "6",
+              "partyA": "406/52/2022",
+              "partyB": "MULI KIOKO",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "ENDAU MOBILE COURT UNDER KITUI MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 5",
+        "date": 2023-10-11T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. MAUREEN KIMANI",
+        "phone": undefined,
+        "url": "https://tinyurl.com/yhqecybr",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E010/2022",
+              "num": "1",
+              "partyA": "405/75/22",
+              "partyB": "CHRISTINE WAMBUA",
+            },
+            {
+              "caseNumber": "MCCR/E009/2022",
+              "num": "2",
+              "partyA": "405/74/2022",
+              "partyB": "BENSON MUUSYA",
+            },
+            {
+              "caseNumber": "MCCR/E009/2023",
+              "num": "3",
+              "partyA": "405/61/23",
+              "partyB": "MUSYOKA MUSEMBI",
+            },
+          ],
+          "dateTime": 2023-10-12T06:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E008/2022",
+              "num": "4",
+              "partyA": "405/65/22",
+              "partyB": "MWALIMU NGOLO AND MUVISI NZAMULI AND MUTISYA NGULI AND MUTIA NGULI",
+            },
+            {
+              "caseNumber": "MCCR/E010/2023",
+              "num": "5",
+              "partyA": "405/63/2023",
+              "partyB": "ALEX MAUNDU KWIA",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "ENDAU MOBILE COURT UNDER KITUI MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 5",
+        "date": 2023-10-12T21:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. MAUREEN KIMANI",
+        "phone": undefined,
+        "url": "https://tinyurl.com/yhqecybr",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/29/2017",
+              "num": "1",
+              "partyA": "405/40/2017",
+              "partyB": "DANIEL MUSEMBI MUTIA",
+            },
+            {
+              "caseNumber": "MCSO/5/2020",
+              "num": "2",
+              "partyA": "405/32/2020",
+              "partyB": "MWENDWA WAMBUA",
+            },
+          ],
+          "dateTime": 2023-10-13T06:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8efbde09cda2ab733b19ec0ad11 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "1",
+        "date": 2023-11-26T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
+        "phone": undefined,
+        "url": "https://tinyurl.com/3ndvjujt",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E003/2023",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Mwadama  Zinje Juma",
+            },
+          ],
+          "dateTime": 2023-11-27T07:00:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "6",
+        "date": 2023-11-26T22:00:00.000Z,
+        "email": undefined,
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "phone": undefined,
+        "url": "https://cutt.ly/qjnYEaJ",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E012/2022",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
+            },
+          ],
+          "dateTime": 2023-11-27T07:00:00.000Z,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "1",
+        "date": 2023-11-27T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
+        "phone": undefined,
+        "url": "https://tinyurl.com/3ndvjujt",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E003/2023",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Mwadama  Zinje Juma",
+            },
+          ],
+          "dateTime": 2023-11-28T07:00:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "3",
+        "date": 2023-11-27T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
+        "phone": undefined,
+        "url": "https://bit.ly/3sy5a8H",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E019/2020",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Manduku Daniel And Ano",
+            },
+          ],
+          "dateTime": 2023-11-28T07:30:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "6",
+        "date": 2023-11-27T22:00:00.000Z,
+        "email": undefined,
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "phone": undefined,
+        "url": "https://cutt.ly/qjnYEaJ",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E012/2022",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
+            },
+          ],
+          "dateTime": 2023-11-28T07:00:00.000Z,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "1",
+        "date": 2023-11-28T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
+        "phone": undefined,
+        "url": "https://tinyurl.com/3ndvjujt",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E003/2023",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Mwadama  Zinje Juma",
+            },
+          ],
+          "dateTime": 2023-11-29T07:00:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "3",
+        "date": 2023-11-28T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
+        "phone": undefined,
+        "url": "https://bit.ly/3sy5a8H",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E018/2020",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Zacharia Okoth Obado And Others",
+            },
+          ],
+          "dateTime": 2023-11-29T07:30:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "6",
+        "date": 2023-11-28T22:00:00.000Z,
+        "email": undefined,
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "phone": undefined,
+        "url": "https://cutt.ly/qjnYEaJ",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E012/2022",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
+            },
+          ],
+          "dateTime": 2023-11-29T07:00:00.000Z,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "1",
+        "date": 2023-11-29T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
+        "phone": undefined,
+        "url": "https://tinyurl.com/3ndvjujt",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E003/2023",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Mwadama  Zinje Juma",
+            },
+          ],
+          "dateTime": 2023-11-30T07:00:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "3",
+        "date": 2023-11-29T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
+        "phone": undefined,
+        "url": "https://bit.ly/3sy5a8H",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E018/2020",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Zacharia Okoth Obado And Others",
+            },
+          ],
+          "dateTime": 2023-11-30T07:30:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "6",
+        "date": 2023-11-29T22:00:00.000Z,
+        "email": undefined,
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "phone": undefined,
+        "url": "https://cutt.ly/qjnYEaJ",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCAC/E012/2022",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
+            },
+          ],
+          "dateTime": 2023-11-30T07:00:00.000Z,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "4",
+        "date": 2023-11-30T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. EUNICE KAGURE NYUTU  ACC",
+        "phone": undefined,
+        "url": "https://bit.ly/3fnGQSV",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "ACCR /20/2019",
+              "num": "1",
+              "partyA": "Republic",
+              "partyB": "Henry Kiplagat Rotich &9 Others",
+            },
+          ],
+          "dateTime": 2023-12-01T07:00:00.000Z,
+          "section": "PART HEARD HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: bba8da4dc3bbabf2845bdd0f9928ce45 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 2",
+        "date": 2023-11-22T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON.O.J MUTHONI",
+        "phone": undefined,
+        "url": "https://shorturl.at/fhqS3",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/39/2019",
+              "num": "1",
+              "partyA": "Robert Banu Odhiambo",
+              "partyB": "Grishon Opiyo Nyongoro And Victor Songoi Maulo",
+            },
+            {
+              "caseNumber": "MCCC/40/2019",
+              "num": "2",
+              "partyA": "Mwareri Ersatus Gikonyo",
+              "partyB": "Grishon Opiyo Nyongoro And Victor Songoi Maulo",
+            },
+          ],
+          "dateTime": 2023-11-23T07:00:00.000Z,
+          "section": "HEARING- APPLICATION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/E055/2022",
+              "num": "3",
+              "partyA": "Iddi Akita Sumba",
+              "partyB": "Rashid Ali Okalo",
+            },
+            {
+              "caseNumber": "MCCC/E056/2022",
+              "num": "4",
+              "partyA": "Michael Ingasa Naminde",
+              "partyB": "Rashid Ali Okalo",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/9/2013",
+              "description": "In The Estate Of Ibrahim Ochola Omusula",
+              "num": "1",
+            },
+            {
+              "caseNumber": "MCELC/90/2018",
+              "num": "2",
+              "partyA": "Zainah Kadogo Mukabale",
+              "partyB": "Samwel Amwoma Rafimbi And Samwel Amwoma Rafimbi",
+            },
+            {
+              "caseNumber": "MCSUCC/38/2019",
+              "description": "In The Estate Of Josephat Osale Were",
+              "num": "3",
+            },
+            {
+              "caseNumber": "MCCC/56/2019",
+              "num": "4",
+              "partyA": "Rufas Sisia Makokha",
+              "partyB": "Dennis Simiyu Wanyonyi And Rana Auto Selection Limited",
+            },
+            {
+              "caseNumber": "MCCC/55/2019",
+              "num": "5",
+              "partyA": "Mary Awino Auma",
+              "partyB": "Dennis Simiyu Wanyonyi And Rana Auto Selection Limited",
+            },
+            {
+              "caseNumber": "MCCC/E019/2020",
+              "num": "6",
+              "partyA": "Joseph Shikanda Opare",
+              "partyB": "Joshua Okinda Onchoka And Al Husnain Motors Limited",
+            },
+            {
+              "caseNumber": "MCCC/E012/2020",
+              "num": "7",
+              "partyA": "David Kiko Eshikumo",
+              "partyB": "Margaret Nyambura Githinji And Equity Bank Kenya Limited",
+            },
+            {
+              "caseNumber": "MCSUCC/E244/2021",
+              "description": "In The Estate Of John Osako Musa",
+              "num": "8",
+            },
+            {
+              "caseNumber": "MCCC/E004/2021",
+              "num": "9",
+              "partyA": "Fredrick Osanya Juma",
+              "partyB": "John Wanjohi Njoroge And Shami Motors Limited",
+            },
+            {
+              "caseNumber": "MCSUCC/E223/2021",
+              "description": "In The Estate Of Haggai Ashika Mahero",
+              "num": "10",
+            },
+            {
+              "caseNumber": "MCSUCCMISC/E058/2023",
+              "num": "11",
+              "partyA": "Michael Omondi Oduol",
+              "partyB": "Nathan Oduol Odindo",
+            },
+            {
+              "caseNumber": "MCSUCCMISC/E003/2023",
+              "num": "12",
+              "partyA": "Benjamin Olumasai Akhonya And Charles Akala  And 1 Others",
+              "partyB": "Masoni Ngolo",
+            },
+            {
+              "caseNumber": "MCSUCCMISC/E063/2023",
+              "num": "13",
+              "partyA": "Parasiska Amira Amunga And Margaret Oyile Obonyo",
+              "partyB": "Alexander Obonyo",
+            },
+            {
+              "caseNumber": "MCSUCC/E212/2023",
+              "description": "In The Estate Of Dismas Otengo",
+              "num": "14",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E142/2022",
+              "description": "In The Estate Of Nowa Andati Akhwale",
+              "num": "15",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING- APPLICATION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: bc3145442f46a8166697aa1d65f977ca 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "ITEN MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 2",
+        "date": 2023-11-22T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON.KARANJA VIRGINIA  -PM",
+        "phone": undefined,
+        "url": "https://www.shorturl.at/bmqPV",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E052/2023",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Owiti Kosgei",
+            },
+            {
+              "caseNumber": "MCCR/E010/2023",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Evans Kosgei Chelanga",
+            },
+          ],
+          "dateTime": 2023-11-23T07:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: d3635fcaf33ad2255e521e7854c0f33a 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "KARABA UNDER WANGURU MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "1",
+        "date": 2023-11-20T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. MARTHA OPANGA (PM)",
+        "phone": undefined,
+        "url": "https://tinyurl.com/ysrf5tj7",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E004/2022",
+              "num": "1",
+              "partyA": "Jane Njeri Muchiri",
+              "partyB": "Isaac Nganga Kamau",
+            },
+          ],
+          "dateTime": 2023-11-21T07:00:00.000Z,
+          "section": "RULING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "KARABA UNDER WANGURU MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "1",
+        "date": 2023-11-22T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. MARTHA OPANGA (PM)",
+        "phone": undefined,
+        "url": "https://tinyurl.com/ysrf5tj7",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E010/2021",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Isiah Kiilu Mutava",
+            },
+            {
+              "caseNumber": "MCCR/E132/2021",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Joseph Kawiwi Wambua",
+            },
+            {
+              "caseNumber": "MCCR/E004/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Alvin Kariuki Irungu",
+            },
+            {
+              "caseNumber": "MCSO/E010/2023",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Joshua Ndolo",
+            },
+            {
+              "caseNumber": "MCCR/E186/2023",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "James Mwangi Thiong'o",
+            },
+            {
+              "caseNumber": "MCCR/E201/2023",
+              "num": "6",
+              "partyA": "The Republic",
+              "partyB": "Kelvin Kilonzo Mutua",
+            },
+            {
+              "caseNumber": "MCCR/E202/2023",
+              "num": "7",
+              "partyA": "The Republic",
+              "partyB": "Silvester Mutinda Wambua",
+            },
+            {
+              "caseNumber": "MCCR/E070/2023",
+              "num": "8",
+              "partyA": "The Republic",
+              "partyB": "John Kamurwa Wachira",
+            },
+            {
+              "caseNumber": "MCCR/E172/2023",
+              "num": "9",
+              "partyA": "The Republic",
+              "partyB": "Vincent Ngumbi",
+            },
+            {
+              "caseNumber": "MCCR/E211/2023",
+              "num": "10",
+              "partyA": "The Republic",
+              "partyB": "Juliet Wambui Wangari",
+            },
+            {
+              "caseNumber": "MCCR/E096/2023",
+              "num": "11",
+              "partyA": "The Republic",
+              "partyB": "Nicacio Mugedi",
+            },
+            {
+              "caseNumber": "MCCR/E210/2023",
+              "num": "12",
+              "partyA": "The Republic",
+              "partyB": "Dennis Kabuitu Muchiri",
+            },
+            {
+              "caseNumber": "MCCR/E138/2023",
+              "num": "13",
+              "partyA": "The Republic",
+              "partyB": "David Murimi Muthike",
+            },
+            {
+              "caseNumber": "MCSO/E009/2023",
+              "num": "14",
+              "partyA": "The Republic",
+              "partyB": "Eric Mwaka Nzioka",
+            },
+          ],
+          "dateTime": 2023-11-23T07:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E212/2023",
+              "num": "15",
+              "partyA": "The Republic",
+              "partyB": "Gerald Muriithi Kinyua",
+            },
+            {
+              "caseNumber": "MCCR/E191/2023",
+              "num": "16",
+              "partyA": "The Republic",
+              "partyB": "Samuel Mutua Ituma",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "PRE-TRIAL CONFERENCE",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/116/2019",
+              "num": "17",
+              "partyA": "The Republic",
+              "partyB": "Paul Ngei Mutuku And David Muasa Kioko",
+            },
+            {
+              "caseNumber": "MCCR/E093/2021",
+              "num": "18",
+              "partyA": "The Republic",
+              "partyB": "Geofrey Mutua Mwato",
+            },
+            {
+              "caseNumber": "MCCR/E117/2022",
+              "num": "19",
+              "partyA": "The Republic",
+              "partyB": "Martin Muturi And Danson Mutisya",
+            },
+            {
+              "caseNumber": "MCCR/E112/2023",
+              "num": "20",
+              "partyA": "The Republic",
+              "partyB": "Caroline Wanjiku",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab782c36bd8e5c13641b4f098b4 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-19T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. EDWARD TOO",
+        "phone": undefined,
+        "url": "https://bit.ly/3TwHDlF",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E028/2022",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Awes Dahir",
+            },
+            {
+              "caseNumber": "MCSO/E003/2022",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Abdimalik Ali Kamal",
+            },
+            {
+              "caseNumber": "MCCR/E062/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Yakub Suleiman",
+            },
+            {
+              "caseNumber": "MCCR/E064/2023",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Amos Oseko Bogecho And Andrew Kitheka Ayub  And 3 Others",
+            },
+            {
+              "caseNumber": "MCCR/E065/2023",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "Andrew Kitheka Ayub And Amos Oseko Bogechu  And 1 Others",
+            },
+          ],
+          "dateTime": 2023-11-20T07:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-20T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. EDWARD TOO",
+        "phone": undefined,
+        "url": "https://bit.ly/3TwHDlF",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCHCC/E001/2023",
+              "num": "1",
+              "partyA": "Prisciler Wambui Charlse",
+              "partyB": "Abel Ingati",
+            },
+          ],
+          "dateTime": 2023-11-21T07:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E002/2023",
+              "num": "2",
+              "partyA": "Ahmed Gedi Salah",
+              "partyB": "Ahmed Olow Harun And Nuru Hassan Dara",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "RULING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E063/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Roba Bodole",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "SENTENCING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 2",
+        "date": 2023-11-21T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. B. KABANGA (SRM)",
+        "phone": undefined,
+        "url": "https://bit.ly/3Ubaddm",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E061/2023",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Abass Ghotiko Abdirahman",
+            },
+          ],
+          "dateTime": 2023-11-22T07:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-22T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. EDWARD TOO",
+        "phone": undefined,
+        "url": "https://bit.ly/3TwHDlF",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E019/2023",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Musangi Muzaki",
+            },
+            {
+              "caseNumber": "MCCR/E056/2023",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Charles Maina Jaramba",
+            },
+          ],
+          "dateTime": 2023-11-23T07:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87c5202c6be4d0119807e11290 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "MOYALE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT ROOM 2",
+        "date": 2023-10-29T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. KOMBE LARRY MATAWI (RM)",
+        "phone": undefined,
+        "url": "https://shorturl.at/cyDTY",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E058/2023",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Buke Wario & Ano",
+            },
+            {
+              "caseNumber": "MCCR/E053/2023",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Adan Roba Bonaya",
+            },
+            {
+              "caseNumber": "MCCR/E052/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Adan Wario",
+            },
+            {
+              "caseNumber": "MCCR/E056/2023",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Abdi Dida Alias Abdub Dida",
+            },
+            {
+              "caseNumber": "MCCR/E057/2023",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "Boru Bonaya & Ano Tache",
+            },
+            {
+              "caseNumber": "MCCR/E055/2023",
+              "num": "6",
+              "partyA": "The Republic",
+              "partyB": "Abdi Dida Alias Abdub Dida",
+            },
+          ],
+          "dateTime": 2023-10-30T07:00:00.000Z,
+          "section": "MENTION",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "SOLOLO MOBILE COURT UNDER MOYALE",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT ROOM 2",
+        "date": 2023-11-01T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. KOMBE LARRY MATAWI (RM)",
+        "phone": undefined,
+        "url": "https://shorturl.at/cyDTY",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E059/2023",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Wario Boru",
+            },
+          ],
+          "dateTime": 2023-11-02T07:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E006/2023",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Shoba Dabaso Galgalo",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "PART HEARD HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E052/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Adan Wario",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+    {
+      "header": {
+        "court": [
+          "SOLOLO MOBILE COURT UNDER MOYALE",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT ROOM 2",
+        "date": 2023-11-01T22:00:00.000Z,
+        "email": undefined,
+        "judge": "HON. WILLY K. CHERUIYOT (PM)",
+        "phone": undefined,
+        "url": "https://t.ly/wH_CP",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E045/2023",
+              "num": "1",
+              "partyA": "The Republic",
+              "partyB": "Wako Wario & Ano",
+            },
+            {
+              "caseNumber": "MCCR/E047/2023",
+              "num": "2",
+              "partyA": "The Republic",
+              "partyB": "Abdi Boru Bora",
+            },
+          ],
+          "dateTime": 2023-11-02T07:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E040/2023",
+              "num": "3",
+              "partyA": "The Republic",
+              "partyB": "Adan Roba Bonaya",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "DEFENSE HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E032/2023",
+              "num": "4",
+              "partyA": "The Republic",
+              "partyB": "Jarso Halo Galgalo",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "PART HEARD HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E053/2023",
+              "num": "5",
+              "partyA": "The Republic",
+              "partyB": "Adan Roba Bonaya",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCR/E056/2022",
+              "num": "6",
+              "partyA": "The Republic",
+              "partyB": "Fugicha Diba Galgalo & 2 Others",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSO/E003/2023",
+              "num": "7",
+              "partyA": "The Republic",
+              "partyB": "Abdub Waqo Duba",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "RULING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba2c0864b0af30799d279a92a6 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-22T22:00:00.000Z,
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://shorturl.at/yPZ35",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E043/2022",
+              "description": "In The Estate Of Rahema Shihundu Manya",
+              "num": "1",
+            },
+          ],
+          "dateTime": 2023-11-23T07:00:00.000Z,
+          "section": "RECTIFICATION OF GRANT",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/73/2015",
+              "num": "2",
+              "partyA": "Julius Amere Otsulu",
+              "partyB": "Patrick Omutanyi Mukolwe",
+            },
+            {
+              "caseNumber": "MCSUCC/26/2017",
+              "description": "In The Estate Of Kuboka Amateshe",
+              "num": "3",
+            },
+            {
+              "caseNumber": "MCELC/84/2018",
+              "num": "4",
+              "partyA": "Agnes Maloba Olando",
+              "partyB": "Francis Wakhu Oketch",
+            },
+            {
+              "caseNumber": "MCSUCC/258/2018",
+              "description": "In The Estate Of Nelson Shikanda Saya",
+              "num": "5",
+            },
+            {
+              "caseNumber": "MCSUCC/186/2019",
+              "description": "In The Estate Of Imbusi Namai",
+              "num": "6",
+            },
+            {
+              "caseNumber": "MCSUCC/152/2020",
+              "description": "In The Estate Of Angwe Kalulu",
+              "num": "7",
+            },
+            {
+              "caseNumber": "MCELC/27/2020",
+              "num": "8",
+              "partyA": "Alfred Ongoma Ashibutso",
+              "partyB": "Agrey Okoti Nanjira",
+            },
+            {
+              "caseNumber": "MCSUCC/E181/2021",
+              "description": "",
+              "num": "9",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E020/2022",
+              "num": "10",
+              "partyA": "Kenneth Alukhaba Nasio",
+              "partyB": "Zacharia Mukabana",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "PRE-TRIAL CONFERENCE",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/E040/2023",
+              "num": "11",
+              "partyA": "Mulicka Anindo Indetie",
+              "partyB": "Violet Amboko Ndeta",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "PART HEARD HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/97/2015",
+              "num": "12",
+              "partyA": "Noah Atsiano H. Obiero",
+              "partyB": "Albert Tabu Shimwaka",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "INTERLOCUTORY APPLICATION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/17/2019",
+              "num": "13",
+              "partyA": "John Khangala Nachengo",
+              "partyB": "Joseph Omurunga Indetie And Moses Chibole",
+            },
+            {
+              "caseNumber": "MCELC/E028/2021",
+              "num": "14",
+              "partyA": "Patrick Matendechere Nyanje",
+              "partyB": "Shadrack Moi Nyanje",
+            },
+            {
+              "caseNumber": "MCELC/E050/2021",
+              "num": "15",
+              "partyA": "Truphosa Amakobe Anzaya",
+              "partyB": "Wycliffe Imbeba Alekana",
+            },
+            {
+              "caseNumber": "MCCC/E044/2021",
+              "description": "Fanisi Gimoi Ongadi And Francis Yalo   Vs",
+              "num": "16",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E247/2022",
+              "description": "In The Estate Of Amakobe Ngota",
+              "num": "17",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING- APPLICATION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/E009/2021",
+              "num": "18",
+              "partyA": "Josephine Shisia Shirobo",
+              "partyB": "Peter Maina And Kleen Homes Security Services Limited",
+            },
+            {
+              "caseNumber": "MCCC/E010/2021",
+              "num": "19",
+              "partyA": "William Ndolwa Kutekha",
+              "partyB": "Peter Maina And Kleen Homes Security Services Limited",
+            },
+            {
+              "caseNumber": "MCSUCC/E072/2022",
+              "description": "In The Estate Of Peter Namakhabwa Omuya",
+              "num": "20",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "RULING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/42/2020",
+              "num": "21",
+              "partyA": "Kevin Eyinda",
+              "partyB": "Butere County Hospital And County Government Of Kakamega",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "ASSESSMENT OF COSTS",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;
+
+exports[`parsing CauselistMultiDocumentParser should parse textContent: fb0195898d45e212240e5a28442da849 1`] = `
+{
+  "documents": ParserArray [
+    {
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": 2023-11-27T22:00:00.000Z,
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://urlshortner.org/LAYN7",
+      },
+      "sections": [
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/93/2018",
+              "num": "1",
+              "partyA": "Leah Mutende Obutire",
+              "partyB": "Joseph Moyi Obuchere",
+            },
+            {
+              "caseNumber": "MCSUCC/E020/2020",
+              "description": "In The Estate Of Filex Opat Siabireopiti Shabire",
+              "num": "2",
+            },
+            {
+              "caseNumber": "MCCC/E033/2021",
+              "num": "3",
+              "partyA": "Emmanuel Andewa Opiri",
+              "partyB": "Thomas Odhiambo Okello",
+            },
+            {
+              "caseNumber": "MCCC/E020/2022",
+              "num": "4",
+              "partyA": "Jacquelins Nereah Aluoch",
+              "partyB": "Invesco Assurance Company Limited",
+            },
+            {
+              "caseNumber": "MCSUCCMISC/E070/2023",
+              "num": "5",
+              "partyA": "Samuel Odhiambo Nyaondo And Elly Ochieng Nyaondo",
+              "partyB": "Gilbert Nyaondo Airo",
+            },
+          ],
+          "dateTime": 2023-11-28T07:00:00.000Z,
+          "section": "MENTION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCCC/19(A)/2019",
+              "num": "6",
+              "partyA": "Jacktone Indakwa Wakhusama",
+              "partyB": "Rana Auto Selection Limited",
+            },
+            {
+              "caseNumber": "MCSUCC/E124/2021",
+              "description": "",
+              "num": "7",
+            },
+            {
+              "caseNumber": "MCCC/E028/2022",
+              "num": "8",
+              "partyA": "Richard Omukala Shitseswa",
+              "partyB": "Lungu Building Contractors Ltd And Musa Shiundu Njoroge",
+            },
+            {
+              "caseNumber": "MCELC/E015/2023",
+              "num": "9",
+              "partyA": "Bevalyne Matete Andabwa",
+              "partyB": "William Amoyi Opindi And Mildred Ayako Olaka  And 1 Others",
+            },
+            {
+              "caseNumber": "MCELC/28/2023",
+              "num": "10",
+              "partyA": "Francis Wetukha Murabula",
+              "partyB": "Dancan Kizito Mabwabo And Chief Land Registrar - Kakamega  And 2 Others",
+            },
+            {
+              "caseNumber": "MCELC/E016/2023",
+              "num": "11",
+              "partyA": "Paul Ngawa Okachi",
+              "partyB": "William Amoyi Opindi And Mildred Ayako Olaka  And 1 Others",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCSUCC/E190/2022",
+              "description": "In The Estate Of Cleophas Odhoji",
+              "num": "12",
+            },
+            {
+              "caseNumber": "MCSUCC/E226/2022",
+              "description": "In The Estate Of Aggrey Nasio Ambuche",
+              "num": "13",
+            },
+            {
+              "caseNumber": "MCSUCC/E170/2022",
+              "description": "In The Estate Of Christopher Matendechere Ongoma",
+              "num": "14",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "HEARING- APPLICATION",
+        },
+        {
+          "causelist": [
+            {
+              "caseNumber": "MCELC/E023/2023",
+              "num": "15",
+              "partyA": "Naftali Imende Makotswe And Yafes Yatoli Makotswe  And 1 Others",
+              "partyB": "Zablon Andayi Akhonya",
+            },
+          ],
+          "dateTime": undefined,
+          "section": "RULING",
+        },
+      ],
+      "type": "CAUSE LIST",
+    },
+  ],
+}
+`;

@@ -14,12 +14,19 @@ import { CauseListDocumentParsed } from "@/api";
 import { timeZone } from "./calendar.tsx";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: "center",
   color: theme.palette.text.secondary,
   marginBottom: "0.5em",
+  flexShrink: 0,
+  width: "100%",
+}));
+
+const HeaderItem = styled(Item)(({ theme }) => ({
+  backgroundColor: theme.palette.grey.A200,
+  fontSize: "1.3em",
 }));
 
 const TimeListItem = styled(ListItem)(() => ({
@@ -33,8 +40,10 @@ const TypeOfCauseListItem = styled(ListItem)(() => ({
   fontWeight: "bold",
 }));
 
-const CaseListItem = styled(ListItem)(() => ({
-  border: "1px solid grey",
+const CaseListItem = styled(ListItem)(({ theme }) => ({
+  borderWidth: "1px",
+  borderColor: theme.palette.grey.A400,
+  borderStyle: "solid",
   borderRadius: "0.5em",
   marginBottom: "1em",
 }));
@@ -45,10 +54,8 @@ export interface CauseListProps {
 
 export default function CauseList({ data }: CauseListProps) {
   return (
-    <Stack spacing={0} margin={"0 auto 1em"} maxWidth={"xl"}>
-      <Item>
-        <Typography>{data.header.judge}</Typography>
-      </Item>
+    <Stack spacing={0} margin={"0 auto 1em"} width={"100%"}>
+      <HeaderItem>{data.header.judge}</HeaderItem>
       <Item>
         <Typography>
           {format(new Date(data.header.date), "PPPP", { timeZone })}
@@ -75,7 +82,7 @@ export default function CauseList({ data }: CauseListProps) {
                     <Typography> {c.description}</Typography>
                   ) : (
                     <Typography>
-                      {c.partyA} VS {c.partyB}
+                      {c.partyA} <i>VS</i> {c.partyB}
                     </Typography>
                   )}
                 </ListItemText>

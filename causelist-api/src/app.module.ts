@@ -10,6 +10,8 @@ import AdminJS from 'adminjs';
 import { Model } from 'mongoose';
 import { SearchModule } from './search/search.module.js';
 import { CourtsModule } from './courts/courts.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { UsersModule } from './users/users.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -61,6 +63,8 @@ AdminJS.registerAdapter({
     KenyaLawMenuModuleModule,
     SearchModule,
     CourtsModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

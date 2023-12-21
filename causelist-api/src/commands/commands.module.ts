@@ -7,6 +7,8 @@ import { ImportCommand } from './import.command.js';
 import { ParseCommand } from './parse.command.js';
 import { TestsCommand } from './tests.command.js';
 import { CauseList, CauseListSchema } from '../schemas/causelist.schema.js';
+import { User, UserSchema } from '../schemas/user.schema.js';
+import { DbCommand } from './db.command.js';
 
 @Module({
   imports: [
@@ -15,10 +17,11 @@ import { CauseList, CauseListSchema } from '../schemas/causelist.schema.js';
       { name: MenuEntry.name, schema: MenuEntrySchema },
       { name: InfoFile.name, schema: InfoFileSchema },
       { name: CauseList.name, schema: CauseListSchema },
+      { name: User.name, schema: UserSchema },
     ]),
     CommandModule,
   ],
   controllers: [],
-  providers: [ImportCommand, ParseCommand, TestsCommand],
+  providers: [ImportCommand, ParseCommand, TestsCommand, DbCommand],
 })
 export class CommandsModule {}

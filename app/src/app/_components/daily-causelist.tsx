@@ -13,7 +13,7 @@ import { fetcher } from "./fetcher.ts";
 import useSWR from "swr";
 import { formatOrdinals } from "./ordinal.ts";
 
-import { CauseListDocumentParsed } from "@api";
+import { CauseListDocumentParsed } from "@/api";
 import CauseList from "./causelist.tsx";
 import JudgeSelector from "./judge-selector.tsx";
 import { causeListStore } from "../_store/index.ts";

@@ -22,10 +22,14 @@ import {
   ParserInterface,
 } from './parser-base.js';
 import {
-  CauselistHeaderParsed,
   CauselistHeaderParser,
   CauselistHeaderParserBase,
 } from './causelist-header-parser.js';
+import {
+  CauseListDocumentParsed,
+  CauselistLineParsed,
+  CauselistSectionParsed,
+} from '../../interfaces/index.js';
 
 const SECTION_NAMES = [
   'MENTION',
@@ -93,12 +97,6 @@ const CAUSE_LIST_RE = [
   /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)\s*$/i,
   /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<description>In\s+The\s+Estate\s+Of.*?)\s*$/,
 ];
-
-export type CauselistLineParsed = {
-  caseNumber: string;
-  num: string;
-  additionalNumber?: string;
-} & ({ partyA: string; partyB: string } | { description: string });
 
 export class CauselistLineParser extends ParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
@@ -207,23 +205,18 @@ export class CauselistLineParser extends ParserBase {
   }
 }
 
-export interface CauselistSectionParsed {
-  dateTime: Date;
-  section: string;
-  causelist: CauselistLineParsed[];
-}
 export class CauseListSectionParser extends ParserBase {
   dateTime: ExtractTimeField;
   section = new ExtractStringField(-10, phrasesToRegex(SECTION_NAMES));
   // causelist = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
-  causelist: CauselistLineParser;
+  cases: CauselistLineParser;
   constructor(
     file: FileLines,
     public readonly parent: CauselistHeaderParserBase,
   ) {
     super(file, parent);
     this.dateTime = new ExtractTimeField(-10, parent.date);
-    this.causelist = new CauselistLineParser(this.file);
+    this.cases = new CauselistLineParser(this.file);
   }
 
   tryParse() {
@@ -231,22 +224,16 @@ export class CauseListSectionParser extends ParserBase {
 
     this.section.tryParse(this.file);
     // this.causelist.tryParse(this.file);
-    this.causelist.tryParse();
+    this.cases.tryParse();
   }
 
   getParsed(): CauselistSectionParsed {
     return {
       dateTime: this.dateTime.get(),
-      section: this.section.get(),
-      causelist: this.causelist.getParsed(),
+      typeOfCause: this.section.get(),
+      cases: this.cases.getParsed(),
     };
   }
-}
-
-export interface CauseListDocumentParsed {
-  type: 'CAUSE LIST' | 'UNASSIGNED MATTERS';
-  header: CauselistHeaderParsed;
-  sections: CauselistSectionParsed[];
 }
 
 export abstract class CauseListParseBase extends ParserBase {
@@ -271,7 +258,7 @@ export abstract class CauseListParseBase extends ParserBase {
 
   getParsed() {
     return {
-      sections: this.sections.getParsed(),
+      causeLists: this.sections.getParsed(),
     };
   }
 }

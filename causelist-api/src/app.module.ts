@@ -8,6 +8,8 @@ import { MenuEntry, MenuEntrySchema } from './schemas/menu-entry.schema.js';
 import * as AdminJSMongoose from '@adminjs/mongoose';
 import AdminJS from 'adminjs';
 import { Model } from 'mongoose';
+import { SearchModule } from './search/search.module.js';
+import { CourtsModule } from './courts/courts.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -57,6 +59,8 @@ AdminJS.registerAdapter({
       },
     }),
     KenyaLawMenuModuleModule,
+    SearchModule,
+    CourtsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

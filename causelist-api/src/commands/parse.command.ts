@@ -20,6 +20,7 @@ import {
   CauselistParser,
 } from './parser/causelist-parser.js';
 import { format } from 'date-fns';
+import { CauseList } from '../schemas/causelist.schema.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -48,6 +49,8 @@ export class ParseCommand {
     protected menuEntryModel: Model<MenuEntry>,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
+    @InjectModel(CauseList.name)
+    protected causeListModel: Model<CauseList>,
   ) {}
 
   @Command({
@@ -120,6 +123,13 @@ export class ParseCommand {
       required: false,
     })
     md5: string,
+    @Option({
+      name: 'write',
+      describe: 'Write parsed data to db',
+      type: 'boolean',
+      required: false,
+    })
+    write: string,
   ) {
     const filter: FilterQuery<InfoFile> = docId
       ? { _id: docId }
@@ -158,6 +168,7 @@ export class ParseCommand {
       (e) => e.hasCourt && !e.isNotice && e.hasCauseList,
     );
     const good = parsedList.filter((e) => e.s >= e.p.minValidScore());
+    const goodAtEnd = good.filter((e) => e.p.file.end());
     const bins = {
       0: ' 0- 9',
       10: '10-19',
@@ -182,10 +193,7 @@ export class ParseCommand {
 
     console.log('Total:', documents.length);
     console.log('Total With passing:', good.length);
-    console.log(
-      'Total With passing and reached end:',
-      good.filter((e) => e.p.file.end()).length,
-    );
+    console.log('Total With passing and reached end:', goodAtEnd.length);
     console.log('Total with court:', haveCourt.length);
     console.log(
       'minValidScores are:',
@@ -201,6 +209,33 @@ export class ParseCommand {
       v.length,
     ])) {
       console.log(`  ${bins[bin]} => ${count}`);
+    }
+    if (write) {
+      const savePromises = [];
+      let deletedOld = 0;
+      for (const parsed of goodAtEnd) {
+        const infoFile = parsed.doc;
+        const data = parsed.p.getParsed();
+        const deleted = await this.causeListModel
+          .deleteMany({
+            parsedFrom: infoFile._id,
+          })
+          .exec();
+        deletedOld += deleted.deletedCount;
+        for (const document of data.documents) {
+          const causeList = new this.causeListModel({
+            parsedFrom: infoFile._id,
+            type: document.type,
+            header: document.header,
+            causeLists: document.causeLists,
+          });
+          savePromises.push(causeList.save());
+        }
+      }
+      console.log(`Deleted ${deletedOld} existing CauseLists!`);
+      console.log(`Writing ${savePromises.length} CauseList to db!`);
+      await Promise.all(savePromises);
+      return;
     }
 
     // console.dir(

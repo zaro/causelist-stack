@@ -60,7 +60,7 @@ export class ExtractDateField extends ExtractedField<Date> {
     dateString = dateString.replace(/^FOR\s+/i, '');
     for (const dateFormat of DATE_FORMATS) {
       try {
-        const date = parse(dateString, dateFormat, 0);
+        const date = parse(dateString, dateFormat, new Date());
         if (!Number.isNaN(date.valueOf())) {
           this.set(date);
           return true;

@@ -7,6 +7,7 @@ import {
   ExtractTimeField,
 } from './extracted-field.js';
 import { MultiParser, ParserBase } from './parser-base.js';
+import { CauselistHeaderParsed } from '../../interfaces/index.js';
 
 const URL_RE =
   /(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -24,16 +25,6 @@ const JUDGE_RE = [
   /(?<judge>(?:HON\.\s+).*)/i,
 ];
 
-export interface CauselistHeaderParsed {
-  court: string[];
-  date: Date;
-  judge: string;
-  courtRoom: string;
-  url: string;
-  email: string;
-  phone: string;
-}
-
 export abstract class CauselistHeaderParserBase extends ParserBase {
   court = new ExtractStringListField(10, [/^.*\bcourt\b.*$/i]);
   date = new ExtractDateField(10);
@@ -47,9 +38,10 @@ export abstract class CauselistHeaderParserBase extends ParserBase {
   }
 
   getParsed(): CauselistHeaderParsed {
+    const d = this.date.get();
     return {
       court: this.court.get(),
-      date: this.date.get(),
+      date: `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`,
       judge: this.judge.get()?.judge,
       courtRoom: this.judge.get()?.courtRoom,
       url: this.url.get(),

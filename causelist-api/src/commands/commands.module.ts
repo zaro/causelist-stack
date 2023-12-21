@@ -6,6 +6,7 @@ import { CommandModule } from 'nestjs-command/dist/index.js';
 import { ImportCommand } from './import.command.js';
 import { ParseCommand } from './parse.command.js';
 import { TestsCommand } from './tests.command.js';
+import { CauseList, CauseListSchema } from '../schemas/causelist.schema.js';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TestsCommand } from './tests.command.js';
     MongooseModule.forFeature([
       { name: MenuEntry.name, schema: MenuEntrySchema },
       { name: InfoFile.name, schema: InfoFileSchema },
+      { name: CauseList.name, schema: CauseListSchema },
     ]),
     CommandModule,
   ],

@@ -2,5 +2,9 @@
   "cSpell.words": [
     "Causelist"
   ],
-  "cmake.configureOnOpen": false
+  "cmake.configureOnOpen": false,
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.importModuleSpecifierEnding": "js",
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "typescript.preferences.importModuleSpecifier": "relative"
 }

@@ -7,23 +7,26 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "../../../_components/copyright.tsx";
 import { AppLink } from "../../../_components/app-link.tsx";
 import Link from "@mui/material/Link";
 
-export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+import useUser from "../use-user.hook.ts";
+
+export default function Page() {
+  const { user } = useUser();
+  const updateUser = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
       email: data.get("email"),
-      password: data.get("password"),
     });
   };
-
   return (
     <Container maxWidth="xs">
       <Box
@@ -34,13 +37,13 @@ export default function SignUp() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
+        <Avatar sx={{ m: 1, bgcolor: "info.main" }}>
+          <AccountCircleIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Account
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate onSubmit={updateUser} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -50,6 +53,7 @@ export default function SignUp() {
                 fullWidth
                 id="firstName"
                 label="First Name"
+                defaultValue={user.firstName}
                 autoFocus
               />
             </Grid>
@@ -60,6 +64,7 @@ export default function SignUp() {
                 id="lastName"
                 label="Last Name"
                 name="lastName"
+                defaultValue={user.lastName}
                 autoComplete="family-name"
               />
             </Grid>
@@ -73,30 +78,6 @@ export default function SignUp() {
                 autoComplete="email"
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="tacAccepted" color="primary" />}
-                label={
-                  <span>
-                    I have read and accepted the{" "}
-                    <Link target="_blank" href="/terms-and-conditions">
-                      Terms And Conditions
-                    </Link>
-                  </span>
-                }
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -104,18 +85,10 @@ export default function SignUp() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
+            Save
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <AppLink href="/sign-in" variant="body2">
-                Already have an account? Sign in
-              </AppLink>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }

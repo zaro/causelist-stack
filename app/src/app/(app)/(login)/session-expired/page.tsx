@@ -1,22 +1,13 @@
 "use client";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
 import Copyright from "../../../_components/copyright.tsx";
 import { AppLink } from "../../../_components/app-link.tsx";
-import { userStore } from "../../../_store/index.ts";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useRouter } from "next/navigation";
 
 export default function SessionExpired() {
@@ -24,7 +15,6 @@ export default function SessionExpired() {
 
   return (
     <Container maxWidth="xs">
-      <CssBaseline />
       <Box
         sx={{
           marginTop: 8,

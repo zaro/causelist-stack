@@ -5,7 +5,7 @@ import { CauselistHeaderParsed } from '../interfaces/index.js';
 
 @Schema({ _id: false })
 export class CauseListHeader implements CauselistHeaderParsed {
-  @Prop()
+  @Prop({ index: '' })
   court: string[];
 
   @Prop()
@@ -77,3 +77,21 @@ export class CauseList {
 }
 
 export const CauseListSchema = SchemaFactory.createForClass(CauseList);
+
+CauseListSchema.index(
+  {
+    'header.court': 'text',
+    'header.judge': 'text',
+    'header.url': 'text',
+    'header.email': 'text',
+    'header.phone': 'text',
+    'causeLists.cases.caseNumber': 'text',
+    'causeLists.cases.additionalNumber': 'text',
+    'causeLists.cases.partyA': 'text',
+    'causeLists.cases.partyB': 'text',
+    'causeLists.cases.description': 'text',
+  },
+  {
+    name: 'search',
+  },
+);

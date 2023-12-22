@@ -20,7 +20,26 @@ AdminJS.registerAdapter({
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://causelist:causelist@localhost/causelist'),
+    MongooseModule.forRoot(
+      'mongodb://causelist:causelist@localhost/causelist',
+      {
+        connectionFactory: (connection) => {
+          function setRunValidators(this: any) {
+            if ('runValidators' in this.getOptions()) {
+              return;
+            }
+            this.setOptions({ runValidators: true });
+          }
+          connection.plugin((schema) => {
+            schema.pre('findOneAndUpdate', setRunValidators);
+            schema.pre('updateMany', setRunValidators);
+            schema.pre('updateOne', setRunValidators);
+            schema.pre('update', setRunValidators);
+          });
+          return connection;
+        },
+      },
+    ),
     AdminModule.createAdminAsync({
       inject: [getModelToken(MenuEntry.name)],
       imports: [

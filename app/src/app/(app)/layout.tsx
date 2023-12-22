@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import App from "./app.tsx";
+import ProvideTheme from "./provide-theme.tsx";
 
 export const metadata: Metadata = {
   title: "Causelist",
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <App>{children}</App>
+        <ProvideTheme>{children}</ProvideTheme>
       </body>
     </html>
   );

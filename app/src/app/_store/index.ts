@@ -33,3 +33,30 @@ export const causeListStore = createStore("causeList")({
       return get.selectedJudges()[court];
     },
   }));
+
+interface LoginState {
+  phoneForOtp: string | null;
+  otpExpiresAt: Date | null;
+}
+
+export const loginStore = createStore("login")({
+  phoneForOtp: null,
+  otpExpiresAt: null,
+} as LoginState);
+
+interface UserState {
+  accessToken: string | null;
+  user: any | null;
+}
+
+export const userStore = createStore("user")(
+  {
+    accessToken: null,
+    user: null,
+  } as UserState,
+  {
+    persist: {
+      enabled: true,
+    },
+  }
+);

@@ -6,16 +6,16 @@ export type OtpDocument = HydratedDocument<Otp>;
 
 @Schema({ timestamps: true })
 export class Otp {
-  @Prop()
+  @Prop({ required: true })
   phone: string;
 
-  @Prop()
+  @Prop({ required: true })
   code: string;
 
-  @Prop()
+  @Prop({ required: true })
   used: boolean;
 
-  @Prop()
+  @Prop({ required: true })
   expiresAt: Date;
 
   @Prop()
@@ -24,7 +24,7 @@ export class Otp {
   @Prop()
   updatedAt?: Date;
 
-  @Prop({ type: 'ObjectId', ref: () => User })
+  @Prop({ required: true, type: 'ObjectId', ref: 'User' })
   user: User;
 }
 

@@ -37,13 +37,22 @@ export class UsersService {
     });
   }
 
-  async makeOtp(userPhone: string, expiresInSeconds = 600) {
+  async makeOtp(
+    userPhone: string,
+    expiresInSeconds = 600,
+  ): Promise<Otp | null> {
     const phone = this.normalizePhone(userPhone);
+    const user = await this.findOneByPhone(userPhone);
+    if (!user) {
+      return null;
+    }
     const expiresAt = new Date(Date.now() + expiresInSeconds * 1000);
-    await this.otpModel.findOneAndUpdate(
+    const otp = await this.otpModel.findOneAndUpdate(
       { phone },
-      { code: this.randomCode(6), used: false, expiresAt },
+      { code: this.randomCode(6), used: false, expiresAt, user },
+      { upsert: true, new: true },
     );
+    return otp;
   }
 
   async checkOtp(userPhone: string, code: string): Promise<User | null> {

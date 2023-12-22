@@ -12,10 +12,15 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
@@ -23,7 +28,8 @@ import { useState, FC } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { userStore } from "../../_store/index.ts";
 
 const drawerWidth = 240;
 
@@ -48,6 +54,11 @@ const drawerMenu: DrawerMenuItemType[] = [
   },
   "-",
   {
+    name: "Account",
+    path: "/account",
+    icon: ManageAccountsIcon,
+  },
+  {
     name: "About",
     path: "/about",
     icon: InfoIcon,
@@ -67,20 +78,18 @@ function DrawerMenuItem({
   const Icon = item.icon;
 
   return (
-    <List>
-      <ListItem disablePadding>
-        <ListItemButton
-          component={Link}
-          href={item.path}
-          selected={item.path === currentPath}
-        >
-          <ListItemIcon>
-            <Icon />
-          </ListItemIcon>
-          <ListItemText primary={item.name} />
-        </ListItemButton>
-      </ListItem>
-    </List>
+    <ListItem disablePadding>
+      <ListItemButton
+        component={Link}
+        href={item.path}
+        selected={item.path === currentPath}
+      >
+        <ListItemIcon>
+          <Icon />
+        </ListItemIcon>
+        <ListItemText primary={item.name} />
+      </ListItemButton>
+    </ListItem>
   );
 }
 
@@ -135,8 +144,20 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function App({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const theme = useTheme();
+  const user = userStore.use.user();
+  const accessToken = userStore.use.accessToken();
   const [open, setOpen] = useState(false);
+
+  if (!user || !accessToken) {
+    console.log("no user or accessToken, redirect to /login");
+    console.log("User:", user);
+    console.log("accessToken:", accessToken);
+    router.push("/sign-in");
+    return;
+  }
+
   const currentMenuItem: IDrawerMenuItem = drawerMenu.find(
     (i) => typeof i !== "string" && i.path === pathname
   );
@@ -192,10 +213,28 @@ export default function App({ children }: { children: React.ReactNode }) {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <List>
+          <List sx={{ marginBottom: "auto" }}>
             {drawerMenu.map((i, idx) => (
               <DrawerMenuItem key={idx} item={i} currentPath={pathname} />
             ))}
+          </List>
+          <List>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <AccountCircleIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} href="/sign-out">
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText primary="Sign out" />
+              </ListItemButton>
+            </ListItem>
           </List>
         </Drawer>
         <Main open={open}>

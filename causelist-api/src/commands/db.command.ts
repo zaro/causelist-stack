@@ -29,7 +29,7 @@ export class DbCommand {
         firstName: 'Svetlozar',
         lastName: 'Argirov',
       },
-      { upsert: true },
+      { upsert: true, new: true },
     );
     this.log.log(`Created : id=${user.id}, phone=${user.phone}`);
     user = await this.userModel.findOneAndUpdate(
@@ -40,7 +40,7 @@ export class DbCommand {
         firstName: 'Robinson',
         lastName: 'Kemwamu',
       },
-      { upsert: true },
+      { upsert: true, new: true },
     );
     this.log.log(`Created : id=${user.id}, phone=${user.phone}`);
 

@@ -46,13 +46,11 @@ export const loginStore = createStore("login")({
 
 interface UserState {
   accessToken: string | null;
-  user: any | null;
 }
 
 export const userStore = createStore("user")(
   {
     accessToken: null,
-    user: null,
   } as UserState,
   {
     persist: {

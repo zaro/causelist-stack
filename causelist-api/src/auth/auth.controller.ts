@@ -6,6 +6,7 @@ import {
   Param,
   Logger,
   Body,
+  Get,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service.js';
@@ -26,6 +27,11 @@ export class AuthController {
     private authService: AuthService,
     private userService: UsersService,
   ) {}
+
+  @Get('me')
+  async me(@Request() req) {
+    return this.userService.findById(req.user.userId);
+  }
 
   @Public()
   @UseGuards(AuthGuard('otp'))

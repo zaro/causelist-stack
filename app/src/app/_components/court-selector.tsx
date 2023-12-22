@@ -9,6 +9,11 @@ import { fetcher } from "./fetcher.ts";
 export default function CourtSelector() {
   const [open, setOpen] = React.useState(false);
   const { data, error, isLoading } = useSWR("/api/courts/all", fetcher);
+  console.log(data);
+  if (error) {
+    console.error(error);
+    return <div>failed</div>;
+  }
 
   return (
     <Autocomplete

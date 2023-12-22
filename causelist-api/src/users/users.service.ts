@@ -31,6 +31,10 @@ export class UsersService {
     return result;
   }
 
+  async findById(id: string): Promise<User | undefined> {
+    return this.userModel.findById(id);
+  }
+
   async findOneByPhone(userPhone: string): Promise<User | undefined> {
     return this.userModel.findOne({
       phone: this.normalizePhone(userPhone),

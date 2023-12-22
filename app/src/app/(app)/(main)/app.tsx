@@ -1,5 +1,7 @@
 "use client";
 import { styled, useTheme } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
+
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -24,12 +26,15 @@ import Avatar from "@mui/material/Avatar";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useState, FC } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import useSwr, { SWRConfig } from "swr";
 import { userStore } from "../../_store/index.ts";
+import useUser from "./use-user.hook.ts";
 
 const drawerWidth = 240;
 
@@ -142,21 +147,24 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+function FullScreenSpinner() {
+  return (
+    <Grid container justifyContent={"center"}>
+      <Grid item>
+        <CircularProgress />
+      </Grid>
+    </Grid>
+  );
+}
+
 export default function App({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const theme = useTheme();
-  const user = userStore.use.user();
-  const accessToken = userStore.use.accessToken();
   const [open, setOpen] = useState(false);
-
-  if (!user || !accessToken) {
-    console.log("no user or accessToken, redirect to /login");
-    console.log("User:", user);
-    console.log("accessToken:", accessToken);
-    router.push("/sign-in");
-    return;
-  }
+  const { user, loadingUser, loggedOut } = useUser();
+  if (loggedOut) return <div>redirecting...</div>;
+  if (loadingUser) return <FullScreenSpinner />;
 
   const currentMenuItem: IDrawerMenuItem = drawerMenu.find(
     (i) => typeof i !== "string" && i.path === pathname

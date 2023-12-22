@@ -50,10 +50,15 @@ export default function Calendar() {
         }/${selectedCourt}/days`
       : null;
 
-  const { data: daysWithCauseList, isLoading } = useSWR<string[]>(
-    apiURL,
-    fetcher
-  );
+  const {
+    data: daysWithCauseList,
+    isLoading,
+    error,
+  } = useSWR<string[]>(apiURL, fetcher);
+  if (error) {
+    console.error(error);
+    return <div>failed</div>;
+  }
   const highlightedDays = daysWithCauseList?.map((d) => new Date(d).getDate());
   return (
     <DateCalendar

@@ -31,6 +31,7 @@ function ExpiresIn({ expiresIn }: { expiresIn: Date | null }) {
 export default function CheckOtp() {
   const [working, setWorking] = React.useState(false);
   const [error, setError] = React.useState<string[] | null>(null);
+  const [signedIn, setSignedIn] = React.useState(false);
   const router = useRouter();
   const phoneForOtp = loginStore.get.phoneForOtp();
   // TODO: maybe make this work
@@ -59,11 +60,9 @@ export default function CheckOtp() {
 
         if (r.accessToken && r.user) {
           userStore.set.accessToken(r.accessToken);
-          userStore.set.user(r.user);
           loginStore.set.phoneForOtp(null);
           loginStore.set.otpExpiresAt(null);
-          router.push("/calendar");
-          console.log("Signed in, redirect to /calendar");
+          setSignedIn(true);
         } else {
           setError(["Invalid server response"]);
         }
@@ -73,6 +72,12 @@ export default function CheckOtp() {
       })
       .finally(() => setWorking(false));
   };
+  React.useEffect(() => {
+    if (signedIn) {
+      console.log("Signed in, redirect to /calendar");
+      router.push("/calendar");
+    }
+  }, [signedIn]);
 
   return (
     <Container maxWidth="xs">

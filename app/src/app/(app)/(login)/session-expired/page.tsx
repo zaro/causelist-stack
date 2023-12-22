@@ -19,14 +19,8 @@ import { userStore } from "../../../_store/index.ts";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useRouter } from "next/navigation";
 
-export default function SignOut() {
+export default function SessionExpired() {
   const router = useRouter();
-  React.useEffect(() => {
-    setTimeout(() => {
-      userStore.set.accessToken(null);
-      router.push("/");
-    }, 1000);
-  });
 
   return (
     <Container maxWidth="xs">
@@ -42,9 +36,16 @@ export default function SignOut() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          Signing out
+        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+          Session expired
         </Typography>
+        <Grid container justifyContent={"center"}>
+          <Grid item>
+            <AppLink href="/sign-in" variant="body2">
+              Sign in again
+            </AppLink>
+          </Grid>
+        </Grid>
       </Box>
       <Copyright sx={{ mt: 5 }} />
     </Container>

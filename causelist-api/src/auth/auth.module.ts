@@ -22,11 +22,11 @@ import { JwtAuthGuard } from './jwt-auth.guard.js';
     AuthService,
     OtpStrategy,
     JwtStrategy,
-    // {
-    //   // Make jwt Auth guard global
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      // Make jwt Auth guard global
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
   controllers: [AuthController],
 })

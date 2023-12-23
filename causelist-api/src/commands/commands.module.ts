@@ -9,10 +9,38 @@ import { TestsCommand } from './tests.command.js';
 import { CauseList, CauseListSchema } from '../schemas/causelist.schema.js';
 import { User, UserSchema } from '../schemas/user.schema.js';
 import { DbCommand } from './db.command.js';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://causelist:causelist@localhost/causelist'),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get(
+          'MONGO_URL',
+          'mongodb://causelist:causelist@localhost/causelist',
+        ),
+        connectionFactory: (connection) => {
+          function setRunValidators(this: any) {
+            if ('runValidators' in this.getOptions()) {
+              return;
+            }
+            this.setOptions({ runValidators: true });
+          }
+          connection.plugin((schema) => {
+            schema.pre('findOneAndUpdate', setRunValidators);
+            schema.pre('updateMany', setRunValidators);
+            schema.pre('updateOne', setRunValidators);
+            schema.pre('update', setRunValidators);
+          });
+          return connection;
+        },
+      }),
+    }),
+
     MongooseModule.forFeature([
       { name: MenuEntry.name, schema: MenuEntrySchema },
       { name: InfoFile.name, schema: InfoFileSchema },

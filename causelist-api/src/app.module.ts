@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
@@ -12,6 +13,7 @@ import { SearchModule } from './search/search.module.js';
 import { CourtsModule } from './courts/courts.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
+import { HealthModule } from './health/health.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -20,9 +22,16 @@ AdminJS.registerAdapter({
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb://causelist:causelist@localhost/causelist',
-      {
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get(
+          'MONGO_URL',
+          'mongodb://causelist:causelist@localhost/causelist',
+        ),
         connectionFactory: (connection) => {
           function setRunValidators(this: any) {
             if ('runValidators' in this.getOptions()) {
@@ -38,8 +47,8 @@ AdminJS.registerAdapter({
           });
           return connection;
         },
-      },
-    ),
+      }),
+    }),
     AdminModule.createAdminAsync({
       inject: [getModelToken(MenuEntry.name)],
       imports: [
@@ -84,6 +93,7 @@ AdminJS.registerAdapter({
     CourtsModule,
     AuthModule,
     UsersModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -140,12 +140,67 @@ export default function App({ children }: { children: React.ReactNode }) {
     (i) => typeof i !== "string" && i.path === pathname
   ) as IDrawerMenuItem;
 
+  const drawer = (
+    <>
+      <DrawerHeader>
+        <strong>CauseList</strong>
+        <IconButton
+          onClick={handleDrawerToggle}
+          sx={{
+            display: { xs: "block", sm: "none" },
+          }}
+        >
+          {theme.direction === "ltr" ? (
+            <ChevronLeftIcon />
+          ) : (
+            <ChevronRightIcon />
+          )}
+        </IconButton>
+      </DrawerHeader>
+      <Divider />
+      <List sx={{ marginBottom: "auto" }}>
+        {drawerMenu.map((i, idx) => (
+          <DrawerMenuItem
+            key={idx}
+            item={i}
+            currentPath={pathname}
+            onClick={handleDrawerToggle}
+          />
+        ))}
+      </List>
+      <List>
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <AccountCircleIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/sign-out">
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sign out" />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </>
+  );
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <div style={{ display: "none" }}>{!!accessToken}</div>
-        <AppBar position="fixed">
+        {/* <div style={{ display: "none" }}>{!!accessToken}</div> */}
+        <AppBar
+          position="fixed"
+          sx={{
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
+          }}
+        >
           <Toolbar>
             <IconButton
               color="inherit"
@@ -161,62 +216,42 @@ export default function App({ children }: { children: React.ReactNode }) {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Drawer
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-          variant="temporary"
-          anchor="left"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          aria-label="menu"
         >
-          <DrawerHeader>
-            <strong>CauseList</strong>
-            <IconButton onClick={handleDrawerToggle}>
-              {theme.direction === "ltr" ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <List sx={{ marginBottom: "auto" }}>
-            {drawerMenu.map((i, idx) => (
-              <DrawerMenuItem
-                key={idx}
-                item={i}
-                currentPath={pathname}
-                onClick={handleDrawerToggle}
-              />
-            ))}
-          </List>
-          <List>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <AccountCircleIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={`${user.firstName} ${user.lastName}`} />
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} href="/sign-out">
-                <ListItemIcon>
-                  <LogoutIcon />
-                </ListItemIcon>
-                <ListItemText primary="Sign out" />
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Drawer>
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              display: { xs: "block", sm: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
         <Box
           component="main"
           sx={{

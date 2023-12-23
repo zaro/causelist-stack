@@ -1,0 +1,12 @@
+{{- if .Values.website.useBasicAuth }}
+apiVersion: v1
+data:
+  # Generate the auth data as shouwn here https://kubernetes.github.io/ingress-nginx/examples/auth/basic/
+  # preview:letmein
+  auth: cHJldmlldzokYXByMSRjbWxnTkRhRyRrQzBTMElSa1NLcDF0SWliZGRRU2cvCg==
+kind: Secret
+metadata:
+  name: basic-auth
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+{{- end }}

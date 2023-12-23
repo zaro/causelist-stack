@@ -3,6 +3,9 @@
     "Causelist"
   ],
   "cmake.configureOnOpen": false,
+  "[helm]": {
+    "editor.formatOnSave": false
+  },
   "javascript.preferences.importModuleSpecifier": "relative",
   "javascript.preferences.importModuleSpecifierEnding": "js",
   "typescript.preferences.importModuleSpecifierEnding": "js",

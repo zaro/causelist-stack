@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-init-data
+data:
+{{ (.Files.Glob "init-data/*").AsConfig | indent 2 }}

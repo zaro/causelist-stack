@@ -1,0 +1,81 @@
+{{ if .Values.useDevMode }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  labels:
+{{ include "causelist-stack.labels" (list . "mongo" ) | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "causelist-stack.selectorLabels" (list . "mongo" ) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      labels:
+        {{- include "causelist-stack.selectorLabels" (list . "mongo" ) | nindent 8 }}
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:latest
+          env:
+            - name: MONGO_INITDB_DATABASE
+              value: causelist
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: causelist
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: causelist
+          ports:
+          - name: p1
+            containerPort: 27017
+          - name: p2
+            containerPort: 27018
+          - name: p3
+            containerPort: 27019
+          volumeMounts:
+            - name: init-data-volume
+              mountPath: /docker-entrypoint-initdb.d/
+            - name: mongo
+              mountPath: /data/db
+      volumes:
+        - name: init-data-volume
+          configMap:
+            name: shared-init-data
+            items:
+            - key: init-mongo.js
+              path: init-mongo.js
+        - name: mongo
+          persistentVolumeClaim:
+            claimName: mongo-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: mongo
+  labels:
+{{ include "causelist-stack.labels"  (list . "mongo" ) | indent 4 }}
+spec:
+  ports:
+  - port: 27017
+    name: p1
+  - port: 27018
+    name: p2
+  - port: 27019
+    name: p3
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "mongo" ) | nindent 4 }}
+{{ end }}

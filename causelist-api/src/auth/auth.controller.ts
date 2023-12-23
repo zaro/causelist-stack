@@ -45,7 +45,6 @@ export class AuthController {
   @Public()
   @Post('send-otp')
   async sendOtp(@Body() params: SendOtpParams) {
-    console.log(params);
     const otp = await this.userService.makeOtp(params.phone);
     if (!otp) {
       return {

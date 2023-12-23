@@ -78,12 +78,12 @@ export default function CauseList({ data }: CauseListProps) {
               <CaseListItem key={`c-${idx}-${i}`} alignItems="flex-start">
                 <ListItemText>
                   <i>{c.num ? c.num + "." : null}</i> {c.caseNumber}
-                  {c.description ? (
-                    <Typography> {c.description}</Typography>
-                  ) : (
+                  {c.partyA ? (
                     <Typography>
                       {c.partyA} <i>VS</i> {c.partyB}
                     </Typography>
+                  ) : (
+                    <Typography> {c.description}</Typography>
                   )}
                 </ListItemText>
               </CaseListItem>

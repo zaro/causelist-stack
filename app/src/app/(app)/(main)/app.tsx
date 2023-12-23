@@ -138,7 +138,7 @@ export default function App({ children }: { children: React.ReactNode }) {
 
   const currentMenuItem: IDrawerMenuItem = drawerMenu.find(
     (i) => typeof i !== "string" && i.path === pathname
-  );
+  ) as IDrawerMenuItem;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>

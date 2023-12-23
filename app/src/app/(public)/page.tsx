@@ -6,6 +6,9 @@ export default function Home() {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>Causelist app public site</p>
+        <h3>
+          <a href="/sign-in">sign in</a>
+        </h3>
       </div>
     </main>
   );

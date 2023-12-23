@@ -1,10 +1,5 @@
 import * as React from "react";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
 import { causeListStore } from "../_store";
 import useSWR from "swr";
@@ -27,6 +22,7 @@ export interface JudgeSelectorProps {
   court: string | null;
 }
 
+// fix from : https://stackoverflow.com/questions/75818761/material-ui-autocomplete-warning-a-props-object-containing-a-key-prop-is-be
 export default function JudgeSelector({ court }: JudgeSelectorProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -68,6 +64,18 @@ export default function JudgeSelector({ court }: JudgeSelectorProps) {
           }}
         />
       )}
+      renderOption={(props, option) => {
+        return (
+          <li {...props} key={option}>
+            {option}
+          </li>
+        );
+      }}
+      renderTags={(tagValue, getTagProps) => {
+        return tagValue.map((option, index) => (
+          <Chip {...getTagProps({ index })} key={option} label={option} />
+        ));
+      }}
     />
   );
 }

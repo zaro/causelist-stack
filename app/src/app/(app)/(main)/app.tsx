@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
@@ -27,7 +27,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useState, FC } from "react";
+import { useState, FC, MouseEventHandler } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Link from "next/link";
@@ -73,9 +73,11 @@ const drawerMenu: DrawerMenuItemType[] = [
 function DrawerMenuItem({
   item,
   currentPath,
+  onClick,
 }: {
   item: DrawerMenuItemType;
   currentPath: string;
+  onClick: MouseEventHandler<HTMLAnchorElement> | undefined;
 }) {
   if (item === "-") {
     return <Divider />;
@@ -88,6 +90,7 @@ function DrawerMenuItem({
         component={Link}
         href={item.path}
         selected={item.path === currentPath}
+        onClick={onClick}
       >
         <ListItemIcon>
           <Icon />
@@ -98,53 +101,13 @@ function DrawerMenuItem({
   );
 }
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-${drawerWidth}px`,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  }),
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
+  justifyContent: "space-between",
 }));
 
 function FullScreenSpinner() {
@@ -161,7 +124,12 @@ export default function App({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   const { user, loadingUser, loggedOut } = useUser();
   if (loggedOut) return <div>redirecting...</div>;
   if (loadingUser) return <FullScreenSpinner />;
@@ -170,26 +138,18 @@ export default function App({ children }: { children: React.ReactNode }) {
     (i) => typeof i !== "string" && i.path === pathname
   );
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="fixed" open={open}>
+        <AppBar position="fixed">
           <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={handleDrawerToggle}
               edge="start"
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
+              sx={{ mr: 2, display: { sm: "none" } }}
             >
               <MenuIcon />
             </IconButton>
@@ -200,19 +160,23 @@ export default function App({ children }: { children: React.ReactNode }) {
         </AppBar>
         <Drawer
           sx={{
-            width: drawerWidth,
-            flexShrink: 0,
+            display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": {
-              width: drawerWidth,
               boxSizing: "border-box",
+              width: drawerWidth,
             },
           }}
-          variant="persistent"
+          variant="temporary"
           anchor="left"
-          open={open}
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
         >
           <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
+            <strong>CauseList</strong>
+            <IconButton onClick={handleDrawerToggle}>
               {theme.direction === "ltr" ? (
                 <ChevronLeftIcon />
               ) : (
@@ -223,7 +187,12 @@ export default function App({ children }: { children: React.ReactNode }) {
           <Divider />
           <List sx={{ marginBottom: "auto" }}>
             {drawerMenu.map((i, idx) => (
-              <DrawerMenuItem key={idx} item={i} currentPath={pathname} />
+              <DrawerMenuItem
+                key={idx}
+                item={i}
+                currentPath={pathname}
+                onClick={handleDrawerToggle}
+              />
             ))}
           </List>
           <List>
@@ -245,10 +214,17 @@ export default function App({ children }: { children: React.ReactNode }) {
             </ListItem>
           </List>
         </Drawer>
-        <Main open={open}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
+        >
           <DrawerHeader />
           {children}
-        </Main>
+        </Box>
       </Box>
     </LocalizationProvider>
   );

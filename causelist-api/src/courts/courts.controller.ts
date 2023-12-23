@@ -12,6 +12,12 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
+export class GetJudgesParams {
+  @IsString()
+  @IsNotEmpty()
+  court: string;
+}
+
 export class DaysInMonthParam {
   @IsNumber()
   @Min(2023)
@@ -44,6 +50,11 @@ export class CourtsController {
   @Get('all')
   findAll() {
     return this.service.findAll();
+  }
+
+  @Get(':court/judges')
+  getJudges(@Param() params: GetJudgesParams) {
+    return this.service.findAllJudgesForCourt(params.court);
   }
 
   @Get(':year/:month/:day/:court/list')

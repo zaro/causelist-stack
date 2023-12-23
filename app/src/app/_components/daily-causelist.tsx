@@ -37,7 +37,6 @@ export default function DailyCauseLists({ date, court }: DailyCauseListProps) {
   const { data, error } = useSWR<CauseListDocumentParsed[]>(apiURL, fetcher, {
     suspense: true,
   });
-  const judges = data?.map((c) => c.header.judge) ?? [];
   const selectedJudges = causeListStore.use.judgesForCurrentCourt() ?? [];
   const filteredData =
     selectedJudges.length === 0
@@ -46,7 +45,6 @@ export default function DailyCauseLists({ date, court }: DailyCauseListProps) {
   return (
     <>
       <Stack spacing={0} margin={"0 auto"}>
-        {judges.length ? <JudgeSelector judges={judges} /> : null}
         {filteredData?.map((c, idx) => (
           <CauseList key={idx} data={c} />
         ))}

@@ -14,6 +14,14 @@ export class CourtsService {
     return this.causeListModel.distinct('header.court').exec();
   }
 
+  async findAllJudgesForCourt(court: string): Promise<string[]> {
+    return this.causeListModel
+      .distinct('header.judge', {
+        'header.court': court,
+      })
+      .exec();
+  }
+
   async getDay(
     year: number,
     month: number,

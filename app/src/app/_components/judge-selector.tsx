@@ -5,9 +5,12 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
-import { Box } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 import { causeListStore } from "../_store";
+import useSWR from "swr";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
+import { fetcher } from "./fetcher.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -21,46 +24,50 @@ const MenuProps = {
 };
 
 export interface JudgeSelectorProps {
-  judges: string[];
+  court: string | null;
 }
 
-export default function JudgeSelector({ judges }: JudgeSelectorProps) {
+export default function JudgeSelector({ court }: JudgeSelectorProps) {
+  const [open, setOpen] = React.useState(false);
+
+  const apiUrl = court ? `/api/courts/${court}/judges` : null;
+  const { data, error, isLoading } = useSWR(apiUrl, fetcher);
   const selectedJudges = causeListStore.use.judgesForCurrentCourt() ?? [];
 
-  const handleChange = (event: SelectChangeEvent<typeof selectedJudges>) => {
-    let {
-      target: { value },
-    } = event;
-    if (!value) {
-      value = "";
-    }
-    causeListStore.set.setJudgesForCurrentCourt(
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-
   return (
-    <Box margin={"0 auto"}>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="judge-multiple-checkbox-label">Judge</InputLabel>
-        <Select
-          labelId="judge-multiple-checkbox-label"
-          id="judge-multiple-checkbox"
-          multiple
-          value={selectedJudges}
-          onChange={handleChange}
-          input={<OutlinedInput label="Judge" />}
-          renderValue={(selected) => selected.join(", ")}
-          MenuProps={MenuProps}
-        >
-          {judges.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={selectedJudges.indexOf(name) > -1} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Box>
+    <Autocomplete
+      multiple
+      sx={{ width: 300, margin: ".5em auto" }}
+      open={open}
+      onOpen={() => {
+        setOpen(true);
+      }}
+      onClose={() => {
+        setOpen(false);
+      }}
+      onChange={(e, v: string[]) =>
+        causeListStore.set.setJudgesForCurrentCourt(v)
+      }
+      options={data ?? []}
+      value={selectedJudges}
+      loading={isLoading}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={`Select Judge`}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {isLoading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+          }}
+        />
+      )}
+    />
   );
 }

@@ -9,7 +9,7 @@ import { fetcher } from "./fetcher.ts";
 export default function CourtSelector() {
   const [open, setOpen] = React.useState(false);
   const { data, error, isLoading } = useSWR("/api/courts/all", fetcher);
-  console.log(data);
+
   if (error) {
     console.error(error);
     return <div>failed</div>;
@@ -17,8 +17,7 @@ export default function CourtSelector() {
 
   return (
     <Autocomplete
-      id="asynchronous-demo"
-      sx={{ width: 300, margin: "0 auto" }}
+      sx={{ width: 300, margin: ".5em auto" }}
       open={open}
       onOpen={() => {
         setOpen(true);
@@ -35,7 +34,6 @@ export default function CourtSelector() {
         <TextField
           {...params}
           label={`Select Court`}
-          placeholder="Select a court to see available dates"
           InputProps={{
             ...params.InputProps,
             endAdornment: (

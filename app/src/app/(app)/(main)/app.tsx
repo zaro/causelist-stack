@@ -32,9 +32,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import useSwr, { SWRConfig } from "swr";
-import { userStore } from "../../_store/index.ts";
 import useUser from "./use-user.hook.ts";
+import { userStore } from "../../_store/index.ts";
 
 const drawerWidth = 240;
 
@@ -130,6 +129,9 @@ export default function App({ children }: { children: React.ReactNode }) {
     setMobileOpen(!mobileOpen);
   };
 
+  // Needed
+  const accessToken = userStore.use.accessToken();
+
   const { user, loadingUser, loggedOut } = useUser();
   if (loggedOut) return <div>redirecting...</div>;
   if (loadingUser) return <FullScreenSpinner />;
@@ -142,6 +144,7 @@ export default function App({ children }: { children: React.ReactNode }) {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
+        <div style={{ display: "none" }}>{!!accessToken}</div>
         <AppBar position="fixed">
           <Toolbar>
             <IconButton

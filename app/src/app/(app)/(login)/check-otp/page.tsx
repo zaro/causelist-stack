@@ -74,7 +74,7 @@ export default function CheckOtp() {
       console.log("Signed in, redirect to /calendar");
       router.push("/calendar");
     }
-  }, [signedIn]);
+  }, [signedIn, router]);
 
   return (
     <Container maxWidth="xs">

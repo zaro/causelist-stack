@@ -1,21 +1,10 @@
 "use client";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  Stack,
-  Paper,
-  Typography,
-} from "@mui/material";
-import Chip from "@mui/material/Chip";
-import { styled } from "@mui/material/styles";
+import { Stack } from "@mui/material";
 import { fetcher } from "./fetcher.ts";
 import useSWR from "swr";
-import { formatOrdinals } from "./ordinal.ts";
 
 import { CauseListDocumentParsed } from "@/api";
 import CauseList from "./causelist.tsx";
-import JudgeSelector from "./judge-selector.tsx";
 import { causeListStore } from "../_store/index.ts";
 
 export interface DailyCauseListProps {

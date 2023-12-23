@@ -8,11 +8,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "../../../_components/copyright.tsx";
 import { AppLink } from "../../../_components/app-link.tsx";
-import { useRouter } from "next/navigation";
 
 export default function SessionExpired() {
-  const router = useRouter();
-
   return (
     <Container maxWidth="xs">
       <Box

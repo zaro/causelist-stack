@@ -16,7 +16,7 @@ jobs:
         include:
           - dockerfile: ./app/Dockerfile
             image: ghcr.io/zaro/causelist-app
-          - dockerfile: ./causelist-app/Dockerfile
+          - dockerfile: ./causelist-api/Dockerfile
             image: ghcr.io/zaro/causelist-api
 
     permissions:

@@ -14,9 +14,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - dockerfile: ./app/Dockerfile
+          - context: ./app/
             image: ghcr.io/zaro/causelist-app
-          - dockerfile: ./causelist-api/Dockerfile
+          - context: ./causelist-api/
             image: ghcr.io/zaro/causelist-api
 
     permissions:
@@ -43,8 +43,7 @@ jobs:
       - name: Build and push api image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ${{ matrix.dockerfile }}
+          context: ${{ matrix.context }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

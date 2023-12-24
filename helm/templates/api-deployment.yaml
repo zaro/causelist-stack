@@ -35,7 +35,7 @@ spec:
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 3001
+              containerPort: 3000
               protocol: TCP
           startupProbe:
             httpGet:

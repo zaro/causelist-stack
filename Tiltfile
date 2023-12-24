@@ -28,8 +28,8 @@ docker_build('causelist-api', 'causelist-api',
       sync('causelist-api/', '/api/'),
   ])
 
-
+#
 local_resource('api-interfaces',
-  'mkdir -p app/src/api;cp -vr -t app/src/api causelist-api/src/interfaces/*',
+  './pre-build.sh',
   deps='causelist-api/src/interfaces'
 )

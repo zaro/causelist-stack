@@ -4,7 +4,7 @@
 
 useDevMode: true
 
-website:
+app:
   image:
     repository: causelist-app
   useBasicAuth: false

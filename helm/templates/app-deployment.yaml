@@ -6,7 +6,7 @@ metadata:
     {{- include "causelist-stack.labels" (list .  "website") | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.website.replicaCount }}
+  replicas: {{ .Values.app.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -31,8 +31,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.website.image.repository }}:{{ .Values.website.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.website.image.pullPolicy }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 80

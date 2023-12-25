@@ -1,6 +1,12 @@
 {
   "name": "causelist-stack",
+  "license": "UNLICENSED",
   "scripts": {
-    "crawler:shell": " kubectl exec -n causelist-dev -it $(kubectl get po -n causelist-dev -l app.kubernetes.io/name=kenyalaw-crawler -o Name) -- /bin/sh"
+    "db:import": "scripty",
+    "db:export": "scripty",
+    "crawler:shell": "kubectl exec -n causelist-dev -it $(kubectl get po -n causelist-dev -l app.kubernetes.io/name=kenyalaw-crawler -o Name) -- /bin/sh"
+  },
+  "dependencies": {
+    "scripty": "^2.1.1"
   }
 }

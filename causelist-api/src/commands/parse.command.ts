@@ -130,6 +130,13 @@ export class ParseCommand {
       required: false,
     })
     write: string,
+    @Option({
+      name: 'stats',
+      describe: 'Output more stats',
+      type: 'boolean',
+      required: false,
+    })
+    stats: string,
   ) {
     const filter: FilterQuery<InfoFile> = docId
       ? { _id: docId }
@@ -140,8 +147,9 @@ export class ParseCommand {
         : {
             parentPath: { $regex: `^${path}` },
           };
-    const documents = await this.infoFileModel.find(filter).exec();
-    this.log.log(`Processing ${documents.length} documents`);
+    const allDocuments = await this.infoFileModel.find(filter).exec();
+    this.log.log(`Processing ${allDocuments.length} documents`);
+    const documents = allDocuments.filter((d) => !!d.textContent);
 
     const parsedList = documents.map((d) => {
       const fl = new FileLines(d.textContent);
@@ -191,7 +199,8 @@ export class ParseCommand {
         return acc;
       }, {});
 
-    console.log('Total:', documents.length);
+    console.log('Total:', allDocuments.length);
+    console.log('Total Parsable:', documents.length);
     console.log('Total With passing:', good.length);
     console.log('Total With passing and reached end:', goodAtEnd.length);
     console.log('Total with court:', haveCourt.length);
@@ -260,20 +269,22 @@ export class ParseCommand {
     //   ),
     // );
     // console.dir(Object.entries(nextLineStats(haveCourt)).map(([k, d]) => k));
-    console.dir(
-      Object.entries(nextLineStats(good.filter((e) => !e.p.file.end()))).map(
-        ([k, d]) => [k, d.map((e) => e.doc.md5.toString())],
-      ),
-      { maxArrayLength: null },
-    );
+    if (stats) {
+      console.dir(
+        Object.entries(nextLineStats(good.filter((e) => !e.p.file.end()))).map(
+          ([k, d]) => [k, d.map((e) => e.doc.md5.toString())],
+        ),
+        { maxArrayLength: null },
+      );
 
-    if (docId || md5) {
-      console.dir([parsedList[0].docId, parsedList[0].p.getParsed()], {
-        depth: null,
-      });
-      if (!parsedList[0].p.file.end()) {
-        console.log('First unparsed line: ');
-        console.log(parsedList[0].p.file.peekNext());
+      if (docId || md5) {
+        console.dir([parsedList[0].docId, parsedList[0].p.getParsed()], {
+          depth: null,
+        });
+        if (!parsedList[0].p.file.end()) {
+          console.log('First unparsed line: ');
+          console.log(parsedList[0].p.file.peekNext());
+        }
       }
     }
   }

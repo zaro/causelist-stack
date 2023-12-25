@@ -1,0 +1,23 @@
+#!/bin/sh
+
+NAMESPACE=causelist-dev
+if [ -z "$1" ]; then
+  echo "Must provide DUMP_DIR"
+  exit 1
+else
+  DUMP_DIR_LOCAL="$1"
+  DUMP_DIR=`basename $DUMP_DIR_LOCAL`
+fi
+
+DB_POD=$(kubectl get po -n "${NAMESPACE}" -l app.kubernetes.io/name=mongo -o Name)
+
+echo '***' Make sure directory doesn''t exists in container
+kubectl exec -n "${NAMESPACE}" -it "${DB_POD}" -- rm -rf "/tmp/${DUMP_DIR}"
+
+
+echo '***' Copy dump
+kubectl cp -n "${NAMESPACE}" "${DUMP_DIR_LOCAL}/" "${DB_POD#pod/}:/tmp/${DUMP_DIR}"
+
+echo '***' Running mongorestore
+kubectl exec -n "${NAMESPACE}" -it "${DB_POD}" -- /bin/sh -c "mongorestore -u "\${MONGO_INITDB_ROOT_USERNAME}" -p "\${MONGO_INITDB_ROOT_PASSWORD}"  /tmp/${DUMP_DIR}"
+

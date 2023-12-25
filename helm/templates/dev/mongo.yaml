@@ -78,4 +78,20 @@ spec:
     name: p3
   selector:
     {{- include "causelist-stack.selectorLabels" (list . "mongo" ) | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: mongo-nodeport
+  labels:
+{{ include "causelist-stack.labels"  (list . "mongo" ) | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 27017
+    nodePort: 30017
+    name: mongo-nodeport-api
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "mongo" ) | nindent 4 }}
 {{ end }}

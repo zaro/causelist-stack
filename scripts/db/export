@@ -1,0 +1,19 @@
+#!/bin/sh
+
+[ -z "$NAMESPACE" ] && NAMESPACE=causelist-dev
+DUMP_DIR=$(date '+%Y-%m-%d.%H-%M-%S')
+
+DB_POD=$(kubectl get po -n "${NAMESPACE}" -l app.kubernetes.io/name=mongo -o Name)
+
+if [ -z "$DB_POD" ]; then
+  echo "Cannot find mongo pod!"
+  exit 1
+fi
+
+echo '***' Running mongodump
+
+kubectl exec -n "${NAMESPACE}" -it "${DB_POD}" -- /bin/sh -c "mongodump -u "\${MONGO_INITDB_ROOT_USERNAME}" -p "\${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase=\${MONGO_INITDB_DATABASE} -o /tmp/${DUMP_DIR}"
+
+echo '***' Copy dump
+mkdir -p mongo/${DUMP_DIR}
+kubectl cp -n "${NAMESPACE}" "${DB_POD#pod/}:/tmp/${DUMP_DIR}" ./mongo/${DUMP_DIR}/

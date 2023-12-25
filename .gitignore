@@ -1,3 +1,4 @@
+node_modules/
 mongo/
 proxy/
 causelist_prototype.pdf

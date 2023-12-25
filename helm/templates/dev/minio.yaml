@@ -1,0 +1,126 @@
+{{ if .Values.useDevMode }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  labels:
+{{ include "causelist-stack.labels" (list . "minio" ) | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "causelist-stack.selectorLabels" (list . "minio" ) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      labels:
+        {{- include "causelist-stack.selectorLabels" (list . "minio" ) | nindent 8 }}
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio:latest
+        args: ["server",  "/data",  "--console-address", ":9090"]
+        ports:
+        - name: http
+          containerPort: 9000
+        - name: console
+          containerPort: 9090
+        volumeMounts:
+          - name: minio
+            mountPath: /data
+      volumes:
+        - name: minio
+          persistentVolumeClaim:
+            claimName: minio-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: minio
+  labels:
+{{ include "causelist-stack.labels"  (list . "minio" ) | indent 4 }}
+spec:
+  ports:
+  - port: 9000
+    name: minio-http
+  - port: 9090
+    name: minio-console
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "minio" ) | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: minio-nodeport
+  labels:
+{{ include "causelist-stack.labels"  (list . "minio" ) | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 9000
+    nodePort: 30900
+    name: minio-nodeport-api
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "minio" ) | nindent 4 }}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-ingress
+  labels:
+{{ include "causelist-stack.labels" (list . "minio" ) | indent 4 }}
+  annotations:
+{{- if (not (hasSuffix "tilt" .Values.ingress.appsMainDomain)) }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Gid Ninjas ONLY [-_-]~'
+{{- end }}
+  {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+{{- if .Values.ingress.tlsEnabled }}
+  tls:
+    - hosts:
+        - "minio-api.{{ .Values.ingress.appsMainDomain }}"
+        - "minio.{{ .Values.ingress.appsMainDomain }}"
+      secretName: minio-tls-certficates-secret
+{{- end }}
+  rules:
+    - host: "minio-api.{{ .Values.ingress.appsMainDomain }}"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: minio
+                port:
+                  number: 9000
+    - host: "minio.{{ .Values.ingress.appsMainDomain }}"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: minio
+                port:
+                  number: 9090
+{{ end }}

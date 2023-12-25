@@ -13,7 +13,7 @@ interface PageDescription {
   parent?: PageDescription;
 }
 
-router.addDefaultHandler(async ({ request, enqueueLinks, log, $ }) => {
+router.addDefaultHandler(async ({ enqueueLinks, log, $ }) => {
   const title = $("title").text();
   log.info(`enqueueing new URLs from ${title}`);
   await enqueueLinks({
@@ -142,24 +142,21 @@ router.addHandler(
         };
       })
     );
-    let current: MenuLink;
-    if (!current) {
-      const currentLinkElement = $(
-        `#left-menu ul.nav li > a.current`
-      ).toArray()[0];
-      const parent = getMenuEntryParents($, currentLinkElement);
-      const text = $(currentLinkElement).text();
+    const currentLinkElement = $(
+      `#left-menu ul.nav li > a.current`
+    ).toArray()[0];
+    const parent = getMenuEntryParents($, currentLinkElement);
+    const text = $(currentLinkElement).text();
 
-      current = {
-        text,
-        url: new URL(
-          $(currentLinkElement).attr("href") as string,
-          baseUrl
-        ).toString(),
-        parent,
-        path: parent ? [parent.path, text].join("/") : text,
-      };
-    }
+    let current = {
+      text,
+      url: new URL(
+        $(currentLinkElement).attr("href") as string,
+        baseUrl
+      ).toString(),
+      parent,
+      path: parent ? [parent.path, text].join("/") : text,
+    };
 
     await Promise.all(
       subMenuLinks.map((l) =>
@@ -191,7 +188,7 @@ router.addHandler(
 
 router.addHandler(
   "content",
-  async ({ request, $, log, contentType, body, response }) => {
+  async ({ request, log, contentType, body, response }) => {
     const { parent } = request.userData;
     const dataset = await Dataset.open("files");
     const url = request.url;

@@ -28,6 +28,13 @@ docker_build('causelist-api', 'causelist-api',
       sync('causelist-api/', '/api/'),
   ])
 
+docker_build('kenyalaw-crawler', 'kenyalaw-crawler',
+  target='development',
+  entrypoint='sleep 365d',
+  extra_tag='cawler-test',
+  live_update=[
+      sync('kenyalaw-crawler/', '/crawler-dev/'),
+  ])
 #
 local_resource('api-interfaces',
   './pre-build.sh',

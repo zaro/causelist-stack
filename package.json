@@ -1,0 +1,6 @@
+{
+  "name": "causelist-stack",
+  "scripts": {
+    "crawler:shell": " kubectl exec -n causelist-dev -it $(kubectl get po -n causelist-dev -l app.kubernetes.io/name=kenyalaw-crawler -o Name) -- /bin/sh"
+  }
+}

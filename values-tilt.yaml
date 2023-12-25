@@ -20,6 +20,9 @@ api:
     repository: causelist-api
   env:
     MONGO_URL: "mongodb://causelist:causelist@mongo/causelist"
+    S3_ACCESS_KEY: v46xTwg3vF9HwygSKjh8
+    S3_SECRET: yIrvOtMWK4wwk2vvPyvihlbwNdlUEnn2nnuxCz3n
+    S3_CRAWLER_BUCKET: crawls
 
 imagePullSecrets: []
 nameOverride: ""

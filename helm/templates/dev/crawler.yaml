@@ -1,0 +1,44 @@
+{{ if .Values.useDevMode }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler
+  labels:
+{{ include "causelist-stack.labels" (list . "kenyalaw-crawler" ) | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "causelist-stack.selectorLabels" (list . "kenyalaw-crawler" ) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      labels:
+        {{- include "causelist-stack.selectorLabels" (list . "kenyalaw-crawler" ) | nindent 8 }}
+    spec:
+      containers:
+        - name: crawler
+          image: kenyalaw-crawler
+          volumeMounts:
+            - name: kenyalaw-crawler
+              mountPath: /crawler/storage
+          envFrom:
+            - configMapRef:
+                name: "{{- include "causelist-stack.cmNameForApi" .Values }}"
+      volumes:
+        - name: kenyalaw-crawler
+          persistentVolumeClaim:
+            claimName: kenyalaw-crawler-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kenyalaw-crawler-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+{{ end }}

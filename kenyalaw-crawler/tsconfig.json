@@ -1,13 +1,15 @@
 {
     "extends": "./node_modules/@apify/tsconfig/tsconfig.json",
     "compilerOptions": {
-        "module": "ES2022",
+        "module": "node16",
+        "moduleResolution": "Node16",
         "target": "ES2022",
         "outDir": "dist",
         "noUnusedLocals": false,
+        "skipLibCheck": true,
         "lib": [
             "DOM",
-            "es2022"
+            "es2023"
         ]
     },
     "include": [

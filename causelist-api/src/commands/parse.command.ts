@@ -21,6 +21,7 @@ import {
 } from './parser/causelist-parser.js';
 import { format } from 'date-fns';
 import { CauseList } from '../schemas/causelist.schema.js';
+import { Court } from '../schemas/court.schema.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -51,6 +52,8 @@ export class ParseCommand {
     protected infoFileModel: Model<InfoFile>,
     @InjectModel(CauseList.name)
     protected causeListModel: Model<CauseList>,
+    @InjectModel(Court.name)
+    protected courtModel: Model<Court>,
   ) {}
 
   @Command({
@@ -96,6 +99,98 @@ export class ParseCommand {
       JSON.stringify(data, undefined, 2),
     );
     this.log.log(`Wrote: ${fileName}!`);
+  }
+
+  @Command({
+    command: 'parse:courts',
+    describe: 'Parse Courts from Menu',
+  })
+  async parseCourts() {
+    const root = await this.menuEntryModel
+      .findOne({ name: '_root' })
+      .sort({ updatedAt: 'desc' })
+      .exec();
+    const ignoreSections = [
+      'Vacation Notices',
+      'Notices',
+      'Licensed process servers',
+    ];
+    const courtsDocumentsAll = root.children.filter(
+      (e) => !ignoreSections.includes(e.name),
+    );
+    this.log.log(`Processing courts: ${courtsDocumentsAll.map((e) => e.name)}`);
+    const toSave: Court[] = [];
+    // Supreme Court
+    const noBranches = ['Supreme Court'];
+    toSave.push({
+      name: 'Supreme Court',
+      type: 'Supreme Court',
+      path: 'Supreme Court',
+    });
+    let courtsDocuments = courtsDocumentsAll.filter(
+      (e) => !noBranches.includes(e.name),
+    );
+
+    // High Court of Kenya
+    const hkName = 'High Court of Kenya';
+    const hightCourt = courtsDocumentsAll.find((e) => hkName === e.name);
+    const milimaniLawCourts = hightCourt.children.find(
+      (e) => e.name === 'Milimani Law Courts',
+    );
+    // console.dir(milimaniLawCourts);
+    for (const d of milimaniLawCourts.children) {
+      toSave.push({
+        name: milimaniLawCourts.name + ' / ' + d.name,
+        type: hkName,
+        path: d.path,
+      });
+    }
+    hightCourt.children = hightCourt.children.filter(
+      (e) => e.name !== 'Vacation Notice' && e.name !== 'Milimani Law Courts',
+    );
+    for (const d of hightCourt.children) {
+      toSave.push({
+        name: hightCourt.name + ' / ' + d.name,
+        type: hkName,
+        path: d.path,
+      });
+    }
+    courtsDocuments = courtsDocuments.filter((e) => e.name != hkName);
+
+    // TODO: Court of Appeal Causelist
+    const coaName = 'Court of Appeal';
+    // const courtOfAppealTop = courtsDocuments.find((e) => coaName === e.name);
+    // console.log(courtsDocuments);
+    // const courtOfAppeal = courtOfAppealTop.children.find(
+    //   (e) => 'Court of Appeal Causelist' === e.name,
+    // );
+    // for (const d of courtOfAppeal.children) {
+    //   toSave.push({
+    //     name: coaName,
+    //     type: coaName,
+    //     path: d.path,
+    //   });
+    // }
+
+    courtsDocuments = courtsDocuments.filter((e) => e.name != coaName);
+
+    for (const t of courtsDocuments) {
+      for (const d of t.children) {
+        toSave.push({
+          name: d.name,
+          type: t.name,
+          path: d.path,
+        });
+      }
+    }
+    this.log.log('Saving...');
+    const r = await Promise.all(
+      toSave.map((e) => {
+        return new this.courtModel(e).save();
+      }),
+    );
+    this.log.log(`Saved ${r.length} courts`);
+    // console.log(courtsDocuments);
   }
 
   @Command({

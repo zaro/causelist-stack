@@ -22,5 +22,21 @@
         "${workspaceFolder}/causelist-api/dist/**/*.js"
       ]
     }
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "import:menu",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/causelist-api/src/commands/cli.ts",
+      "args": [
+        "import:menu",
+        "kenyalaw-crawler/storage/"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/causelist-api/dist/**/*.js"
+      ]
+    }
   ]
 }

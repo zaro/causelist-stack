@@ -24,6 +24,18 @@ export class ImportCommand {
     protected infoFileModel: Model<InfoFile>,
   ) {}
 
+  findMenuEntryByName(root: MenuEntry, name: string) {
+    if (root.name === name) {
+      return root;
+    }
+    for (const c of root.children) {
+      const cc = this.findMenuEntryByName(c, name);
+      if (cc) {
+        return cc;
+      }
+    }
+  }
+
   insertMenuEntry(root: MenuEntry, data: any) {
     let node = root;
     if (data.parent) {
@@ -37,22 +49,24 @@ export class ImportCommand {
     if (existingNode) {
       return existingNode;
     }
-    const entry: MenuEntryDocument = new this.menuEntryModel({
+    const entry: MenuEntry = {
       name,
       url: data.url,
       path: data.path,
-    });
+      children: [],
+    };
     node.children.push(entry);
     return entry;
   }
 
-  async saveMenuEntry(root: MenuEntryDocument) {
-    await Promise.all(
+  async saveMenuEntry(root: MenuEntry): Promise<MenuEntryDocument> {
+    const r = await Promise.all(
       root.children.map((child) =>
         this.saveMenuEntry(child as MenuEntryDocument),
       ),
     );
-    return root.save();
+    root.children = r;
+    return new this.menuEntryModel(root).save();
   }
 
   findMenuEntryByPath(root: MenuEntry, path: string): MenuEntry | undefined {
@@ -126,7 +140,7 @@ export class ImportCommand {
     command: 'import:menu <storage_dir>',
     describe: 'Import menu from crawl data',
   })
-  async create(
+  async importMenu(
     @Positional({
       name: 'storage_dir',
       describe: 'dir with crawl storage',
@@ -145,18 +159,48 @@ export class ImportCommand {
         ),
       );
     this.log.log(`Loaded ${dataset.length} records`);
-    const root: MenuEntryDocument = new this.menuEntryModel({
+    const root: MenuEntry = {
       name: '_root',
       url: '_root',
-    });
+      path: null,
+      children: [],
+    };
 
     this.log.log(`Building menu...`);
     for (const d of dataset) {
-      this.insertMenuEntry(root, d);
+      // if (d.text === 'Civil Division') {
+      //   console.log('>>>');
+      // }
+
+      const r = this.insertMenuEntry(root, d);
+      // if (d.parent?.text === 'Milimani Law Courts') {
+      //   console.log(d.text, '>>>', r);
+      //   const f = this.findMenuEntryByName(root, 'Milimani Law Courts');
+      //   console.log('&&&', f);
+      //   if (f === undefined) {
+      //     console.log('rootMenu', JSON.stringify(root));
+      //   }
+      // }
     }
     this.log.log(`Saving menu...`);
-    // console.log('rootMenu', JSON.stringify(rootMenuEntry));
+    console.log('rootMenu', JSON.stringify(root));
     await this.saveMenuEntry(root);
+    this.log.log(`Done`);
+  }
+
+  @Command({
+    command: 'import:all <storage_dir>',
+    describe: 'Import menu and files from crawl data',
+  })
+  async create(
+    @Positional({
+      name: 'storage_dir',
+      describe: 'dir with crawl storage',
+      type: 'string',
+    })
+    storageDir: string,
+  ) {
+    await this.importMenu(storageDir);
 
     const convertedDir = path.join(storageDir, 'converted/');
     const filesDir = path.join(storageDir, 'key_value_stores', 'default');

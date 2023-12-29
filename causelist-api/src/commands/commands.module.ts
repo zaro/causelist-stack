@@ -10,6 +10,7 @@ import { CauseList, CauseListSchema } from '../schemas/causelist.schema.js';
 import { User, UserSchema } from '../schemas/user.schema.js';
 import { DbCommand } from './db.command.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Court, CourtSchema } from '../schemas/court.schema.js';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       { name: InfoFile.name, schema: InfoFileSchema },
       { name: CauseList.name, schema: CauseListSchema },
       { name: User.name, schema: UserSchema },
+      { name: Court.name, schema: CourtSchema },
     ]),
     CommandModule,
   ],

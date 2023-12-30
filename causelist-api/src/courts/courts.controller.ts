@@ -15,7 +15,7 @@ import { Transform } from 'class-transformer';
 export class GetJudgesParams {
   @IsString()
   @IsNotEmpty()
-  court: string;
+  courtPath: string;
 }
 
 export class DaysInMonthParam {
@@ -33,7 +33,7 @@ export class DaysInMonthParam {
 
   @IsString()
   @IsNotEmpty()
-  court: string;
+  courtPath: string;
 }
 
 export class GetDayParams extends DaysInMonthParam {
@@ -52,23 +52,27 @@ export class CourtsController {
     return this.service.findAll();
   }
 
-  @Get(':court/judges')
+  @Get(':courtPath/judges')
   getJudges(@Param() params: GetJudgesParams) {
-    return this.service.findAllJudgesForCourt(params.court);
+    return this.service.findAllJudgesForCourt(params.courtPath);
   }
 
-  @Get(':year/:month/:day/:court/list')
+  @Get(':year/:month/:day/:courtPath/list')
   getDay(@Param() params: GetDayParams) {
     return this.service.getDay(
       params.year,
       params.month,
       params.day,
-      params.court,
+      params.courtPath,
     );
   }
 
-  @Get(':year/:month/:court/days')
+  @Get(':year/:month/:courtPath/days')
   findDays(@Param() params: DaysInMonthParam) {
-    return this.service.daysInAMonth(params.year, params.month, params.court);
+    return this.service.daysInAMonth(
+      params.year,
+      params.month,
+      params.courtPath,
+    );
   }
 }

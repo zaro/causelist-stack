@@ -9,10 +9,13 @@ const startUrls = [
   // "http://kenyalaw.org/kl/index.php?id=8281"
 ];
 
+const proxyConfiguration = process.env.PROXY_URL
+  ? new ProxyConfiguration({
+      proxyUrls: [process.env.PROXY_URL],
+    })
+  : undefined;
 const crawler = new CheerioCrawler({
-  proxyConfiguration: new ProxyConfiguration({
-    proxyUrls: ["http://127.0.0.1:3128"],
-  }),
+  proxyConfiguration,
   requestHandler: router,
   maxConcurrency: 50,
   navigationTimeoutSecs: 120,

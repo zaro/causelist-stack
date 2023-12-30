@@ -45,9 +45,9 @@ export default function Calendar() {
 
   const apiURL =
     month && year && selectedCourt
-      ? `/api/courts/${year.getFullYear()}/${
-          month.getMonth() + 1
-        }/${selectedCourt}/days`
+      ? `/api/courts/${year.getFullYear()}/${month.getMonth() + 1}/${
+          selectedCourt.path
+        }/days`
       : null;
 
   const {
@@ -55,6 +55,7 @@ export default function Calendar() {
     isLoading,
     error,
   } = useSWR<string[]>(apiURL, fetcher);
+
   if (error) {
     console.error(error);
     return <div>failed</div>;

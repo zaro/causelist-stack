@@ -52,7 +52,7 @@ export class ImportCommand {
     const entry: MenuEntry = {
       name,
       url: data.url,
-      path: data.path,
+      path: data.pathArray.join(':'),
       children: [],
     };
     node.children.push(entry);
@@ -80,8 +80,13 @@ export class ImportCommand {
       }
     }
   }
+
   fileMd5(fileName: string) {
     return createHash('md5').update(fs.readFileSync(fileName)).digest('hex');
+  }
+
+  textMd5(text: string) {
+    return createHash('md5').update(text).digest('hex');
   }
 
   async convertFileToTxt(fileName: string, convertedDir: string) {
@@ -183,7 +188,7 @@ export class ImportCommand {
       // }
     }
     this.log.log(`Saving menu...`);
-    console.log('rootMenu', JSON.stringify(root));
+    // console.log('rootMenu', JSON.stringify(root));
     await this.saveMenuEntry(root);
     this.log.log(`Done`);
   }
@@ -228,15 +233,16 @@ export class ImportCommand {
 
       const filePath = path.join(filesDir, fileName);
       const md5 = this.fileMd5(filePath);
-      if (!parent?.path) {
-        console.error(`Parent path is missing! for file ${fileName}`);
+      if (!parent?.path?.length) {
+        console.error(`Parent path Array is missing! for file ${fileName}`);
         continue;
       }
+      const parentPath = parent.pathArray.join(':');
       const existingFile: InfoFileDocument = await this.infoFileModel
         .findOne({
           md5,
           fileName,
-          parentPath: parent.path,
+          parentPath,
         })
         .exec();
       if (existingFile && !existingFile.error) {
@@ -255,9 +261,10 @@ export class ImportCommand {
         mimeType,
         textContent,
         textContentType,
+        textContentMd5: textContent ? this.textMd5(textContent) : null,
         error,
         parentUrl: parent.url,
-        parentPath: parent.path,
+        parentPath,
       });
       saves.push(file.save());
     }

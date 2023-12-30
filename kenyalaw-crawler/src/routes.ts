@@ -74,6 +74,7 @@ interface MenuLink {
   text: string;
   url: string | undefined;
   path: string;
+  pathArray: string[];
   parent?: MenuLink;
 }
 
@@ -97,6 +98,7 @@ function getMenuEntryParents(
       url: new URL(cm.attr("href") as string, baseUrl).toString(),
       text: cm.text(),
       path: cm.text(),
+      pathArray: [cm.text()],
       parent: undefined as any,
     });
   }
@@ -133,12 +135,14 @@ router.addHandler(
       submenuLinksElements.toArray().map((e) => {
         const parent = getMenuEntryParents($, e);
         const text = $(e).text();
+        const pathArray = parent ? [...parent.pathArray, text] : [text];
         return {
           text,
           url: new URL($(e).attr("href") as string, baseUrl).toString(),
           current: $(e).hasClass("current"),
           parent,
-          path: parent ? [parent.path, text].join("/") : text,
+          path: pathArray.join("/"),
+          pathArray,
         };
       })
     );
@@ -148,14 +152,16 @@ router.addHandler(
     const parent = getMenuEntryParents($, currentLinkElement);
     const text = $(currentLinkElement).text();
 
-    let current = {
+    const pathArray = parent ? [...parent.pathArray, text] : [text];
+    let current: MenuLink = {
       text,
       url: new URL(
         $(currentLinkElement).attr("href") as string,
         baseUrl
       ).toString(),
       parent,
-      path: parent ? [parent.path, text].join("/") : text,
+      path: pathArray.join("/"),
+      pathArray,
     };
 
     await Promise.all(

@@ -7,6 +7,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import MuiLink from "@mui/material/Link";
 import { format, utcToZonedTime } from "date-fns-tz";
 import { styled } from "@mui/material/styles";
 
@@ -55,12 +56,43 @@ export interface CauseListProps {
 export default function CauseList({ data }: CauseListProps) {
   return (
     <Stack spacing={0} margin={"0 auto 1em"} width={"100%"}>
-      <HeaderItem>{data.header.judge}</HeaderItem>
+      <HeaderItem>
+        {data.header.judge} {data.header.courtRoom}
+      </HeaderItem>
       <Item>
         <Typography>
           {format(new Date(data.header.date), "PPPP", { timeZone })}
         </Typography>
       </Item>
+      {data.header.phone && (
+        <Item>
+          <MuiLink
+            target="_blank"
+            rel="noopener"
+            href={`tel:${data.header.phone}`}
+          >
+            {data.header.phone}
+          </MuiLink>
+        </Item>
+      )}
+      {data.header.email && (
+        <Item>
+          <MuiLink
+            target="_blank"
+            rel="noopener"
+            href={`mail:${data.header.email}`}
+          >
+            {data.header.email}
+          </MuiLink>
+        </Item>
+      )}
+      {data.header.url && (
+        <Item>
+          <MuiLink target="_blank" rel="noopener" href={data.header.url}>
+            {data.header.url}
+          </MuiLink>
+        </Item>
+      )}
       <Item>
         {data.causeLists.map((cls, idx) => (
           <Fragment key={idx}>

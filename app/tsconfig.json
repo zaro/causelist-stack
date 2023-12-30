@@ -28,7 +28,7 @@
         "./src/*"
       ],
       "@/api/*": [
-        "./src/interfaces/*"
+        "./src/api/*"
       ]
     }
   },

@@ -2,22 +2,43 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CauseList } from '../schemas/causelist.schema.js';
 import { Model } from 'mongoose';
+import { Court } from '../schemas/court.schema.js';
+import { ICourt } from '../interfaces/courts.js';
 
 @Injectable()
 export class CourtsService {
   constructor(
+    @InjectModel(Court.name) private courtModel: Model<Court>,
     @InjectModel(CauseList.name) private causeListModel: Model<CauseList>,
   ) {}
   header;
 
-  async findAll(): Promise<string[]> {
-    return this.causeListModel.distinct('header.court').exec();
+  async findAll(): Promise<ICourt[]> {
+    const courts = await this.courtModel
+      .find(
+        {},
+        {
+          name: 1,
+          type: 1,
+          path: 1,
+        },
+      )
+      .exec();
+    // await new Promise((ok, fail) => setTimeout(() => ok(1), 5000));
+    // return courts.reduce(
+    //   (r, c) => ({
+    //     ...r,
+    //     [c.type]: r[c.type] ? [...r[c.type], c] : [c],
+    //   }),
+    //   {},
+    // );
+    return courts;
   }
 
-  async findAllJudgesForCourt(court: string): Promise<string[]> {
+  async findAllJudgesForCourt(courtPath: string): Promise<string[]> {
     return this.causeListModel
       .distinct('header.judge', {
-        'header.court': court,
+        parentPath: new RegExp(`^${courtPath}`),
       })
       .exec();
   }
@@ -26,12 +47,12 @@ export class CourtsService {
     year: number,
     month: number,
     day: number,
-    court: string,
+    courtPath: string,
   ): Promise<CauseList[]> {
     return this.causeListModel
       .find({
         'header.date': `${year}-${month}-${day}`,
-        'header.court': court,
+        parentPath: new RegExp(`^${courtPath}`),
       })
       .exec();
   }
@@ -39,12 +60,12 @@ export class CourtsService {
   async daysInAMonth(
     year: number,
     month: number,
-    court: string,
+    courtPath: string,
   ): Promise<string[]> {
     return this.causeListModel
       .distinct('header.date', {
         'header.date': new RegExp(`^${year}-${month}`),
-        'header.court': court,
+        parentPath: new RegExp(`^${courtPath}`),
       })
       .exec();
   }

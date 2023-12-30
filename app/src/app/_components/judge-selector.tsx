@@ -6,6 +6,7 @@ import useSWR from "swr";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { fetcher } from "./fetcher.ts";
+import { ICourt } from "@/api/courts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -19,16 +20,16 @@ const MenuProps = {
 };
 
 export interface JudgeSelectorProps {
-  court: string | null;
+  court: ICourt | null;
 }
 
 // fix from : https://stackoverflow.com/questions/75818761/material-ui-autocomplete-warning-a-props-object-containing-a-key-prop-is-be
 export default function JudgeSelector({ court }: JudgeSelectorProps) {
   const [open, setOpen] = React.useState(false);
 
-  const apiUrl = court ? `/api/courts/${court}/judges` : null;
+  const apiUrl = court ? `/api/courts/${court.path}/judges` : null;
   const { data, error, isLoading } = useSWR(apiUrl, fetcher);
-  const selectedJudges = causeListStore.use.judgesForCurrentCourt() ?? [];
+  const selectedJudges = causeListStore.use.selectedJudges() ?? [];
 
   return (
     <Autocomplete
@@ -41,9 +42,7 @@ export default function JudgeSelector({ court }: JudgeSelectorProps) {
       onClose={() => {
         setOpen(false);
       }}
-      onChange={(e, v: string[]) =>
-        causeListStore.set.setJudgesForCurrentCourt(v)
-      }
+      onChange={(e, v: string[]) => causeListStore.set.selectedJudges(v)}
       options={data ?? []}
       value={selectedJudges}
       loading={isLoading}

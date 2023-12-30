@@ -74,6 +74,9 @@ export class CauseList {
 
   @Prop({ type: 'ObjectId', ref: () => InfoFile })
   parsedFrom: InfoFile;
+
+  @Prop()
+  parentPath: string;
 }
 
 export const CauseListSchema = SchemaFactory.createForClass(CauseList);

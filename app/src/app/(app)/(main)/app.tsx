@@ -191,8 +191,7 @@ export default function App({ children }: { children: React.ReactNode }) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box sx={{ display: "flex" }}>
-        <CssBaseline />
+      <Box sx={{ display: "flex", height: "100%" }}>
         {/* <div style={{ display: "none" }}>{!!accessToken}</div> */}
         <AppBar
           position="fixed"
@@ -258,6 +257,7 @@ export default function App({ children }: { children: React.ReactNode }) {
             flexGrow: 1,
             p: 3,
             width: { sm: `calc(100% - ${drawerWidth}px)` },
+            margin: "5px",
           }}
         >
           <DrawerHeader />

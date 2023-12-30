@@ -21,6 +21,9 @@ export class InfoFile {
   textContentType: string;
 
   @Prop()
+  textContentMd5: string;
+
+  @Prop()
   error: string;
 
   @Prop()

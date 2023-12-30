@@ -2,6 +2,7 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { ThemeOptions } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
 export const themeOptions: ThemeOptions = {
   palette: {
@@ -28,5 +29,10 @@ export default function ProvideTheme({
 }: {
   children: React.ReactNode;
 }) {
-  return <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <CssBaseline />
+      {children}
+    </ThemeProvider>
+  );
 }

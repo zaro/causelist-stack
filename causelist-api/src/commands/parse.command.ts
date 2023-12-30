@@ -186,7 +186,13 @@ export class ParseCommand {
     this.log.log('Saving...');
     const r = await Promise.all(
       toSave.map((e) => {
-        return new this.courtModel(e).save();
+        const { name, type, ...rest } = e;
+        return this.courtModel
+          .findOneAndUpdate({ name, type }, rest, {
+            upsert: true,
+            new: true,
+          })
+          .exec();
       }),
     );
     this.log.log(`Saved ${r.length} courts`);
@@ -332,6 +338,7 @@ export class ParseCommand {
             type: document.type,
             header: document.header,
             causeLists: document.causeLists,
+            parentPath: infoFile.parentPath,
           });
           savePromises.push(causeList.save());
         }

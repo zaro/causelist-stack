@@ -5,8 +5,8 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Copyright from "../../../_components/copyright.tsx";
-import { userStore } from "../../../_store/index.ts";
+import Copyright from "../../_components/copyright.tsx";
+import { userStore } from "../../_store/index.ts";
 import { useRouter } from "next/navigation";
 
 export default function SignOut() {

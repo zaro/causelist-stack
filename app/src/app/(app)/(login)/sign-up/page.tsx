@@ -10,8 +10,8 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Copyright from "../../../_components/copyright.tsx";
-import { AppLink } from "../../../_components/app-link.tsx";
+import Copyright from "../../_components/copyright.tsx";
+import { AppLink } from "../../_components/app-link.tsx";
 import Link from "@mui/material/Link";
 
 export default function SignUp() {

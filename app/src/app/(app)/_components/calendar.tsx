@@ -1,6 +1,6 @@
 "use client";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { causeListStore } from "../_store";
+import { causeListStore } from "../_store/index.ts";
 import { useEffect, useState } from "react";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers/PickersDay";
 import Badge from "@mui/material/Badge";

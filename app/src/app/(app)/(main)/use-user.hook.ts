@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { fetcher } from "../../_components/fetcher.ts";
+import { fetcher } from "../_components/fetcher.ts";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

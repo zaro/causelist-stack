@@ -33,7 +33,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import useUser from "./use-user.hook.ts";
-import { userStore } from "../../_store/index.ts";
+import { userStore } from "../_store/index.ts";
 
 const drawerWidth = 240;
 

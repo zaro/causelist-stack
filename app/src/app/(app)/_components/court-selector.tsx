@@ -21,13 +21,13 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import useSWR from "swr";
-import { causeListStore } from "../_store";
+import { causeListStore } from "../_store/index.ts";
 import { fetcher } from "./fetcher.ts";
 import Button from "@mui/material/Button";
 import Collapse from "@mui/material/Collapse";
 import CourtTree from "./court-tree.tsx";
 import IconButton from "@mui/material/IconButton";
-import { ICourt } from "../../api/courts.ts";
+import { ICourt } from "../../../api/courts.ts";
 
 export default function CourtSelector() {
   const theme = useTheme();

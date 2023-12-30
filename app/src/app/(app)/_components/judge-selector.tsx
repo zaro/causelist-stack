@@ -1,7 +1,7 @@
 import * as React from "react";
 import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
-import { causeListStore } from "../_store";
+import { causeListStore } from "../_store/index.ts";
 import useSWR from "swr";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";

@@ -1,5 +1,5 @@
 import React from "react";
-import { loginStore } from "../../_store/index.ts";
+import { loginStore } from "../_store/index.ts";
 import { useRouter } from "next/navigation";
 
 export default function useSendOtp() {

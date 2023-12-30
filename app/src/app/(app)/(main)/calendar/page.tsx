@@ -1,12 +1,12 @@
 "use client";
 import { Stack } from "@mui/material";
-import CourtSelector from "../../../_components/court-selector.tsx";
-import { causeListStore } from "../../../_store/index.ts";
+import CourtSelector from "../../_components/court-selector.tsx";
+import { causeListStore } from "../../_store/index.ts";
 import { Suspense } from "react";
-import DailyCauseLists from "../../../_components/daily-causelist.tsx";
-import Calendar from "../../../_components/calendar.tsx";
-import JudgeSelector from "../../../_components/judge-selector.tsx";
-import Centered from "../../../_components/centered.tsx";
+import DailyCauseLists from "../../_components/daily-causelist.tsx";
+import Calendar from "../../_components/calendar.tsx";
+import JudgeSelector from "../../_components/judge-selector.tsx";
+import Centered from "../../_components/centered.tsx";
 
 export default function Page() {
   const selectedCourt = causeListStore.use.selectedCourt();

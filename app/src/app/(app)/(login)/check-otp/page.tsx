@@ -10,9 +10,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import Copyright from "../../../_components/copyright.tsx";
-import { AppLink } from "../../../_components/app-link.tsx";
-import { loginStore, userStore } from "../../../_store/index.ts";
+import Copyright from "../../_components/copyright.tsx";
+import { AppLink } from "../../_components/app-link.tsx";
+import { loginStore, userStore } from "../../_store/index.ts";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useRouter } from "next/navigation";
 

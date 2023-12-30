@@ -1,26 +1,8 @@
 "use client";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { ThemeOptions } from "@mui/material/styles";
+import themeOptions from "../_common/theme-options.ts";
 import CssBaseline from "@mui/material/CssBaseline";
-
-export const themeOptions: ThemeOptions = {
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#932c2b",
-    },
-    secondary: {
-      main: "#faa21c",
-    },
-    error: {
-      main: "#ff3636",
-    },
-    warning: {
-      main: "#e08f4f",
-    },
-  },
-};
 
 const defaultTheme = createTheme(themeOptions);
 

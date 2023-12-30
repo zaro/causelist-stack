@@ -9,11 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
+    "@mui/material-nextjs": "^5.15.0",
+    "@mui/styles": "^5.15.2",
     "@mui/x-date-pickers": "^6.18.5",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",

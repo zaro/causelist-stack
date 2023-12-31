@@ -132,9 +132,9 @@ export default function App({ children }: { children: React.ReactNode }) {
   // Needed
   const accessToken = userStore.use.accessToken();
 
-  const { user, loadingUser, loggedOut } = useUser();
+  const { user, isLoading, isValidating, loggedOut } = useUser();
+  if (isValidating || isLoading) return <FullScreenSpinner />;
   if (loggedOut) return <div>redirecting...</div>;
-  if (loadingUser) return <FullScreenSpinner />;
 
   const currentMenuItem: IDrawerMenuItem = drawerMenu.find(
     (i) => typeof i !== "string" && i.path === pathname

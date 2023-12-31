@@ -132,12 +132,7 @@ const Header = (props) => {
                 }}
               >
                 {links.map((link) => (
-                  <Link
-                    href={link.url}
-                    target="_blank"
-                    underline="none"
-                    key={link.id}
-                  >
+                  <Link href={link.url} underline="none" key={link.id}>
                     <Typography className={classes.link}>
                       {link.route}
                     </Typography>

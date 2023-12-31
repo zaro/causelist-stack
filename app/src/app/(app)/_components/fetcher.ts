@@ -24,6 +24,7 @@ export const fetcher = async (
       Authorization: `Bearer ${accessToken}`,
     };
   }
+  // console.log("Fetching ", input, "with headers: ", init?.headers);
   const res = await fetch(input, init);
   if (!res.ok) {
     throw new FetcherError(
@@ -32,5 +33,7 @@ export const fetcher = async (
       res.status
     );
   }
-  return res.json();
+  const result = await res.json();
+  // console.log("Fetched ", res.status, result);
+  return result;
 };

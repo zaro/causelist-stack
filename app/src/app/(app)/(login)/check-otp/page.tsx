@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -15,6 +15,7 @@ import { AppLink } from "../../_components/app-link.tsx";
 import { loginStore, userStore } from "../../_store/index.ts";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useRouter } from "next/navigation";
+import { useRevalidateUser } from "../../(main)/use-user.hook.ts";
 
 function ExpiresIn({ expiresIn }: { expiresIn: Date | null }) {
   if (!expiresIn) {
@@ -26,6 +27,7 @@ function ExpiresIn({ expiresIn }: { expiresIn: Date | null }) {
 }
 
 export default function CheckOtp() {
+  const { revalidateUser } = useRevalidateUser();
   const [working, setWorking] = React.useState(false);
   const [error, setError] = React.useState<string[] | null>(null);
   const [signedIn, setSignedIn] = React.useState(false);
@@ -59,7 +61,9 @@ export default function CheckOtp() {
           userStore.set.accessToken(r.accessToken);
           loginStore.set.phoneForOtp(null);
           loginStore.set.otpExpiresAt(null);
-          setSignedIn(true);
+          return revalidateUser().then(() => {
+            setSignedIn(true);
+          });
         } else {
           setError(["Invalid server response"]);
         }
@@ -113,14 +117,15 @@ export default function CheckOtp() {
               />
             </Grid>
           </Grid>
-          <Button
+          <LoadingButton
+            loading={working}
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
             Verify Code
-          </Button>
+          </LoadingButton>
           {error?.length && (
             <Alert severity="error" sx={{ mt: 1, mb: 2 }}>
               <AlertTitle>Error</AlertTitle>

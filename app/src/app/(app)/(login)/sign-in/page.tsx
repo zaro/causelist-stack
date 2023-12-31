@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -13,9 +13,19 @@ import { AppLink } from "../../_components/app-link.tsx";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import useSendOtp from "../send-otp.hook.tsx";
+import useUser from "../../(main)/use-user.hook.ts";
 
 export default function SignIn() {
   const { working, error, userMissing, sendOtp } = useSendOtp();
+  const { user, isLoading, isValidating, router } = useUser({
+    noAutoLogOut: true,
+  });
+
+  React.useEffect(() => {
+    if (!isLoading && !isValidating && user) {
+      router.push("/calendar");
+    }
+  }, [isLoading, isValidating, router, user]);
 
   return (
     <Container maxWidth="xs">
@@ -47,15 +57,15 @@ export default function SignIn() {
               />
             </Grid>
           </Grid>
-          <Button
+          <LoadingButton
+            loading={working}
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={working}
           >
             Sign In
-          </Button>
+          </LoadingButton>
           {userMissing && (
             <Alert severity="error" sx={{ mt: 1, mb: 2 }}>
               <AlertTitle>User Not Found</AlertTitle>

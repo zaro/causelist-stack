@@ -1,25 +1,49 @@
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { fetcher } from "../_components/fetcher.ts";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function useUser() {
-  const router = useRouter();
-  const { data, mutate, error } = useSWR("/api/auth/me", fetcher);
+export const USER_ENDPOINT = "/api/auth/me";
 
-  const loadingUser = !data && !error;
-  const loggedOut = error && error.status === 401;
+export interface UseUserProps {
+  noAutoLogOut?: boolean;
+}
+
+export default function useUser({ noAutoLogOut }: UseUserProps = {}) {
+  const router = useRouter();
+  const { data, mutate, error, isLoading, isValidating } = useSWR(
+    USER_ENDPOINT,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+    }
+  );
+  const loggedOut =
+    !isValidating && !isLoading && error && error.status === 401;
 
   useEffect(() => {
-    if (loggedOut) {
+    if (loggedOut && !noAutoLogOut) {
+      mutate();
+      console.log("Logging out because of loggedOut");
       router.push("/session-expired");
     }
-  }, [loggedOut, router]);
+  }, [loggedOut, router, noAutoLogOut, mutate]);
 
   return {
-    loadingUser,
+    router,
     loggedOut,
     user: data,
+    isLoading,
+    isValidating,
     mutateUser: mutate,
+  };
+}
+
+export function useRevalidateUser() {
+  const { mutate } = useSWRConfig();
+  return {
+    revalidateUser: () =>
+      mutate(USER_ENDPOINT, fetcher(USER_ENDPOINT), { populateCache: true }),
   };
 }

@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <WebVitals />
+        {/* <WebVitals /> */}
         <ThemeRegistry>
           <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
         </ThemeRegistry>

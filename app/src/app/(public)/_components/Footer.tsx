@@ -13,9 +13,7 @@ const Footer = () => {
       <Typography className={classes.footerText}>
         Created by CodeSmart Technologies
       </Typography>
-      <Typography className={classes.footerDate}>
-        Open-Source Sample - Buit with MUI
-      </Typography>
+      <Typography className={classes.footerDate}>© Copyright {date}</Typography>
     </Box>
   );
 };

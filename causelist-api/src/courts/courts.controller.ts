@@ -1,5 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { CourtsService } from './courts.service.js';
+import { InternalRoute, Public } from '../auth/public.decorator.js';
 
 import {
   IsNotEmpty,
@@ -50,6 +51,13 @@ export class CourtsController {
   @Get('all')
   findAll() {
     return this.service.findAll();
+  }
+
+  @Public()
+  @InternalRoute()
+  @Get('random')
+  random() {
+    return this.service.getRandomDay();
   }
 
   @Get(':courtPath/judges')

@@ -24,7 +24,8 @@ export interface CauselistSectionParsed {
 }
 
 export interface CauseListDocumentParsed {
-  type: 'CAUSE LIST' | 'UNASSIGNED MATTERS';
+  // type: 'CAUSE LIST' | 'UNASSIGNED MATTERS';
+  type: string;
   header: CauselistHeaderParsed;
   causeLists: CauselistSectionParsed[];
 }

@@ -36,6 +36,16 @@
   align-items: center;
   justify-content: center;
 }
+.heroContainer {
+  display: flex;
+  align-items: center;
+  max-width: 1300px;
+  padding: 50px;
+}
+.sampleCauselist {
+  max-height: 40em;
+  overflow: scroll;
+}
 .gridContainer {
   display: flex;
   align-items: center;
@@ -57,6 +67,7 @@
 }
 .title {
   padding-bottom: 15px;
+  text-align:center;
 }
 .subtitle {
   opacity: 0.4;

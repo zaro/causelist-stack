@@ -4,6 +4,12 @@ import { CauseList } from '../schemas/causelist.schema.js';
 import { Model } from 'mongoose';
 import { Court } from '../schemas/court.schema.js';
 import { ICourt } from '../interfaces/courts.js';
+import { RandomCourtData } from '../interfaces/ssr.js';
+import { CauseListDocumentParsed } from '../interfaces/index.js';
+
+const RANDOM_COURTS = [
+  'Chief Magistrates Court:Milimani Chief Magistrate Criminal Court',
+];
 
 @Injectable()
 export class CourtsService {
@@ -68,5 +74,74 @@ export class CourtsService {
         parentPath: new RegExp(`^${courtPath}`),
       })
       .exec();
+  }
+
+  async getRandomDay(): Promise<RandomCourtData> {
+    const courtPath =
+      RANDOM_COURTS[Math.floor(Math.random() * RANDOM_COURTS.length)];
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const reV =
+      month === 1
+        ? `${year}-${month.toString().padStart(2, '0')}|${year - 1}-12`
+        : `${year}-(?:${month.toString().padStart(2, '0')}|${(month - 1)
+            .toString()
+            .padStart(2, '0')})`;
+
+    const daysWithCauselist = await this.causeListModel
+      .aggregate([
+        {
+          $match: {
+            'header.date': new RegExp(`^${reV}`),
+            parentPath: new RegExp(`^${courtPath}`),
+          },
+        },
+        { $group: { _id: '$header.date', count: { $sum: 1 } } },
+        //{ $sort: { _id: -1 } },
+        { $sort: { count: -1 } },
+      ])
+      .exec();
+
+    const days = daysWithCauselist.slice(0, 1).map((e) => e._id);
+
+    const causelist = await Promise.all(
+      days.map((day) =>
+        this.causeListModel
+          .find({
+            'header.date': day,
+            parentPath: new RegExp(`^${courtPath}`),
+          })
+          .exec(),
+      ),
+    ).then((r) =>
+      r.reduce((acc, v) => ({ ...acc, [v[0].header.date]: v }), {}),
+    );
+
+    const daysWithData = await this.causeListModel
+      .distinct('header.date', {
+        'header.date': new RegExp(`^${days[0].replace(/-\d+$/, '')}`),
+        parentPath: new RegExp(`^${courtPath}`),
+      })
+      .exec();
+
+    const court = await this.courtModel
+      .findOne(
+        {
+          path: courtPath,
+        },
+        {
+          name: 1,
+          type: 1,
+          path: 1,
+        },
+      )
+      .exec();
+
+    return {
+      daysWithData,
+      court,
+      causelist,
+    };
   }
 }

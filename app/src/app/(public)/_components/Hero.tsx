@@ -1,39 +1,68 @@
 import React from "react";
-import Image from "next/image";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import myteam from "../_images/myteam.jpg";
 import classes from "./common.module.css";
+import SampleCalendar from "./SampleCalendar.tsx";
+import SampleCauseLists from "./SampleCauselist.tsx";
+import { Paper } from "@mui/material";
+import { RandomCourtData } from "@/api/ssr.ts";
 
-const Hero = () => {
+async function getData(): Promise<RandomCourtData> {
+  const res = await fetch("http://api/courts/random");
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error(`Failed to fetch data: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+export default async function Hero() {
+  let data: RandomCourtData;
+  try {
+    data = await getData();
+    console.log(data);
+  } catch (e) {
+    console.error(e);
+    return <div>Server Error</div>;
+  }
+  const daysWithPreview = Object.keys(data.causelist);
+  const day = daysWithPreview[0];
+
+  // const onDaySelected = (day) => {
+  //   console.log("selected", day);
+  // };
   return (
-    <Box className={classes.heroBox}>
-      <Grid container spacing={6} className={classes.gridContainer}>
-        <Grid item xs={12} md={7}>
-          <Typography variant="h3" fontWeight={700} className={classes.title}>
-            Let's scale your business
-          </Typography>
-          <Typography variant="h6" className={classes.subtitle}>
-            Hire professionals who will help your business make 10X your
-            previous income. With over 5years experience in Marketing & Business
-            strategy, we are your best client.
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ width: "200px", fontSize: "16px" }}
-          >
-            HIRE US
-          </Button>
-        </Grid>
-        <Grid item xs={12} md={5}>
-          <Image src={myteam} alt="My Team" className={classes.largeImage} />
-        </Grid>
-      </Grid>
-    </Box>
-  );
-};
+    <Stack>
+      <Typography variant="h3" fontWeight={700} className={classes.title}>
+        Causelists made easy
+      </Typography>
 
-export default Hero;
+      <Box className={classes.heroBox}>
+        <Paper elevation={3}>
+          <Grid container spacing={6} className={classes.heroContainer}>
+            <Grid item xs={12} md={5}>
+              <Box display="flex" justifyContent="center">
+                <Button variant="outlined">{data?.court.name}</Button>
+              </Box>
+              <SampleCalendar
+                day={day}
+                days={data.daysWithData}
+                daysWithPreview={daysWithPreview}
+              />
+            </Grid>
+            <Grid item xs={12} md={7} className={classes.sampleCauselist}>
+              <SampleCauseLists data={data.causelist[day]} />
+            </Grid>
+          </Grid>
+        </Paper>
+      </Box>
+    </Stack>
+  );
+}

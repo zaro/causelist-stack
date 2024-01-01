@@ -1,0 +1,23 @@
+.faqContainer {
+  margin: 3em;
+}
+
+.faqContainer h3{
+  text-align: center;
+}
+
+
+.q {
+  font-weight: bold;
+  margin-top: 2em;
+}
+
+p.a {
+  text-indent: 1em;;
+  padding-left: 2em;;
+}
+
+ul.a {
+  padding-left: 2em;;
+}
+

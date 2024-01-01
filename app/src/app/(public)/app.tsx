@@ -7,16 +7,12 @@ import Footer from "./_components/Footer";
 import AboutUs from "./_components/AboutUs";
 import CssBaseline from "@mui/material/CssBaseline";
 
-function App() {
+function App({ children }: { children: React.ReactNode }) {
   return (
     <>
       <CssBaseline />
       <Header />
-      <Hero />
-      <Section />
-      <AboutUs />
-      {/* <Testimonial /> */}
-      <ContactUs />
+      {children}
       <Footer />
     </>
   );

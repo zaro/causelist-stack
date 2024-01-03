@@ -24,6 +24,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -40,6 +41,7 @@ const drawerWidth = 240;
 interface IDrawerMenuItem {
   name: string;
   path: string;
+  target?: "_blank";
   icon: FC;
 }
 
@@ -61,6 +63,12 @@ const drawerMenu: DrawerMenuItemType[] = [
     name: "Account",
     path: "/account",
     icon: ManageAccountsIcon,
+  },
+  {
+    name: "Website",
+    path: "/",
+    icon: HomeIcon,
+    target: "_blank",
   },
   {
     name: "About",
@@ -88,6 +96,7 @@ function DrawerMenuItem({
       <ListItemButton
         component={Link}
         href={item.path}
+        target={item.target}
         selected={item.path === currentPath}
         onClick={onClick}
       >

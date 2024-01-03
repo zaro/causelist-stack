@@ -13,6 +13,7 @@ import Container from "@mui/material/Container";
 import Copyright from "../../_components/copyright.tsx";
 import { AppLink } from "../../_components/app-link.tsx";
 import Link from "@mui/material/Link";
+import PhoneTextField from "../../_components/phone-text-field.tsx";
 
 export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,6 +43,17 @@ export default function SignUp() {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <PhoneTextField
+                required
+                fullWidth
+                id="phone"
+                label="Phone"
+                name="phone"
+                autoComplete="phone"
+              />
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="given-name"
@@ -71,17 +83,6 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
               />
             </Grid>
             <Grid item xs={12}>

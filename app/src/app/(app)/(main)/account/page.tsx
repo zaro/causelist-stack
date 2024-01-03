@@ -15,6 +15,7 @@ import { AppLink } from "../../_components/app-link.tsx";
 import Link from "@mui/material/Link";
 
 import useUser from "../use-user.hook.ts";
+import PhoneTextField from "../../_components/phone-text-field.tsx";
 
 export default function Page() {
   const { user } = useUser();
@@ -66,6 +67,17 @@ export default function Page() {
                 name="lastName"
                 defaultValue={user.lastName}
                 autoComplete="family-name"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <PhoneTextField
+                fullWidth
+                id="phone"
+                label="Phone"
+                name="phone"
+                value={user.phone}
+                disabled
+                autoComplete="phone"
               />
             </Grid>
             <Grid item xs={12}>

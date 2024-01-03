@@ -40,12 +40,11 @@ function CauseListDay(
 export default function Calendar() {
   const selectedCourt = causeListStore.use.selectedCourt();
   const refDate = new Date();
-  const [month, setMonth] = useState<Date>(refDate);
-  const [year, setYear] = useState<Date>(refDate);
+  const [yearMonth, setYearMonth] = useState<Date>(refDate);
 
   const apiURL =
-    month && year && selectedCourt
-      ? `/api/courts/${year.getFullYear()}/${month.getMonth() + 1}/${
+    yearMonth && selectedCourt
+      ? `/api/courts/${yearMonth.getFullYear()}/${yearMonth.getMonth() + 1}/${
           selectedCourt.path
         }/days`
       : null;
@@ -70,8 +69,12 @@ export default function Calendar() {
       onChange={(v, state) => {
         causeListStore.set.selectedDate(v);
       }}
-      onMonthChange={(v) => setMonth(v)}
-      onYearChange={(v) => setYear(v)}
+      onMonthChange={(v) => {
+        setYearMonth(v);
+      }}
+      onYearChange={(v) => {
+        setYearMonth(v);
+      }}
       slots={{
         day: CauseListDay,
       }}

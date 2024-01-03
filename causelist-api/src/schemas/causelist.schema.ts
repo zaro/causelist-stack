@@ -83,11 +83,6 @@ export const CauseListSchema = SchemaFactory.createForClass(CauseList);
 
 CauseListSchema.index(
   {
-    'header.court': 'text',
-    'header.judge': 'text',
-    'header.url': 'text',
-    'header.email': 'text',
-    'header.phone': 'text',
     'causeLists.cases.caseNumber': 'text',
     'causeLists.cases.additionalNumber': 'text',
     'causeLists.cases.partyA': 'text',

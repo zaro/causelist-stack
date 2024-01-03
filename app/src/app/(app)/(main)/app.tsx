@@ -136,9 +136,16 @@ export default function App({ children }: { children: React.ReactNode }) {
   if (isValidating || isLoading) return <FullScreenSpinner />;
   if (loggedOut) return <div>redirecting...</div>;
 
+  let pageTitle = "???";
   const currentMenuItem: IDrawerMenuItem = drawerMenu.find(
     (i) => typeof i !== "string" && i.path === pathname
   ) as IDrawerMenuItem;
+
+  if (currentMenuItem) {
+    pageTitle = currentMenuItem.name;
+  } else if (pathname.startsWith("/search/result/")) {
+    pageTitle = "Search Result Details";
+  }
 
   const drawer = (
     <>
@@ -211,7 +218,7 @@ export default function App({ children }: { children: React.ReactNode }) {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap component="div">
-              {currentMenuItem?.name ?? "???"}
+              {pageTitle}
             </Typography>
           </Toolbar>
         </AppBar>

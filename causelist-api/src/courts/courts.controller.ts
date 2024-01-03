@@ -9,14 +9,28 @@ import {
   IsString,
   Max,
   Min,
+  MinLength,
   ValidateIf,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+
+export class SearchParams {
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  text: string;
+}
 
 export class GetJudgesParams {
   @IsString()
   @IsNotEmpty()
   courtPath: string;
+}
+
+export class GetCauseListParams {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
 }
 
 export class DaysInMonthParam {
@@ -53,11 +67,21 @@ export class CourtsController {
     return this.service.findAll();
   }
 
+  @Get('search/:text*')
+  search(@Param() params: SearchParams) {
+    return this.service.search(params.text);
+  }
+
   @Public()
   @InternalRoute()
   @Get('random')
   random() {
     return this.service.getRandomDay();
+  }
+
+  @Get('causelist/:id')
+  getCauselist(@Param() params: GetCauseListParams) {
+    return this.service.getCauseList(params.id);
   }
 
   @Get(':courtPath/judges')

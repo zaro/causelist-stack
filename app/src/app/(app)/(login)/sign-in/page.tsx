@@ -14,6 +14,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import useSendOtp from "../send-otp.hook.tsx";
 import useUser from "../../(main)/use-user.hook.ts";
+import PhoneTextField from "../../_components/phone-text-field.tsx";
 
 export default function SignIn() {
   const { working, error, userMissing, sendOtp } = useSendOtp();
@@ -46,7 +47,7 @@ export default function SignIn() {
         <Box component="form" noValidate onSubmit={sendOtp} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
+              <PhoneTextField
                 required
                 fullWidth
                 id="phone"

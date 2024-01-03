@@ -3,12 +3,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CauseList } from '../schemas/causelist.schema.js';
 import { Model } from 'mongoose';
 import { Court } from '../schemas/court.schema.js';
-import { ICourt } from '../interfaces/courts.js';
+import { ICourt, ISearchResult } from '../interfaces/courts.js';
 import { RandomCourtData } from '../interfaces/ssr.js';
 import { CauseListDocumentParsed } from '../interfaces/index.js';
 
 const RANDOM_COURTS = [
   'Chief Magistrates Court:Milimani Chief Magistrate Criminal Court',
+];
+
+const CASE_FIELDS = [
+  'caseNumber',
+  'additionalNumber',
+  'partyA',
+  'partyB',
+  'description',
 ];
 
 @Injectable()
@@ -39,6 +47,10 @@ export class CourtsService {
     //   {},
     // );
     return courts;
+  }
+
+  async getCauseList(id: string): Promise<CauseList> {
+    return this.causeListModel.findOne({ _id: id }).exec();
   }
 
   async findAllJudgesForCourt(courtPath: string): Promise<string[]> {
@@ -74,6 +86,51 @@ export class CourtsService {
         parentPath: new RegExp(`^${courtPath}`),
       })
       .exec();
+  }
+
+  async search(text: string) {
+    const list = await this.causeListModel
+      .find(
+        { $text: { $search: `"${text}"` } },
+        { score: { $meta: 'textScore' } },
+      )
+      .sort({ score: { $meta: 'textScore' } })
+      .exec();
+    const partialList: ISearchResult[] = [];
+    const textLower = text.toLowerCase();
+    for (const doc of list) {
+      const pre = {
+        _id: doc._id.toString(),
+        date: doc.header.date,
+        judge: doc.header.judge,
+      };
+      for (
+        let sectionIdx = 0;
+        sectionIdx < doc.causeLists.length;
+        sectionIdx++
+      ) {
+        const section = doc.causeLists[sectionIdx];
+        const sec = {
+          ...pre,
+          typeOfCause: section.typeOfCause,
+        };
+        for (let lineIdx = 0; lineIdx < section.cases.length; lineIdx++) {
+          const line = section.cases[lineIdx];
+          for (const k of CASE_FIELDS) {
+            const v = line[k];
+            if (typeof v === 'string' && v.toLowerCase().includes(textLower)) {
+              partialList.push({
+                ...sec,
+                case: line,
+                casePosition: [sectionIdx, lineIdx],
+              });
+              break;
+            }
+          }
+        }
+      }
+    }
+    return partialList;
   }
 
   async getRandomDay(): Promise<RandomCourtData> {

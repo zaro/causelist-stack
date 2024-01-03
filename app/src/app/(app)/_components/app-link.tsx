@@ -1,5 +1,7 @@
 import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 import type { LinkOwnProps } from "@mui/material/Link";
+import type { ButtonOwnProps } from "@mui/material/Button";
 import NextLink from "next/link";
 import type { LinkProps } from "next/link";
 
@@ -33,6 +35,27 @@ export function AppLink(props: AppLinkPropsReal) {
       >
         {children}
       </Link>
+    </NextLink>
+  );
+}
+
+type AppButtonLinkProps = LinkProps & ButtonOwnProps;
+
+type AppButtonLinkPropsReal = React.PropsWithChildren<
+  Omit<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    keyof AppButtonLinkProps
+  > &
+    AppButtonLinkProps
+>;
+
+export function AppButtonLink(props: AppButtonLinkPropsReal) {
+  const { children, classes, color, sx, variant, ...nextLinkProps } = props;
+  return (
+    <NextLink legacyBehavior={true} {...nextLinkProps}>
+      <Button classes={classes} color={color} sx={sx} variant={variant}>
+        {children}
+      </Button>
     </NextLink>
   );
 }

@@ -1,18 +1,14 @@
 "use client";
 import { Fragment } from "react";
-import {
-  ListItem,
-  ListItemText,
-  Stack,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { ListItem, Stack, Paper, Typography } from "@mui/material";
 import MuiLink from "@mui/material/Link";
 import { format, utcToZonedTime } from "date-fns-tz";
 import { styled } from "@mui/material/styles";
 
 import { CauseListDocumentParsed } from "@/api";
 import { timeZone } from "./calendar.tsx";
+import CaseListItem from "./causelist-item.tsx";
+import CauseListItem from "./causelist-item.tsx";
 
 const Item = styled(Paper)(({ theme }) => ({
   // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -41,19 +37,15 @@ const TypeOfCauseListItem = styled(ListItem)(() => ({
   fontWeight: "bold",
 }));
 
-const CaseListItem = styled(ListItem)(({ theme }) => ({
-  borderWidth: "1px",
-  borderColor: theme.palette.grey.A400,
-  borderStyle: "solid",
-  borderRadius: "0.5em",
-  marginBottom: "1em",
-}));
-
 export interface CauseListProps {
   data: CauseListDocumentParsed;
+  highLight?: number[];
 }
 
-export default function CauseList({ data }: CauseListProps) {
+export default function CauseList({ data, highLight }: CauseListProps) {
+  if (!highLight) {
+    highLight = [];
+  }
   return (
     <Stack spacing={0} margin={"0 auto 1em"} width={"100%"}>
       <HeaderItem>
@@ -106,20 +98,17 @@ export default function CauseList({ data }: CauseListProps) {
             <TypeOfCauseListItem key={`toc-${idx}`}>
               {cls.typeOfCause}
             </TypeOfCauseListItem>
-            {cls.cases.map((c, i) => (
-              <CaseListItem key={`c-${idx}-${i}`} alignItems="flex-start">
-                <ListItemText>
-                  <i>{c.num ? c.num + "." : null}</i> {c.caseNumber}
-                  {c.partyA ? (
-                    <Typography>
-                      {c.partyA} <i>VS</i> {c.partyB}
-                    </Typography>
-                  ) : (
-                    <Typography> {c.description}</Typography>
-                  )}
-                </ListItemText>
-              </CaseListItem>
-            ))}
+            {cls.cases.map((c, i) => {
+              const highLightItem = idx === highLight[0] && i === highLight[1];
+              return (
+                <CauseListItem
+                  key={`c-${idx}-${i}`}
+                  data={c}
+                  highLight={highLightItem}
+                  autoFocus={highLightItem}
+                />
+              );
+            })}
           </Fragment>
         ))}
       </Item>

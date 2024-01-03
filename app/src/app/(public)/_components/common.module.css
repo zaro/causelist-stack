@@ -109,8 +109,14 @@
   background-color: #f2f0f1;
   flex-direction: column;
 }
+
+.footerLinks {
+  margin: 0 auto;
+}
+
 .footerText {
-  padding-bottom: 10px;
+  padding-top: .5em;
+  padding-bottom: .5em;
 }
 .footerDate {
   opacity: 0.4;

@@ -20,6 +20,7 @@ import classes from "./common.module.css";
 // import useStyles from "../_styles/styles";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { AppLink } from "../../(app)/_components/app-link.tsx";
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -51,10 +52,11 @@ const Header = (props) => {
   const links = [
     {
       id: 1,
-      route: "About",
-      url: "https://blog.appseed.us/mui-react-coding-landing-page/",
+      route: "About Us",
+      url: "/about-us",
     },
-    { id: 2, route: "Sign In", url: "/sign-in" },
+    { id: 2, route: "Sign Up", url: "/sign-up" },
+    { id: 3, route: "Sign In", url: "/sign-in" },
   ];
 
   const [state, setState] = React.useState({
@@ -97,11 +99,11 @@ const Header = (props) => {
       <ElevationScroll {...props}>
         <AppBar>
           <Toolbar className={classes.toolBar}>
-            <Link href="#" underline="none">
+            <AppLink href="/" underline="none">
               <Typography variant="h5" className={classes.logo}>
                 CauseList
               </Typography>
-            </Link>
+            </AppLink>
 
             {matches ? (
               <Box>
@@ -132,11 +134,11 @@ const Header = (props) => {
                 }}
               >
                 {links.map((link) => (
-                  <Link href={link.url} underline="none" key={link.id}>
+                  <AppLink href={link.url} underline="none" key={link.id}>
                     <Typography className={classes.link}>
                       {link.route}
                     </Typography>
-                  </Link>
+                  </AppLink>
                 ))}
               </Box>
             )}

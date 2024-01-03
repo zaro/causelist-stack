@@ -28,7 +28,7 @@ export function AppLink(props: AppLinkPropsReal) {
       <Link
         classes={classes}
         color={color}
-        sx={sx}
+        sx={{ ...sx, cursor: "pointer" }}
         TypographyClasses={TypographyClasses}
         underline={underline}
         variant={variant}

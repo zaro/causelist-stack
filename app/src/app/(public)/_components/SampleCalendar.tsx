@@ -3,6 +3,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { useState } from "react";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers/PickersDay";
 import Badge from "@mui/material/Badge";
+import CircleIcon from "@mui/icons-material/Circle";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Typography from "@mui/material/Typography";
@@ -40,9 +41,7 @@ function CauseListDay(
       overlap="circular"
       badgeContent={
         isSelected || hasPreview ? (
-          <Typography gutterBottom component="span" color={color}>
-            ⏺
-          </Typography>
+          <CircleIcon color={color} sx={{ fontSize: "10px" }} />
         ) : undefined
       }
     >

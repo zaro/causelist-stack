@@ -7,6 +7,7 @@ import {
   Toolbar,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   IconButton,
   Drawer,
@@ -81,8 +82,10 @@ const Header = (props: any) => {
     >
       <List>
         {links.map((link) => (
-          <ListItem button key={link.id}>
-            <ListItemText primary={link.route} />
+          <ListItem key={link.id}>
+            <AppLink href={link.url}>
+              <ListItemText primary={link.route} />
+            </AppLink>
           </ListItem>
         ))}
       </List>

@@ -4,6 +4,8 @@ import { causeListStore } from "../_store/index.ts";
 import { useEffect, useState } from "react";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers/PickersDay";
 import Badge from "@mui/material/Badge";
+import CircleIcon from "@mui/icons-material/Circle";
+
 import useSWR from "swr";
 import { fetcher } from "./fetcher.ts";
 import utcToZonedTime from "date-fns-tz/utcToZonedTime";
@@ -26,7 +28,11 @@ function CauseListDay(
     <Badge
       key={props.day.toString()}
       overlap="circular"
-      badgeContent={isSelected ? "🔵" : undefined}
+      badgeContent={
+        isSelected ? (
+          <CircleIcon color="primary" sx={{ fontSize: "10px" }} />
+        ) : undefined
+      }
     >
       <PickersDay
         {...other}

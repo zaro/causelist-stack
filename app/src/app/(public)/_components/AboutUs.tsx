@@ -11,11 +11,16 @@ export default function AboutUs() {
   return (
     <Box className={classes.aboutUsContainer}>
       <Grid container spacing={6} className={classes.gridContainer}>
-        <Grid item xs={12} md={4}>
-          <Image src={bestTeams} width={430} alt="My Team" objectFit="" />
+        <Grid item xs={12} md={3}>
+          <Image
+            src={bestTeams}
+            sizes="(max-width: 900px) 215px, (max-width: 1200px) 430px, 860px"
+            alt="Team"
+            width={215}
+          />
         </Grid>
 
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={9}>
           <Typography variant="h4" fontWeight={700} className={classes.title}>
             CODESMART TECHNOLOGIES
           </Typography>

@@ -21,7 +21,7 @@ export const fetcher = async (
     }
     init.headers = {
       ...init.headers,
-      Authorization: `Bearer ${accessToken}`,
+      "Auth-Token": accessToken,
     };
   }
   // console.log("Fetching ", input, "with headers: ", init?.headers);

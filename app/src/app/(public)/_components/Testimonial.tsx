@@ -54,14 +54,14 @@ export default function Testimonial() {
             <Card className={classes.testimonialCard}>
               <CardContent>
                 <Typography className={classes.testimonialStatement}>
-                  "{review.statement}"
+                  &quot;{review.statement}&quot;
                 </Typography>
                 <Box sx={{ display: "flex" }}>
-                  <Avatar
+                  {/* <Avatar
                     src={review.image_url}
                     size="large"
                     className={classes.avatar}
-                  />
+                  /> */}
                   <Box>
                     <Typography>{review.name}</Typography>
                     <Typography className={classes.testimonialPosition}>

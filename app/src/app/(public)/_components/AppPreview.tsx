@@ -19,7 +19,7 @@ import useSWR from "swr";
 import { APP_PREVIEW_PATH, getAppPreviewData } from "./app-preview-data.ts";
 import { AppLink } from "../../(app)/_components/app-link.tsx";
 
-function getDefaultDay(data?: { [key: string]: unknown }) {
+function getDefaultDay(data: undefined | RandomCourtData) {
   if (!data?.causelist) {
     return undefined;
   }
@@ -53,10 +53,15 @@ export default function AppPreview() {
   if (!data) {
     return <div>Server Error</div>;
   }
-
+  if (!day) {
+    return <div>Loading data</div>;
+  }
   const daysWithPreview = Object.keys(data.causelist);
 
-  const onDaySelected = (day: Date) => {
+  const onDaySelected = (day: Date | null) => {
+    if (!day) {
+      return;
+    }
     const dayStr = day.toISOString().split("T")[0];
     if (daysWithPreview.includes(dayStr)) {
       setDay(dayStr);

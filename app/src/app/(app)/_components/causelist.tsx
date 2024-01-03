@@ -43,9 +43,6 @@ export interface CauseListProps {
 }
 
 export default function CauseList({ data, highLight }: CauseListProps) {
-  if (!highLight) {
-    highLight = [];
-  }
   return (
     <Stack spacing={0} margin={"0 auto 1em"} width={"100%"}>
       <HeaderItem>
@@ -99,7 +96,8 @@ export default function CauseList({ data, highLight }: CauseListProps) {
               {cls.typeOfCause}
             </TypeOfCauseListItem>
             {cls.cases.map((c, i) => {
-              const highLightItem = idx === highLight[0] && i === highLight[1];
+              const highLightItem =
+                idx === highLight?.[0] && i === highLight?.[1];
               return (
                 <CauseListItem
                   key={`c-${idx}-${i}`}

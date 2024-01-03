@@ -60,11 +60,7 @@
   justify-content: center;
   margin: 30px 0px 50px 0px;
 }
-.aboutUsSubtitle {
-  opacity: 0.7;
-  padding-bottom: 30px;
-  font-size: 18px;
-}
+
 .title {
   padding-bottom: 15px;
   text-align:center;
@@ -72,9 +68,6 @@
 .subtitle {
   opacity: 0.4;
   padding-bottom: 30px;
-}
-.largeImage {
-  width: 100%;
 }
 .sectionGridContainer {
   display: flex;

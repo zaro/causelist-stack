@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import classes from "./common.module.css";
 
-export default function Hero({ fallback }) {
+export default function Hero({ fallback }: { fallback: any }) {
   return (
     <Stack>
       <Typography variant="h3" fontWeight={700} className={classes.title}>

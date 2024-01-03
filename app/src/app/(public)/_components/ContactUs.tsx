@@ -18,7 +18,7 @@ const ContactUs = () => {
   const [subject, setSubject] = ["", ""];
   const [message, setMessage] = ["", ""];
 
-  const submitForm = (e) => {
+  const submitForm: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     console.log({ email, firstName, subject, message });
   };

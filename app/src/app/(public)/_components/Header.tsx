@@ -22,15 +22,18 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { AppLink } from "../../(app)/_components/app-link.tsx";
 
-function ElevationScroll(props) {
-  const { children, window } = props;
+interface ElevationScrollProps {
+  children: React.ReactElement;
+}
+
+function ElevationScroll(props: ElevationScrollProps) {
+  const { children } = props;
   // Note that you normally won't need to set the window ref as useScrollTrigger
   // will default to window.
   // This is only being set here because the demo is in an iframe.
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 0,
-    target: window ? window() : undefined,
   });
   // return children;
   return React.cloneElement(children, {
@@ -40,14 +43,9 @@ function ElevationScroll(props) {
 
 ElevationScroll.propTypes = {
   children: PropTypes.element.isRequired,
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
 };
 
-const Header = (props) => {
+const Header = (props: any) => {
   // const classes = useStyles();
   const links = [
     {
@@ -63,7 +61,7 @@ const Header = (props) => {
     right: false,
   });
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = (anchor: any, open: any) => (event: any) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -74,7 +72,7 @@ const Header = (props) => {
     setState({ ...state, [anchor]: open });
   };
 
-  const list = (anchor) => (
+  const list = (anchor: any) => (
     <Box
       sx={{ width: 250 }}
       role="presentation"

@@ -59,7 +59,7 @@ export interface SampleCalendarProps {
   day: string;
   days: string[];
   daysWithPreview: string[];
-  onDaySelected: (day) => void;
+  onDaySelected: (day: Date | null) => void;
 }
 
 export default function SampleCalendar({

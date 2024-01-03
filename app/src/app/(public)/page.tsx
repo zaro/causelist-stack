@@ -11,7 +11,7 @@ import {
 } from "./_components/app-preview-data.ts";
 
 // export const revalidate = 3600; // revalidate at most every hour
-export async function getFallbackData() {
+async function getFallbackData() {
   // `getStaticProps` is executed on the server side.
   const url = APP_PREVIEW_PATH.replace(/^\/api/, "http://api");
   const randomData = await getAppPreviewData(url);

@@ -160,7 +160,7 @@ export class CourtsService {
       ])
       .exec();
 
-    const days = daysWithCauselist.slice(0, 1).map((e) => e._id);
+    const days = daysWithCauselist.slice(0, 3).map((e) => e._id);
 
     const causelist = await Promise.all(
       days.map((day) =>

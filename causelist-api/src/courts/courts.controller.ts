@@ -73,7 +73,7 @@ export class CourtsController {
   }
 
   @Public()
-  @InternalRoute()
+  // @InternalRoute()
   @Get('random')
   random() {
     return this.service.getRandomDay();

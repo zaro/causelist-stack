@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Typography from "@mui/material/Typography";
 
-const minDate = new Date("2023-01-01");
+const minDate = new Date("2023-12-01");
 const maxDate = new Date(`${new Date().getFullYear() + 1}-12-31`);
 export const timeZone = "Africa/Nairobi";
 
@@ -59,18 +59,16 @@ export interface SampleCalendarProps {
   day: string;
   days: string[];
   daysWithPreview: string[];
-  // onDaySelected: (day) => void;
+  onDaySelected: (day) => void;
 }
 
 export default function SampleCalendar({
   day,
   days,
   daysWithPreview,
-}: // onDaySelected,
-SampleCalendarProps) {
+  onDaySelected,
+}: SampleCalendarProps) {
   const refDate = new Date(day);
-  const [month, setMonth] = useState<Date>(refDate);
-  const [year, setYear] = useState<Date>(refDate);
 
   const highlightedDays = days.map((d) => new Date(d).getDate());
   const daysWithPreviewAsDays = daysWithPreview.map((d) =>
@@ -79,14 +77,12 @@ SampleCalendarProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateCalendar
-        defaultValue={refDate}
+        value={refDate}
         minDate={minDate}
         maxDate={maxDate}
-        // onChange={(v, state) => {
-        //   if (onDaySelected) onDaySelected(v);
-        // }}
-        // onMonthChange={(v) => setMonth(v)}
-        // onYearChange={(v) => setYear(v)}
+        onChange={(v, state) => {
+          if (onDaySelected) onDaySelected(v);
+        }}
         slots={{
           day: CauseListDay,
         }}

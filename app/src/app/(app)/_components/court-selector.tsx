@@ -1,4 +1,5 @@
 import * as React from "react";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -16,6 +17,9 @@ import ListItemText from "@mui/material/ListItemText";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ClearIcon from "@mui/icons-material/Clear";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
 import BackspaceIcon from "@mui/icons-material/Backspace";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -111,6 +115,15 @@ export default function CourtSelector() {
           </React.Suspense>
         </DialogContent>
         <DialogActions>
+          <Box marginLeft={"0.2em"}>
+            <CheckCircleIcon />
+            Supported
+          </Box>
+          <Box marginLeft={"0.2em"}>
+            <HourglassBottomIcon />
+            Coming soon
+          </Box>
+          <Box flexGrow={1} />
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>

@@ -126,6 +126,7 @@ export class ParseCommand {
       name: 'Supreme Court',
       type: 'Supreme Court',
       path: 'Supreme Court',
+      documentsCount: 0,
     });
     let courtsDocuments = courtsDocumentsAll.filter(
       (e) => !noBranches.includes(e.name),
@@ -143,6 +144,7 @@ export class ParseCommand {
         name: milimaniLawCourts.name + ' / ' + d.name,
         type: hkName,
         path: d.path,
+        documentsCount: 0,
       });
     }
     hightCourt.children = hightCourt.children.filter(
@@ -153,6 +155,7 @@ export class ParseCommand {
         name: hightCourt.name + ' / ' + d.name,
         type: hkName,
         path: d.path,
+        documentsCount: 0,
       });
     }
     courtsDocuments = courtsDocuments.filter((e) => e.name != hkName);
@@ -180,6 +183,7 @@ export class ParseCommand {
           name: d.name,
           type: t.name,
           path: d.path,
+          documentsCount: 0,
         });
       }
     }

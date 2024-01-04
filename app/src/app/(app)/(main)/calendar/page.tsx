@@ -16,13 +16,20 @@ export default function Page() {
     <Stack height={"100%"}>
       <CourtSelector />
       {selectedCourt ? (
-        <>
-          <JudgeSelector court={selectedCourt} />
-          <Calendar />
-          <Suspense fallback={<h3>Loading data</h3>}>
-            <DailyCauseLists date={selectedDate} court={selectedCourt} />
-          </Suspense>
-        </>
+        selectedCourt.hasData ? (
+          <>
+            <JudgeSelector court={selectedCourt} />
+            <Calendar />
+            <Suspense fallback={<h3>Loading data</h3>}>
+              <DailyCauseLists date={selectedDate} court={selectedCourt} />
+            </Suspense>
+          </>
+        ) : (
+          <Centered>
+            We do not support this court yet, but we are working hard to add it
+            to our database.
+          </Centered>
+        )
       ) : (
         <Centered>Select court to view data</Centered>
       )}

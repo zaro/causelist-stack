@@ -35,6 +35,7 @@ export class CourtsService {
           name: 1,
           type: 1,
           path: 1,
+          hasData: { $gt: ['$documentsCount', 0] },
         },
       )
       .exec();

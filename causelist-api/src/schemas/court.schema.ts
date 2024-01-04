@@ -15,6 +15,9 @@ export class Court {
   path: string;
 
   @Prop()
+  documentsCount: number;
+
+  @Prop()
   createdAt?: Date;
 
   @Prop()

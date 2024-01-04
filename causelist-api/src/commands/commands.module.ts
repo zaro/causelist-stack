@@ -11,6 +11,7 @@ import { User, UserSchema } from '../schemas/user.schema.js';
 import { DbCommand } from './db.command.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Court, CourtSchema } from '../schemas/court.schema.js';
+import { UpdateCommand } from './update.command.js';
 
 @Module({
   imports: [
@@ -52,6 +53,12 @@ import { Court, CourtSchema } from '../schemas/court.schema.js';
     CommandModule,
   ],
   controllers: [],
-  providers: [ImportCommand, ParseCommand, TestsCommand, DbCommand],
+  providers: [
+    ImportCommand,
+    ParseCommand,
+    TestsCommand,
+    DbCommand,
+    UpdateCommand,
+  ],
 })
 export class CommandsModule {}

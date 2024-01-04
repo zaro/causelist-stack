@@ -19,7 +19,9 @@ import Button from "@mui/material/Button";
 import type { ICourt } from "@/api/courts";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
-import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
 import useSWR from "swr";
 import { causeListStore } from "../_store/index.ts";
 import { fetcher } from "./fetcher.ts";
@@ -127,7 +129,11 @@ export default function CourtTree({ filter, sx, onChange }: CourtTreeProps) {
                     key={idx}
                     secondaryAction={
                       <IconButton onClick={() => selectCourt(c)}>
-                        <DoubleArrowIcon />
+                        {c.hasData ? (
+                          <CheckCircleIcon color="success" />
+                        ) : (
+                          <HourglassBottomIcon color="warning" />
+                        )}
                       </IconButton>
                     }
                   >

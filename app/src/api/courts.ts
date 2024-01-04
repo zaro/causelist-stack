@@ -1,9 +1,10 @@
-import { CauselistLineParsed } from './index.js';
+import { CauselistLineParsed } from "./index.js";
 
 export interface ICourt {
   name: string;
   type: string;
   path: string;
+  hasData: boolean;
 }
 
 export interface ISearchResult {

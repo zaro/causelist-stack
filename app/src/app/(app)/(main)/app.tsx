@@ -49,6 +49,11 @@ type DrawerMenuItemType = IDrawerMenuItem | "-";
 
 const drawerMenu: DrawerMenuItemType[] = [
   {
+    name: "Home",
+    path: "/home",
+    icon: HomeIcon,
+  },
+  {
     name: "Calendar",
     path: "/calendar",
     icon: CalendarMonthIcon,

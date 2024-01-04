@@ -19,6 +19,7 @@ RUN \
 
 # 2. Rebuild the source code only when needed
 FROM base AS development
+ARG SENTRY_AUTH_TOKEN
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -27,6 +28,7 @@ COPY . .
 
 # 3. Rebuild the source code only when needed
 FROM development AS builder
+ARG SENTRY_AUTH_TOKEN
 WORKDIR /app
 RUN yarn build
 

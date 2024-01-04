@@ -23,6 +23,9 @@ api:
     S3_ACCESS_KEY: v46xTwg3vF9HwygSKjh8
     S3_SECRET: yIrvOtMWK4wwk2vvPyvihlbwNdlUEnn2nnuxCz3n
     S3_CRAWLER_BUCKET: crawls
+    ZETTATEL_API_KEY: c2395debd6724a0bf871de8d904861e10bf304f4
+    ZETTATEL_USER: zaro
+    ZETTATEL_SENDER_ID: ZTSMS
 
 imagePullSecrets: []
 nameOverride: ""

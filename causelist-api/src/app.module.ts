@@ -14,6 +14,7 @@ import { CourtsModule } from './courts/courts.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { HealthModule } from './health/health.module.js';
+import { SmsApiModule } from './sms-api/sms-api.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -94,6 +95,7 @@ AdminJS.registerAdapter({
     AuthModule,
     UsersModule,
     HealthModule,
+    SmsApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

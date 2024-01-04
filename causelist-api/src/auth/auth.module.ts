@@ -8,11 +8,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy.js';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
+import { SmsApiModule } from '../sms-api/sms-api.module.js';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    SmsApiModule,
     JwtModule.register({
       secret: 'secret',
       signOptions: { expiresIn: '30d' },

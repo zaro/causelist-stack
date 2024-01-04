@@ -13,6 +13,7 @@ import { AuthService } from './auth.service.js';
 import { Public } from './public.decorator.js';
 import { UsersService } from '../users/users.service.js';
 import { IsPhoneNumber } from 'class-validator';
+import { SmsApiService } from '../sms-api/sms-api.service.js';
 
 export class SendOtpParams {
   @IsPhoneNumber('KE')
@@ -26,6 +27,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UsersService,
+    private smsService: SmsApiService,
   ) {}
 
   @Get('me')
@@ -52,10 +54,13 @@ export class AuthController {
         userMissing: true,
       };
     }
-    this.log.log(`OTP for ${params.phone} => ${otp.code}`);
+    this.log.log(`Sending OTP for ${params.phone} => ${otp.code}`);
+    const msg = `Login code for causelist.co.ke : ${otp.code}`;
+    const smsResult = await this.smsService.sendMessage(params.phone, msg);
     return {
       phone: otp.phone,
       expiresAt: otp.expiresAt,
+      smsSuccess: smsResult.success,
     };
   }
 }

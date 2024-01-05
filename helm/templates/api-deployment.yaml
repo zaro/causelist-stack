@@ -53,7 +53,7 @@ spec:
               port: http
           envFrom:
             - configMapRef:
-                name: "{{- include "causelist-stack.cmNameForApi" .Values }}"
+                name: "{{- include "causelist-stack.cmNameForApi" .Values.api }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

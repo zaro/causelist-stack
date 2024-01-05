@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{- include "causelist-stack.cmNameForApi" .Values.api }}"
+  name: "{{- include "causelist-stack.cmNameForApp" .Values.app }}"
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "causelist-stack.labels" . | nindent 4 }}
 data:
-{{- if  .Values.api.env }}
-{{- range $index, $content := .Values.api.env }}
+{{- if  .Values.app.env }}
+{{- range $index, $content := .Values.app.env }}
   {{ $index }}: |-
 {{ print $content | indent 4 }}
 {{- end }}

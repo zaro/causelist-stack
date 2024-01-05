@@ -83,3 +83,7 @@ Create the name of directus env config
 {{- define "causelist-stack.cmNameForApi" -}}
 api-env-{{ get . "env" | toYaml | sha256sum | trunc 8 }}
 {{- end -}}
+
+{{- define "causelist-stack.cmNameForApp" -}}
+app-env-{{ get . "env" | toYaml | sha256sum | trunc 8 }}
+{{- end -}}

@@ -21,10 +21,10 @@ spec:
           image: kenyalaw-crawler
           volumeMounts:
             - name: kenyalaw-crawler
-              mountPath: /crawler/storage
+              mountPath: /crawler-dev/storage
           envFrom:
             - configMapRef:
-                name: "{{- include "causelist-stack.cmNameForApi" .Values }}"
+                name: "{{- include "causelist-stack.cmNameForApi" .Values.api }}"
       volumes:
         - name: kenyalaw-crawler
           persistentVolumeClaim:

@@ -12,26 +12,21 @@ if [ -z "$S3_CRAWLER_BUCKET" ]; then
   exit 1
 fi
 
-if [ -z "$CRAWL_STORE_PREFIX" ]; then
-  CRAWL_STORE_PREFIX=$(date -Is)
+V=prod
+if [ "$CRAWLER_TEST" ]; then
+  V=dev
 fi
 
+STORAGE_DIR=storage
 
-if [ -z "$MINIO_URL" ]; then
-  MINIO_URL=http://minio:9000
-fi
-
-mc alias set s3stor $MINIO_URL "$S3_ACCESS_KEY" "$S3_SECRET" --api S3v4
-
-mkdir -p storage
+mkdir -p ${STORAGE_DIR}
 if [ "$CRAWLER_TEST" = "job" ]; then
-  echo "Job test run at $(date -Is)" > storage/log.txt
-elif [ "$CRAWLER_TEST"  ]; then
-  yarn start:dev >storage/log.txt 2>storage/error.txt
+  mkdir -p ${STORAGE_DIR}/request_queues/default/
+  touch ${STORAGE_DIR}/request_queues/default/dummy.json
+  echo "Job test run at $(date -Is)" > ${STORAGE_DIR}/crawler.log.txt
 else
-  yarn start:prod >storage/log.txt 2>storage/error.txt
+  yarn start:${V} ${STORAGE_DIR} ${STORAGE_DIR}/crawler.log.txt 2>${STORAGE_DIR}/crawler.error.txt
+  yarn process:${V} ${STORAGE_DIR} ${STORAGE_DIR}/process.log.txt 2>${STORAGE_DIR}/process.error.txt
 fi
 
-#
-mc cp -q --recursive storage/ "s3stor/${S3_CRAWLER_BUCKET}/${CRAWL_STORE_PREFIX}/"
-
+yarn upload-logs:${V} ${STORAGE_DIR}

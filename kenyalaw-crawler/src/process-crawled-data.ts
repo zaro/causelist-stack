@@ -1,0 +1,415 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as util from "node:util";
+import * as child_process from "node:child_process";
+import objectHash from "object-hash";
+import { createHash } from "node:crypto";
+
+import { log } from "crawlee";
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
+
+const exec = util.promisify(child_process.exec);
+
+async function convertFileToTxt(fileName: string, convertedDir: string) {
+  let { stderr: mimeTypeError, stdout: mimeType } = await exec(
+    `file --brief --mime-type ${fileName}`
+  );
+  mimeType = mimeType.trim();
+  mimeTypeError = mimeTypeError.trim();
+  if (mimeTypeError) {
+    return {
+      error: mimeTypeError,
+    };
+  }
+  let outFileName = path.join(
+    convertedDir,
+    path.basename(fileName).replace(/\.\w+$/, ".txt")
+  );
+  let cmd,
+    textContentType = "text";
+  switch (true) {
+    case mimeType === "application/pdf":
+      cmd = `pdftotext -layout ${fileName} ${outFileName}`;
+      break;
+    case mimeType === "image/png" || mimeType === "image/jpeg":
+      cmd = `tesseract ${fileName} ${outFileName.replace(/\.txt$/, "")}`;
+      break;
+    case mimeType ===
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      cmd = `libreoffice --convert-to csv --outdir ${convertedDir} ${fileName}`;
+      outFileName = outFileName.replace(/\.txt$/, ".csv");
+      textContentType = "csv";
+      break;
+    default:
+      cmd = `libreoffice --convert-to "txt:Text (encoded):UTF8" --outdir ${convertedDir} ${fileName}`;
+  }
+  const { stderr } = await exec(cmd);
+  if (stderr) {
+    return {
+      error: stderr,
+    };
+  }
+  try {
+    return {
+      textContent: fs.readFileSync(outFileName).toString(),
+      textContentType,
+      mimeType,
+    };
+  } catch (e: any) {
+    return {
+      error: e.toString(),
+    };
+  }
+}
+
+function fileSha1(fileName: string) {
+  return createHash("SHA1").update(fs.readFileSync(fileName)).digest("hex");
+}
+
+function textSha1(text: string) {
+  return createHash("SHA1").update(text).digest("hex");
+}
+
+function getCrawlTime(storageDir: string) {
+  const reqDir = path.join(storageDir, "request_queues", "default");
+  const fileTimes = fs
+    .readdirSync(reqDir)
+    .map((e) => fs.statSync(path.join(reqDir, e)).mtime);
+  return fileTimes.toSorted().at(-1);
+}
+
+interface ProcessedFile {
+  url: string;
+  statusCode: number;
+  fileName: string;
+  sha1: string;
+  mimeType: string | undefined;
+  textContent: string | undefined;
+  textContentType: string | undefined;
+  textContentSha1: string | undefined;
+  error: any;
+  parentUrl: string;
+  parentPath: string;
+  parent: any;
+}
+
+class SimpleS3 {
+  s3: S3Client;
+  bucket: string;
+  constructor(
+    protected filesPrefix: string,
+    protected menuEntryPrefix: string,
+    protected logsPrefix: string
+  ) {
+    this.s3 = new S3Client({
+      forcePathStyle: true,
+      endpoint: process.env.S3_ENDPOINT,
+      region: process.env.S3_REGION,
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY ?? "invalid",
+        secretAccessKey: process.env.S3_SECRET ?? "invalid",
+      },
+    });
+    this.bucket = process.env.S3_CRAWLER_BUCKET ?? "invalid";
+    if (!this.filesPrefix.endsWith("/")) {
+      this.filesPrefix += "/";
+    }
+    if (!this.menuEntryPrefix.endsWith("/")) {
+      this.menuEntryPrefix += "/";
+    }
+    if (!this.logsPrefix.endsWith("/")) {
+      this.logsPrefix += "/";
+    }
+  }
+
+  async putMenuEntryIndex(
+    keyList: string[],
+    crawlTime: Date
+  ): Promise<string | null> {
+    const time = crawlTime.toISOString();
+    const Body = JSON.stringify(keyList, null, 2);
+    const Key = this.menuEntryPrefix + `index.${time}.json`;
+    const commands = [
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key,
+        Body,
+        ContentType: "application/json",
+      }),
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: this.menuEntryPrefix + `index.json`,
+        Body,
+        ContentType: "application/json",
+      }),
+    ];
+
+    try {
+      await Promise.all(commands.map((command) => this.s3.send(command)));
+      return Key;
+    } catch (e: any) {
+      log.error(`putFileRecord(index.json):`, e);
+      return null;
+    }
+  }
+
+  async putMenuEntry(menuEntryRecord: any): Promise<string | null> {
+    const key = objectHash(menuEntryRecord, { algorithm: "sha1" });
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: this.menuEntryPrefix + key,
+      Body: JSON.stringify(menuEntryRecord, null, 2),
+      ContentType: "application/json",
+    });
+
+    try {
+      await this.s3.send(command);
+      return key;
+    } catch (e: any) {
+      log.error(`putFileRecord(${key}):`, e);
+    }
+    return null;
+  }
+
+  async getFileRecord(fileSha1: string): Promise<ProcessedFile | null> {
+    const command = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key: this.filesPrefix + fileSha1 + "/meta.json",
+    });
+
+    try {
+      const response = await this.s3.send(command);
+      const str = await response.Body?.transformToString();
+      if (!str) {
+        log.error(`${fileSha1} has no body`);
+        return null;
+      }
+      return JSON.parse(str);
+    } catch (e: any) {
+      if (e.Code != "NoSuchKey") {
+        log.error(`getFileRecord(${fileSha1}):`, e);
+      }
+      return null;
+    }
+  }
+
+  async putFileRecord(record: ProcessedFile) {
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: this.filesPrefix + record.sha1 + "/meta.json",
+      Body: JSON.stringify(record, null, 2),
+      ContentType: "application/json",
+    });
+
+    try {
+      await this.s3.send(command);
+      return true;
+    } catch (e: any) {
+      log.error(`putFileRecord(${fileSha1}):`, e);
+      return false;
+    }
+  }
+
+  async putFileContent(
+    record: ProcessedFile,
+    key: string,
+    body: Buffer | string | fs.ReadStream | undefined,
+    contentType: string | undefined
+  ) {
+    const Key = this.filesPrefix + record.sha1 + "/" + key;
+
+    if (!body) {
+      log.warning(`Skipping creating ${Key}, no body provided!`);
+      return;
+    }
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key,
+      Body: body,
+      ContentType: contentType,
+    });
+
+    try {
+      await this.s3.send(command);
+      return true;
+    } catch (e: any) {
+      log.error(`putFileRecord(${fileSha1}):`, e);
+      return false;
+    }
+  }
+
+  async putFileAsFileContent(
+    record: ProcessedFile,
+    key: string,
+    fileName: string,
+    contentType: string | undefined
+  ) {
+    return this.putFileContent(
+      record,
+      key,
+      fs.readFileSync(fileName),
+      contentType
+    );
+  }
+
+  async uploadLogFile(fileName: string, key: string, crawlTime: Date) {
+    const time = crawlTime.toISOString();
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: this.logsPrefix + time + "/" + key,
+      Body: fs.readFileSync(fileName),
+      ContentType: "text/plain",
+    });
+
+    try {
+      await this.s3.send(command);
+      return true;
+    } catch (e: any) {
+      log.error(`uploadLogFile(${fileName}):`, e);
+      return false;
+    }
+  }
+}
+
+async function processFiles(s3: SimpleS3, storageDir: string) {
+  const filesDir = path.join(storageDir, "key_value_stores", "default");
+  const convertedDir = path.join(storageDir, "converted/");
+
+  const datasetFiles = fs
+    .readdirSync(path.join(storageDir, "datasets", "files"))
+    .map((file) =>
+      JSON.parse(
+        fs
+          .readFileSync(path.join(storageDir, "datasets", "files", file))
+          .toString()
+      )
+    );
+
+  for (const datasetFile of datasetFiles) {
+    const { parent, fileName, statusCode, url } = datasetFile;
+    if (statusCode !== 200) {
+      log.warning(`Ignoring ${fileName}, status code ${statusCode}`);
+      continue;
+    }
+    // workaround for problem with crawler
+    // const fileName = key.replace(/(\.\w+)$/, '$1$1');
+
+    const filePath = path.join(filesDir, fileName);
+    const sha1 = fileSha1(filePath);
+    if (!parent?.path?.length) {
+      log.error(`Parent path Array is missing! for file ${fileName}`);
+      continue;
+    }
+    const parentPath = parent.pathArray.join(":");
+    const existingFile: ProcessedFile | null = await s3.getFileRecord(sha1);
+    if (existingFile && !existingFile.error) {
+      log.info(`Skip ${fileName}, already parsed w/o errors`);
+      continue;
+    }
+    log.info(`Converting ${fileName} ...`);
+    const { textContent, textContentType, mimeType, error } =
+      await convertFileToTxt(filePath, convertedDir);
+    if (error) {
+      log.warning(`Failed to parse ${filePath} : ${error}`);
+    }
+    const file: ProcessedFile = {
+      url,
+      statusCode,
+      fileName,
+      sha1,
+      mimeType,
+      textContent,
+      textContentType,
+      textContentSha1: textContent ? textSha1(textContent) : undefined,
+      error,
+      parentUrl: parent.url,
+      parentPath,
+      parent,
+    };
+    await Promise.all([
+      s3.putFileAsFileContent(
+        file,
+        "original",
+        path.join(filesDir, fileName),
+        mimeType
+      ),
+      s3.putFileContent(file, "text", textContent, "text/plain"),
+    ]);
+    await s3.putFileRecord(file);
+  }
+}
+
+async function processMenuEntries(
+  s3: SimpleS3,
+  storageDir: string,
+  crawlTime: Date
+) {
+  const dataset = fs
+    .readdirSync(path.join(storageDir, "datasets", "default"))
+    .map((file) =>
+      JSON.parse(
+        fs
+          .readFileSync(path.join(storageDir, "datasets", "default", file))
+          .toString()
+      )
+    );
+  const keys: (string | null)[] = await Promise.all(
+    dataset.map((e) => s3.putMenuEntry(e))
+  );
+  if (keys.some((v) => v === null)) {
+    throw new Error("Some menuEntries failed to save");
+  }
+  const r = await s3.putMenuEntryIndex(keys as string[], crawlTime);
+  log.info(`Saved menuEntires as ${r}`);
+}
+
+async function processData(storageDir: string, crawlTime: Date) {
+  const s3 = new SimpleS3("files/", "menu-entries/", "logs/");
+  await processFiles(s3, storageDir);
+  await processMenuEntries(s3, storageDir, crawlTime);
+}
+
+async function uploadLogs(storageDir: string, crawlTime: Date) {
+  const s3 = new SimpleS3("files/", "menu-entries/", "logs");
+  const logsFiles = fs
+    .readdirSync(storageDir)
+    .filter((e) => e.endsWith(".txt"));
+  for (const logFile of logsFiles) {
+    await s3.uploadLogFile(path.join(storageDir, logFile), logFile, crawlTime);
+  }
+  log.info(`Uploaded ${logsFiles.length} log files`);
+}
+
+const allowedCommands = [processData, uploadLogs];
+const command = process.argv[2];
+const storageDir = process.argv[3];
+const cmd = allowedCommands.find((f) => f.name === command);
+
+if (!cmd) {
+  log.error(
+    "Must specify command, one of:",
+    allowedCommands.map((f) => f.name)
+  );
+  process.exit(1);
+}
+if (!storageDir) {
+  log.error("Must specify storage dir!");
+  process.exit(1);
+}
+
+const crawlTime = getCrawlTime(storageDir);
+if (!crawlTime) {
+  log.error("Invalid or empty crawl directory");
+  process.exit(1);
+}
+log.info(`Detected crawTime: ${crawlTime.toISOString()}`);
+
+cmd(storageDir, crawlTime).catch((e) => {
+  log.error(`Error while processing : ${storageDir}`);
+  log.error(e);
+});

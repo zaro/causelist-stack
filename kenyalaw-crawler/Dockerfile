@@ -5,6 +5,8 @@ FROM apify/actor-node:20 AS builder
 
 WORKDIR /crawler-dev
 
+RUN apk add curl file openjdk21-jre-headless libreoffice  poppler-utils tesseract-ocr tesseract-ocr-data-eng --no-cache
+
 # Copy just package.json and package-lock.json
 # to speed up the build using Docker layer cache.
 COPY package.json yarn.lock ./
@@ -22,13 +24,12 @@ RUN yarn build
 
 FROM apify/actor-node:20 as runner-base
 
-RUN apk add curl --no-cache
-RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
-RUN chmod +x /usr/local/bin/mc
+# RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+# RUN chmod +x /usr/local/bin/mc
 
 FROM builder as development
 
-COPY --from=runner-base /usr/local/bin/mc /usr/local/bin/mc
+#COPY --from=runner-base /usr/local/bin/mc /usr/local/bin/mc
 
 
 # Create final image

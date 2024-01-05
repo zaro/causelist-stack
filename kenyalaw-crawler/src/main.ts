@@ -5,8 +5,10 @@ import { router } from "./routes.js";
 import { DOWNLOAD_MIME_TYPES } from "./file-types.js";
 
 const startUrls = [
-  "http://kenyalaw.org/kl/index.php?id=11965",
+  // Start at: Licensed process servers / Process Servers
+  "http://kenyalaw.org/kl/index.php?id=10977",
   // "http://kenyalaw.org/kl/index.php?id=8281"
+  //  "http://kenyalaw.org/kl/index.php?id=11965",
 ];
 
 const proxyConfiguration = process.env.PROXY_URL

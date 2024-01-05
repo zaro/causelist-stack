@@ -14,15 +14,21 @@ app:
         paths:
           - path: /
             pathType: ImplementationSpecific
+  env:
+    DISABLE_SENTRY: 1
 
 api:
   image:
     repository: causelist-api
   env:
+    PROXY_URL: "http://proxy:3128"
     MONGO_URL: "mongodb://causelist:causelist@mongo/causelist"
-    S3_ACCESS_KEY: v46xTwg3vF9HwygSKjh8
-    S3_SECRET: yIrvOtMWK4wwk2vvPyvihlbwNdlUEnn2nnuxCz3n
-    S3_CRAWLER_BUCKET: crawls
+    S3_ACCESS_KEY: BcPgXgoVU1J6D6sdit32
+    S3_SECRET: obQNHBAOCiR8LdYu4X9r4njHCMVMPVWWElU7laEO
+    S3_CRAWLER_BUCKET: kenylaw-crawler
+    S3_ENDPOINT: http://minio.tilt:30900
+    S3_REGION: minio
+
     # ZETTATEL_API_KEY: c2395debd6724a0bf871de8d904861e10bf304f4
     # ZETTATEL_USER: zaro
     # ZETTATEL_SENDER_ID: ZTSMS

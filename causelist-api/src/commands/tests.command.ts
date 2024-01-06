@@ -11,15 +11,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { FilterQuery, Model } from 'mongoose';
-import { FileLines } from './parser/file-lines.js';
-import { CauselistHeaderParser } from './parser/causelist-header-parser.js';
-import { NoticeParser } from './parser/notice-parser.js';
-import { peekForRe, peekForWord } from './parser/util.js';
+import { FileLines } from '../data-importer/parser/file-lines.js';
+import { CauselistHeaderParser } from '../data-importer/parser/causelist-header-parser.js';
+import { NoticeParser } from '../data-importer/parser/notice-parser.js';
+import { peekForRe, peekForWord } from '../data-importer/parser/util.js';
 import {
   CauselistMultiDocumentParser,
   CauselistParser,
-} from './parser/causelist-parser.js';
+} from '../data-importer/parser/causelist-parser.js';
 import { format } from 'date-fns';
+import {
+  DocumentWithData,
+  KenyaLawParserService,
+} from '../data-importer/kenya-law-parser.service.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -30,28 +34,26 @@ export class TestsCommand {
   private readonly log = new Logger(TestsCommand.name);
 
   constructor(
+    protected parserService: KenyaLawParserService,
     @InjectModel(MenuEntry.name)
     protected menuEntryModel: Model<MenuEntry>,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
   ) {}
 
-  async makeFixtureFromDocument(document: InfoFile) {
+  async makeFixtureFromDocument(document: DocumentWithData) {
     const data = {
-      fileName: document.fileName,
-      fileMd5: document.md5,
-      mimeType: document.mimeType,
+      fileName: document.doc.fileName,
+      fileSha1: document.doc.sha1,
+      mimeType: document.doc.mimeType,
       textContent: document.textContent,
       textContentType: document.textContentType,
-      parentUrl: document.parentUrl,
-      parentPath: document.parentPath,
-      textContentMd5: createHash('md5')
-        .update(document.textContent)
-        .digest('hex'),
+      parentUrl: document.doc.parentUrl,
+      parentPath: document.doc.parentPath,
+      textContentSha1: document.textContentSha1,
     };
-
     // Store under MD5(textContent) filename
-    const fileName = `${data.textContentMd5}.json`;
+    const fileName = `${data.textContentSha1}.json`;
     fs.writeFileSync(
       path.join(fixturesDir, fileName),
       JSON.stringify(data, undefined, 2),
@@ -65,23 +67,21 @@ export class TestsCommand {
   })
   async makeFixture(
     @Positional({
-      name: 'docIdOrMd5',
-      describe: 'document id',
+      name: 'sha1',
+      describe: 'document sha1',
       type: 'string',
     })
-    docIdOrMd5: string,
+    sha1: string,
   ) {
-    const document = await this.infoFileModel
-      .findOne(
-        docIdOrMd5.length === 24 ? { _id: docIdOrMd5 } : { md5: docIdOrMd5 },
-      )
-      .exec();
-    if (!document) {
-      this.log.error(`Document with id: ${docIdOrMd5} not found!`);
+    const documents = await this.parserService.loadDocumentsWithData({
+      sha1,
+    });
+    if (!documents.length) {
+      this.log.error(`Document with sha1: ${sha1} not found!`);
       return;
     }
     fs.mkdirSync(fixturesDir, { recursive: true });
-    this.makeFixtureFromDocument(document);
+    this.makeFixtureFromDocument(documents[0]);
   }
 
   @Command({
@@ -112,12 +112,13 @@ export class TestsCommand {
     );
     // console.log(goodRecords);
     this.log.log(`Found ${goodRecords.length} good records`);
-    const documents = await this.infoFileModel
-      .find({ md5: { $in: goodRecords.map((r) => r.md5) } })
-      .exec();
-    this.log.log(`Loaded ${documents.length} documents`);
-    for (const document of documents) {
-      this.makeFixtureFromDocument(document);
-    }
+    // TODO:
+    // const documents = await this.infoFileModel
+    //   .find({ md5: { $in: goodRecords.map((r) => r.md5) } })
+    //   .exec();
+    // this.log.log(`Loaded ${documents.length} documents`);
+    // for (const document of documents) {
+    //   this.makeFixtureFromDocument(document);
+    // }
   }
 }

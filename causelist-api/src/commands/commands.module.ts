@@ -12,6 +12,7 @@ import { DbCommand } from './db.command.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Court, CourtSchema } from '../schemas/court.schema.js';
 import { UpdateCommand } from './update.command.js';
+import { DataImporterModule } from '../data-importer/data-importer.module.js';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { UpdateCommand } from './update.command.js';
       { name: Court.name, schema: CourtSchema },
     ]),
     CommandModule,
+    DataImporterModule,
   ],
   controllers: [],
   providers: [

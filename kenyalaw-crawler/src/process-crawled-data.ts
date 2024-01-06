@@ -74,6 +74,10 @@ function textSha1(text: string) {
   return createHash("SHA1").update(text).digest("hex");
 }
 
+function textMd5(text: string) {
+  return createHash("MD5").update(text).digest("hex");
+}
+
 function getCrawlTime(storageDir: string) {
   const reqDir = path.join(storageDir, "request_queues", "default");
   const fileTimes = fs
@@ -88,12 +92,13 @@ interface ProcessedFile {
   fileName: string;
   sha1: string;
   mimeType: string | undefined;
-  textContent: string | undefined;
-  textContentType: string | undefined;
-  textContentSha1: string | undefined;
+  textContentType: string;
+  textContentSha1: string;
+  textContentMd5: string;
   error: any;
   parentUrl: string;
   parentPath: string;
+  parentName: string;
   parent: any;
 }
 
@@ -218,15 +223,11 @@ class SimpleS3 {
   async putFileContent(
     record: ProcessedFile,
     key: string,
-    body: Buffer | string | fs.ReadStream | undefined,
+    body: Buffer | string | fs.ReadStream,
     contentType: string | undefined
   ) {
     const Key = this.filesPrefix + record.sha1 + "/" + key;
 
-    if (!body) {
-      log.warning(`Skipping creating ${Key}, no body provided!`);
-      return;
-    }
     const command = new PutObjectCommand({
       Bucket: this.bucket,
       Key,
@@ -276,9 +277,12 @@ class SimpleS3 {
   }
 }
 
-async function processFiles(s3: SimpleS3, storageDir: string) {
+async function processFiles(
+  s3: SimpleS3,
+  storageDir: string,
+  convertedDir: string
+) {
   const filesDir = path.join(storageDir, "key_value_stores", "default");
-  const convertedDir = path.join(storageDir, "converted/");
 
   const datasetFiles = fs
     .readdirSync(path.join(storageDir, "datasets", "files"))
@@ -308,7 +312,7 @@ async function processFiles(s3: SimpleS3, storageDir: string) {
     const parentPath = parent.pathArray.join(":");
     const existingFile: ProcessedFile | null = await s3.getFileRecord(sha1);
     if (existingFile && !existingFile.error) {
-      log.info(`Skip ${fileName}, already parsed w/o errors`);
+      log.debug(`Skip ${fileName}, already parsed w/o errors`);
       continue;
     }
     log.info(`Converting ${fileName} ...`);
@@ -317,18 +321,25 @@ async function processFiles(s3: SimpleS3, storageDir: string) {
     if (error) {
       log.warning(`Failed to parse ${filePath} : ${error}`);
     }
+
+    if (!textContent) {
+      log.warning(`Empty content for ${filePath} skipping`);
+      continue;
+    }
+
     const file: ProcessedFile = {
       url,
       statusCode,
       fileName,
       sha1,
       mimeType,
-      textContent,
       textContentType,
-      textContentSha1: textContent ? textSha1(textContent) : undefined,
+      textContentSha1: textSha1(textContent),
+      textContentMd5: textMd5(textContent),
       error,
       parentUrl: parent.url,
       parentPath,
+      parentName: parent.text,
       parent,
     };
     await Promise.all([
@@ -370,7 +381,9 @@ async function processMenuEntries(
 
 async function processData(storageDir: string, crawlTime: Date) {
   const s3 = new SimpleS3("files/", "menu-entries/", "logs/");
-  await processFiles(s3, storageDir);
+  const convertedDir = path.join(storageDir, "converted/");
+  fs.mkdirSync(convertedDir, { recursive: true });
+  await processFiles(s3, storageDir, convertedDir);
   await processMenuEntries(s3, storageDir, crawlTime);
 }
 

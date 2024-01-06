@@ -9,31 +9,28 @@ export class InfoFile {
   fileName: string;
 
   @Prop()
-  md5: string;
+  fileUrl: string;
+
+  @Prop()
+  sha1: string;
 
   @Prop()
   mimeType: string;
 
   @Prop()
-  textContent: string;
+  fullyParsed: boolean;
 
   @Prop()
-  textContentType: string;
-
-  @Prop()
-  textContentMd5: string;
-
-  @Prop()
-  error: string;
+  parseError: boolean;
 
   @Prop()
   parentUrl: string;
 
   @Prop()
-  parentName: string;
+  parentPath: string;
 
   @Prop()
-  parentPath: string;
+  parentName: string;
 
   @Prop()
   createdAt?: Date;

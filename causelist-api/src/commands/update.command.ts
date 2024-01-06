@@ -11,17 +11,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { FilterQuery, Model } from 'mongoose';
-import { FileLines } from './parser/file-lines.js';
-import { CauselistHeaderParser } from './parser/causelist-header-parser.js';
-import { NoticeParser } from './parser/notice-parser.js';
-import { peekForRe, peekForWord } from './parser/util.js';
+import { FileLines } from '../data-importer/parser/file-lines.js';
+import { CauselistHeaderParser } from '../data-importer/parser/causelist-header-parser.js';
+import { NoticeParser } from '../data-importer/parser/notice-parser.js';
+import { peekForRe, peekForWord } from '../data-importer/parser/util.js';
 import {
   CauselistMultiDocumentParser,
   CauselistParser,
-} from './parser/causelist-parser.js';
+} from '../data-importer/parser/causelist-parser.js';
 import { format } from 'date-fns';
 import { CauseList } from '../schemas/causelist.schema.js';
 import { Court, CourtDocument } from '../schemas/court.schema.js';
+import { UpdateStatsService } from '../data-importer/update-stats.service.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -29,43 +30,13 @@ const exec = util.promisify(child_process.exec);
 
 @Injectable()
 export class UpdateCommand {
-  private readonly log = new Logger(UpdateCommand.name);
-
-  constructor(
-    @InjectModel(MenuEntry.name)
-    protected menuEntryModel: Model<MenuEntry>,
-    @InjectModel(InfoFile.name)
-    protected infoFileModel: Model<InfoFile>,
-    @InjectModel(CauseList.name)
-    protected causeListModel: Model<CauseList>,
-    @InjectModel(Court.name)
-    protected courtModel: Model<Court>,
-  ) {}
+  constructor(protected statsService: UpdateStatsService) {}
 
   @Command({
     command: 'update:courts-stats',
     describe: 'Update Courts Stats',
   })
   async updateCourtsStats() {
-    const courts = await this.courtModel.find().exec();
-    const toSave: CourtDocument[] = [];
-    for (const court of courts) {
-      const clCount = await this.causeListModel
-        .count({
-          parentPath: new RegExp(`^${court.path}`),
-        })
-        .exec();
-      if (clCount != court.documentsCount) {
-        court.documentsCount = clCount;
-        toSave.push(court);
-      }
-    }
-    const r = await Promise.all(
-      toSave.map((c) => {
-        return c.save();
-      }),
-    );
-
-    this.log.log(`Updated ${r.length} courts`);
+    return this.statsService.updateCourtsStats();
   }
 }

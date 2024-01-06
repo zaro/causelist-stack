@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import { FileLines } from './file-lines.js';
 import { CauselistMultiDocumentParser } from './causelist-parser.js';
 
-const fixturesDir = 'src/commands/parser/__fixtures__/data';
+const fixturesDir = 'src/data-importer/parser/__fixtures__/data';
 
 describe('parsing', () => {
   describe('CauselistMultiDocumentParser', () => {
@@ -19,7 +19,20 @@ describe('parsing', () => {
       parser.tryParse();
       // We must have consumed all text
       expect(parser.file.end()).toBe(true);
-      expect(parser.getParsed()).toMatchSnapshot(document.textContentMd5);
+      // handle some key renames
+      let parsed = {
+        documents: parser.getParsed().documents.map((d) => ({
+          type: d.type,
+          header: d.header,
+          sections: d.causeLists.map((c) => ({
+            dateTime: c.dateTime,
+            causelist: c.cases,
+            section: c.typeOfCause,
+          })),
+        })),
+      };
+
+      expect(parsed).toMatchSnapshot(document.textContentMd5);
     });
   });
 });

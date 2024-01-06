@@ -108,7 +108,7 @@ function getMenuEntryParents(
   let p = [];
   for (let i = parents.length - 1; i >= 0; i--) {
     p.push(parents[i].path);
-    parents[i].path = p.join("/");
+    parents[i].path = p.join(":");
   }
   const parent = parents.shift();
   let current = parent as MenuLink;
@@ -141,7 +141,7 @@ router.addHandler(
           url: new URL($(e).attr("href") as string, baseUrl).toString(),
           current: $(e).hasClass("current"),
           parent,
-          path: pathArray.join("/"),
+          path: pathArray.join(":"),
           pathArray,
         };
       })
@@ -160,7 +160,7 @@ router.addHandler(
         baseUrl
       ).toString(),
       parent,
-      path: pathArray.join("/"),
+      path: pathArray.join(":"),
       pathArray,
     };
 

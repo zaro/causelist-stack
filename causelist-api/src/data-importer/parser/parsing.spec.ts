@@ -19,20 +19,8 @@ describe('parsing', () => {
       parser.tryParse();
       // We must have consumed all text
       expect(parser.file.end()).toBe(true);
-      // handle some key renames
-      let parsed = {
-        documents: parser.getParsed().documents.map((d) => ({
-          type: d.type,
-          header: d.header,
-          sections: d.causeLists.map((c) => ({
-            dateTime: c.dateTime,
-            causelist: c.cases,
-            section: c.typeOfCause,
-          })),
-        })),
-      };
 
-      expect(parsed).toMatchSnapshot(document.textContentMd5);
+      expect(parser.getParsed()).toMatchSnapshot(document.textContentMd5);
     });
   });
 });

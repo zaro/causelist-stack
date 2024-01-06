@@ -4,21 +4,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "BUTERE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 1",
-        "date": 2023-11-29T22:00:00.000Z,
-        "email": undefined,
-        "judge": "EDWIN NYONGESA",
-        "phone": undefined,
-        "url": "https://urlshortner.org/LAYN7",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/412/2018",
               "description": "In The Estate Of Walter Eshirisia Lutta",
@@ -59,11 +47,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
               "num": "7",
             },
           ],
-          "dateTime": 2023-11-30T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-30T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E004/2021",
               "description": "In The Estate Of Morris Akali Omukubaakali Mukuba",
@@ -83,10 +71,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
             },
           ],
           "dateTime": undefined,
-          "section": "SUBMISSIONS",
+          "typeOfCause": "SUBMISSIONS",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E048/2022",
               "num": "11",
@@ -107,10 +95,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
             },
           ],
           "dateTime": undefined,
-          "section": "PRE-TRIAL CONFERENCE",
+          "typeOfCause": "PRE-TRIAL CONFERENCE",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E030/2021",
               "num": "14",
@@ -119,10 +107,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
             },
           ],
           "dateTime": undefined,
-          "section": "DEFENSE HEARING",
+          "typeOfCause": "DEFENSE HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/34/2020",
               "description": "In The Estate Of Joseph Neondo Otinga",
@@ -145,10 +133,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING- APPLICATION",
+          "typeOfCause": "HEARING- APPLICATION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E023/2021",
               "num": "19",
@@ -157,10 +145,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E045/2022",
               "num": "20",
@@ -175,9 +163,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8b2594a1
             },
           ],
           "dateTime": undefined,
-          "section": "RULING",
+          "typeOfCause": "RULING",
         },
       ],
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": "2023-11-30",
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://urlshortner.org/LAYN7",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -188,21 +188,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 93cd8455
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "BUTERE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 2",
-        "date": 2023-11-29T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON.O.J MUTHONI",
-        "phone": undefined,
-        "url": "https://bit.ly/3JlrCuO",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/258/2019",
               "description": "In The Estate Of Amulabu Indumuli",
@@ -224,11 +212,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 93cd8455
               "num": "4",
             },
           ],
-          "dateTime": 2023-11-30T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-30T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E056/2023",
               "description": "In The Estate Of Meshack Mbendo Osienyo",
@@ -241,10 +229,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 93cd8455
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING- APPLICATION",
+          "typeOfCause": "HEARING- APPLICATION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/74/2019",
               "num": "7",
@@ -265,10 +253,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 93cd8455
             },
           ],
           "dateTime": undefined,
-          "section": "ASSESSMENT OF COSTS",
+          "typeOfCause": "ASSESSMENT OF COSTS",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E177/2021",
               "description": "",
@@ -305,9 +293,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 93cd8455
             },
           ],
           "dateTime": undefined,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
       ],
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 2",
+        "date": "2023-11-30",
+        "email": undefined,
+        "judge": "HON.O.J MUTHONI",
+        "phone": undefined,
+        "url": "https://bit.ly/3JlrCuO",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -318,21 +318,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "BUTERE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 1",
-        "date": 2023-11-20T22:00:00.000Z,
-        "email": undefined,
-        "judge": "EDWIN NYONGESA",
-        "phone": undefined,
-        "url": "https://shorturl.at/yPZ35",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/76/2018",
               "num": "1",
@@ -340,11 +328,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
               "partyB": "Priscila Nyarunda Ochieng And Asman Harambee Kweyu  And 1 Others",
             },
           ],
-          "dateTime": 2023-11-21T07:00:00.000Z,
-          "section": "DIRECTIONS",
+          "dateTime": 2023-11-21T06:00:00.000Z,
+          "typeOfCause": "DIRECTIONS",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E194/2021",
               "description": "In The Estate Of Anyanje Ashira",
@@ -369,10 +357,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
             },
           ],
           "dateTime": undefined,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/61/2018",
               "num": "6",
@@ -381,10 +369,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
             },
           ],
           "dateTime": undefined,
-          "section": "SUBMISSIONS",
+          "typeOfCause": "SUBMISSIONS",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/E052/2021",
               "num": "7",
@@ -405,10 +393,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
             },
           ],
           "dateTime": undefined,
-          "section": "DEFENSE HEARING",
+          "typeOfCause": "DEFENSE HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/84/2017",
               "num": "10",
@@ -434,10 +422,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING- APPLICATION",
+          "typeOfCause": "HEARING- APPLICATION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E010/2021",
               "num": "14",
@@ -457,10 +445,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/99/2022",
               "description": "In The Estate Of Joseph Maloba Wanyonje",
@@ -468,10 +456,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
             },
           ],
           "dateTime": undefined,
-          "section": "RULING",
+          "typeOfCause": "RULING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/42/2018",
               "num": "18",
@@ -486,9 +474,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 381d39b1
             },
           ],
           "dateTime": undefined,
-          "section": "JUDGMENT",
+          "typeOfCause": "JUDGMENT",
         },
       ],
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": "2023-11-21",
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://shorturl.at/yPZ35",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -499,21 +499,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8258f2db
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "ENDAU MOBILE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 4",
-        "date": 2023-07-10T21:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. FELISTUS NEKESA",
-        "phone": undefined,
-        "url": "TINYURL.COM/YFYN257N",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E021/2022",
               "num": "1",
@@ -546,10 +534,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8258f2db
             },
           ],
           "dateTime": 2023-07-11T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E007/2022",
               "num": "6",
@@ -558,27 +546,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8258f2db
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "ENDAU MOBILE MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 4",
-        "date": 2023-07-11T21:00:00.000Z,
+        "date": "2023-7-11",
         "email": undefined,
         "judge": "HON. FELISTUS NEKESA",
         "phone": undefined,
         "url": "TINYURL.COM/YFYN257N",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/29/2017",
               "num": "1",
@@ -623,10 +611,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8258f2db
             },
           ],
           "dateTime": 2023-07-12T06:00:00.000Z,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E006/2022",
               "num": "8",
@@ -635,27 +623,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8258f2db
             },
           ],
           "dateTime": undefined,
-          "section": "JUDGMENT",
+          "typeOfCause": "JUDGMENT",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "ENDAU MOBILE MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 4",
-        "date": 2023-07-12T21:00:00.000Z,
+        "date": "2023-7-12",
         "email": undefined,
         "judge": "HON. FELISTUS NEKESA",
         "phone": undefined,
         "url": "TINYURL.COM/YFYN257N",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E028/2021",
               "num": "1",
@@ -670,9 +658,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8258f2db
             },
           ],
           "dateTime": 2023-07-13T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
       ],
+      "header": {
+        "court": [
+          "ENDAU MOBILE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 4",
+        "date": "2023-7-13",
+        "email": undefined,
+        "judge": "HON. FELISTUS NEKESA",
+        "phone": undefined,
+        "url": "TINYURL.COM/YFYN257N",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -683,21 +683,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8984da5a
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "MAVOKO MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT NO. 3",
-        "date": 2023-11-14T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. E. K. SUTER – PM",
-        "phone": undefined,
-        "url": "https://meet.google.com/qtc-vbyk-ira",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCHCC/E043/2023",
               "num": "1",
@@ -705,28 +693,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8984da5a
               "partyB": "Simon Odhiambo",
             },
           ],
-          "dateTime": 2023-11-15T06:45:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-15T05:45:00.000Z,
+          "typeOfCause": "MENTION",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MAVOKO MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
-        "courtRoom": "COURT 1",
-        "date": 2023-11-14T22:00:00.000Z,
+        "courtRoom": "COURT NO. 3",
+        "date": "2023-11-15",
         "email": undefined,
-        "judge": "HON. BARBARA OJOO",
+        "judge": "HON. E. K. SUTER – PM",
         "phone": undefined,
-        "url": "https://bit.ly/3IQUREv",
+        "url": "https://meet.google.com/qtc-vbyk-ira",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/E707/2023",
               "num": "1",
@@ -758,10 +746,22 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 8984da5a
               "partyB": "Yamin Construction Company Limted Vs  Flora Kagendo",
             },
           ],
-          "dateTime": 2023-11-15T07:00:00.000Z,
-          "section": "DIRECTIONS",
+          "dateTime": 2023-11-15T06:00:00.000Z,
+          "typeOfCause": "DIRECTIONS",
         },
       ],
+      "header": {
+        "court": [
+          "MAVOKO MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": "2023-11-15",
+        "email": undefined,
+        "judge": "HON. BARBARA OJOO",
+        "phone": undefined,
+        "url": "https://bit.ly/3IQUREv",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -772,21 +772,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 9027e5d9
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "BUSIA HIGH COURT",
-          "SMALL CLAIMS COURT",
-        ],
-        "courtRoom": undefined,
-        "date": 2023-11-16T22:00:00.000Z,
-        "email": undefined,
-        "judge": "Hon. Kassim Akida",
-        "phone": undefined,
-        "url": "https://shorturl.at/fisxM",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "SCCC/E001/2023",
               "num": "1",
@@ -830,10 +818,22 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 9027e5d9
               "partyB": "St John Baptist Mabale Sec School",
             },
           ],
-          "dateTime": 2023-11-17T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-17T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
       ],
+      "header": {
+        "court": [
+          "BUSIA HIGH COURT",
+          "SMALL CLAIMS COURT",
+        ],
+        "courtRoom": undefined,
+        "date": "2023-11-17",
+        "email": undefined,
+        "judge": "Hon. Kassim Akida",
+        "phone": undefined,
+        "url": "https://shorturl.at/fisxM",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -844,21 +844,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "TINDERET MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 1",
-        "date": 2023-09-03T21:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. BONFACE W. WACHIRA (SRM)",
-        "phone": undefined,
-        "url": "shorturl.at/btOPY",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E003/2023",
               "num": "1",
@@ -867,10 +855,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": 2023-09-04T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E054/2022",
               "num": "2",
@@ -891,10 +879,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "DEFENSE HEARING",
+          "typeOfCause": "DEFENSE HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E143/2023",
               "num": "5",
@@ -903,27 +891,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "TINDERET MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 1",
-        "date": 2023-09-04T21:00:00.000Z,
+        "date": "2023-9-4",
         "email": undefined,
         "judge": "HON. BONFACE W. WACHIRA (SRM)",
         "phone": undefined,
         "url": "shorturl.at/btOPY",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E149/2023",
               "num": "1",
@@ -932,10 +920,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": 2023-09-05T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E051/2022",
               "num": "2",
@@ -980,27 +968,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "TINDERET MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 1",
-        "date": 2023-09-05T21:00:00.000Z,
+        "date": "2023-9-5",
         "email": undefined,
         "judge": "HON. BONFACE W. WACHIRA (SRM)",
         "phone": undefined,
         "url": "shorturl.at/btOPY",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E045/2022",
               "num": "1",
@@ -1039,10 +1027,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": 2023-09-06T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E042/2022",
               "num": "7",
@@ -1051,10 +1039,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "DEFENSE HEARING",
+          "typeOfCause": "DEFENSE HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E044/2022",
               "num": "8",
@@ -1099,27 +1087,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "TINDERET MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 1",
-        "date": 2023-09-06T21:00:00.000Z,
+        "date": "2023-9-6",
         "email": undefined,
         "judge": "HON. BONFACE W. WACHIRA (SRM)",
         "phone": undefined,
         "url": "shorturl.at/btOPY",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E023/2022",
               "num": "1",
@@ -1134,10 +1122,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": 2023-09-07T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E009/2023",
               "num": "3",
@@ -1152,10 +1140,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "DEFENSE HEARING",
+          "typeOfCause": "DEFENSE HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E019/2022",
               "num": "5",
@@ -1194,10 +1182,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E096/2022",
               "num": "11",
@@ -1206,9 +1194,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: 879389e6
             },
           ],
           "dateTime": undefined,
-          "section": "SENTENCING",
+          "typeOfCause": "SENTENCING",
         },
       ],
+      "header": {
+        "court": [
+          "TINDERET MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": "2023-9-7",
+        "email": undefined,
+        "judge": "HON. BONFACE W. WACHIRA (SRM)",
+        "phone": undefined,
+        "url": "shorturl.at/btOPY",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -1219,21 +1219,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: ade312b4
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "ENDAU MOBILE COURT UNDER KITUI MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 5",
-        "date": 2023-10-10T21:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. MAUREEN KIMANI",
-        "phone": undefined,
-        "url": "https://tinyurl.com/yhqecybr",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E010/2020",
               "num": "1",
@@ -1260,10 +1248,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: ade312b4
             },
           ],
           "dateTime": 2023-10-11T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E003/2023",
               "num": "5",
@@ -1278,27 +1266,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: ade312b4
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "ENDAU MOBILE COURT UNDER KITUI MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 5",
-        "date": 2023-10-11T21:00:00.000Z,
+        "date": "2023-10-11",
         "email": undefined,
         "judge": "HON. MAUREEN KIMANI",
         "phone": undefined,
         "url": "https://tinyurl.com/yhqecybr",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E010/2022",
               "num": "1",
@@ -1319,10 +1307,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: ade312b4
             },
           ],
           "dateTime": 2023-10-12T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E008/2022",
               "num": "4",
@@ -1337,27 +1325,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: ade312b4
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "ENDAU MOBILE COURT UNDER KITUI MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 5",
-        "date": 2023-10-12T21:00:00.000Z,
+        "date": "2023-10-12",
         "email": undefined,
         "judge": "HON. MAUREEN KIMANI",
         "phone": undefined,
         "url": "https://tinyurl.com/yhqecybr",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/29/2017",
               "num": "1",
@@ -1372,9 +1360,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: ade312b4
             },
           ],
           "dateTime": 2023-10-13T06:00:00.000Z,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
       ],
+      "header": {
+        "court": [
+          "ENDAU MOBILE COURT UNDER KITUI MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 5",
+        "date": "2023-10-13",
+        "email": undefined,
+        "judge": "HON. MAUREEN KIMANI",
+        "phone": undefined,
+        "url": "https://tinyurl.com/yhqecybr",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -1385,21 +1385,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "MILIMANI MAGISTRATE COURT",
-          "MAGISTRATE COURT ANTI CORRUPTION",
-        ],
-        "courtRoom": "1",
-        "date": 2023-11-26T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. THOMAS NZYOKI -CM  ACC",
-        "phone": undefined,
-        "url": "https://tinyurl.com/3ndvjujt",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E003/2023",
               "num": "1",
@@ -1407,28 +1395,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Mwadama  Zinje Juma",
             },
           ],
-          "dateTime": 2023-11-27T07:00:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-11-27T06:00:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "6",
-        "date": 2023-11-26T22:00:00.000Z,
+        "courtRoom": "1",
+        "date": "2023-11-27",
         "email": undefined,
-        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
         "phone": undefined,
-        "url": "https://cutt.ly/qjnYEaJ",
+        "url": "https://tinyurl.com/3ndvjujt",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E012/2022",
               "num": "1",
@@ -1436,28 +1424,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
             },
           ],
-          "dateTime": 2023-11-27T07:00:00.000Z,
-          "section": "HEARING",
+          "dateTime": 2023-11-27T06:00:00.000Z,
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "1",
-        "date": 2023-11-27T22:00:00.000Z,
+        "courtRoom": "6",
+        "date": "2023-11-27",
         "email": undefined,
-        "judge": "HON. THOMAS NZYOKI -CM  ACC",
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
         "phone": undefined,
-        "url": "https://tinyurl.com/3ndvjujt",
+        "url": "https://cutt.ly/qjnYEaJ",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E003/2023",
               "num": "1",
@@ -1465,28 +1453,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Mwadama  Zinje Juma",
             },
           ],
-          "dateTime": 2023-11-28T07:00:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-11-28T06:00:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "3",
-        "date": 2023-11-27T22:00:00.000Z,
+        "courtRoom": "1",
+        "date": "2023-11-28",
         "email": undefined,
-        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
         "phone": undefined,
-        "url": "https://bit.ly/3sy5a8H",
+        "url": "https://tinyurl.com/3ndvjujt",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E019/2020",
               "num": "1",
@@ -1494,28 +1482,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Manduku Daniel And Ano",
             },
           ],
-          "dateTime": 2023-11-28T07:30:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-11-28T06:30:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "6",
-        "date": 2023-11-27T22:00:00.000Z,
+        "courtRoom": "3",
+        "date": "2023-11-28",
         "email": undefined,
-        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
         "phone": undefined,
-        "url": "https://cutt.ly/qjnYEaJ",
+        "url": "https://bit.ly/3sy5a8H",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E012/2022",
               "num": "1",
@@ -1523,28 +1511,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
             },
           ],
-          "dateTime": 2023-11-28T07:00:00.000Z,
-          "section": "HEARING",
+          "dateTime": 2023-11-28T06:00:00.000Z,
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "1",
-        "date": 2023-11-28T22:00:00.000Z,
+        "courtRoom": "6",
+        "date": "2023-11-28",
         "email": undefined,
-        "judge": "HON. THOMAS NZYOKI -CM  ACC",
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
         "phone": undefined,
-        "url": "https://tinyurl.com/3ndvjujt",
+        "url": "https://cutt.ly/qjnYEaJ",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E003/2023",
               "num": "1",
@@ -1552,28 +1540,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Mwadama  Zinje Juma",
             },
           ],
-          "dateTime": 2023-11-29T07:00:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-11-29T06:00:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "3",
-        "date": 2023-11-28T22:00:00.000Z,
+        "courtRoom": "1",
+        "date": "2023-11-29",
         "email": undefined,
-        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
         "phone": undefined,
-        "url": "https://bit.ly/3sy5a8H",
+        "url": "https://tinyurl.com/3ndvjujt",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E018/2020",
               "num": "1",
@@ -1581,28 +1569,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Zacharia Okoth Obado And Others",
             },
           ],
-          "dateTime": 2023-11-29T07:30:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-11-29T06:30:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "6",
-        "date": 2023-11-28T22:00:00.000Z,
+        "courtRoom": "3",
+        "date": "2023-11-29",
         "email": undefined,
-        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
         "phone": undefined,
-        "url": "https://cutt.ly/qjnYEaJ",
+        "url": "https://bit.ly/3sy5a8H",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E012/2022",
               "num": "1",
@@ -1610,28 +1598,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
             },
           ],
-          "dateTime": 2023-11-29T07:00:00.000Z,
-          "section": "HEARING",
+          "dateTime": 2023-11-29T06:00:00.000Z,
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "1",
-        "date": 2023-11-29T22:00:00.000Z,
+        "courtRoom": "6",
+        "date": "2023-11-29",
         "email": undefined,
-        "judge": "HON. THOMAS NZYOKI -CM  ACC",
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
         "phone": undefined,
-        "url": "https://tinyurl.com/3ndvjujt",
+        "url": "https://cutt.ly/qjnYEaJ",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E003/2023",
               "num": "1",
@@ -1639,28 +1627,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Mwadama  Zinje Juma",
             },
           ],
-          "dateTime": 2023-11-30T07:00:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-11-30T06:00:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "3",
-        "date": 2023-11-29T22:00:00.000Z,
+        "courtRoom": "1",
+        "date": "2023-11-30",
         "email": undefined,
-        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
+        "judge": "HON. THOMAS NZYOKI -CM  ACC",
         "phone": undefined,
-        "url": "https://bit.ly/3sy5a8H",
+        "url": "https://tinyurl.com/3ndvjujt",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E018/2020",
               "num": "1",
@@ -1668,28 +1656,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Zacharia Okoth Obado And Others",
             },
           ],
-          "dateTime": 2023-11-30T07:30:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-11-30T06:30:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "6",
-        "date": 2023-11-29T22:00:00.000Z,
+        "courtRoom": "3",
+        "date": "2023-11-30",
         "email": undefined,
-        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
+        "judge": "HON. VICTOR WAKUMILE (SPM)   ACC",
         "phone": undefined,
-        "url": "https://cutt.ly/qjnYEaJ",
+        "url": "https://bit.ly/3sy5a8H",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCAC/E012/2022",
               "num": "1",
@@ -1697,28 +1685,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Nyakeri  Hezbone And George  Wanjau And 1 Other(s)",
             },
           ],
-          "dateTime": 2023-11-30T07:00:00.000Z,
-          "section": "HEARING",
+          "dateTime": 2023-11-30T06:00:00.000Z,
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "MILIMANI MAGISTRATE COURT",
           "MAGISTRATE COURT ANTI CORRUPTION",
         ],
-        "courtRoom": "4",
-        "date": 2023-11-30T22:00:00.000Z,
+        "courtRoom": "6",
+        "date": "2023-11-30",
         "email": undefined,
-        "judge": "HON. EUNICE KAGURE NYUTU  ACC",
+        "judge": "ISABELLAH BARASA -PM (DR)  ACC",
         "phone": undefined,
-        "url": "https://bit.ly/3fnGQSV",
+        "url": "https://cutt.ly/qjnYEaJ",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "ACCR /20/2019",
               "num": "1",
@@ -1726,10 +1714,22 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: b22cc8ef
               "partyB": "Henry Kiplagat Rotich &9 Others",
             },
           ],
-          "dateTime": 2023-12-01T07:00:00.000Z,
-          "section": "PART HEARD HEARING",
+          "dateTime": 2023-12-01T06:00:00.000Z,
+          "typeOfCause": "PART HEARD HEARING",
         },
       ],
+      "header": {
+        "court": [
+          "MILIMANI MAGISTRATE COURT",
+          "MAGISTRATE COURT ANTI CORRUPTION",
+        ],
+        "courtRoom": "4",
+        "date": "2023-12-1",
+        "email": undefined,
+        "judge": "HON. EUNICE KAGURE NYUTU  ACC",
+        "phone": undefined,
+        "url": "https://bit.ly/3fnGQSV",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -1740,21 +1740,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: bba8da4d
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "BUTERE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 2",
-        "date": 2023-11-22T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON.O.J MUTHONI",
-        "phone": undefined,
-        "url": "https://shorturl.at/fhqS3",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/39/2019",
               "num": "1",
@@ -1768,11 +1756,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: bba8da4d
               "partyB": "Grishon Opiyo Nyongoro And Victor Songoi Maulo",
             },
           ],
-          "dateTime": 2023-11-23T07:00:00.000Z,
-          "section": "HEARING- APPLICATION",
+          "dateTime": 2023-11-23T06:00:00.000Z,
+          "typeOfCause": "HEARING- APPLICATION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/E055/2022",
               "num": "3",
@@ -1787,10 +1775,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: bba8da4d
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/9/2013",
               "description": "In The Estate Of Ibrahim Ochola Omusula",
@@ -1872,10 +1860,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: bba8da4d
             },
           ],
           "dateTime": undefined,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E142/2022",
               "description": "In The Estate Of Nowa Andati Akhwale",
@@ -1883,9 +1871,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: bba8da4d
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING- APPLICATION",
+          "typeOfCause": "HEARING- APPLICATION",
         },
       ],
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 2",
+        "date": "2023-11-23",
+        "email": undefined,
+        "judge": "HON.O.J MUTHONI",
+        "phone": undefined,
+        "url": "https://shorturl.at/fhqS3",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -1896,21 +1896,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: bc314544
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "ITEN MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 2",
-        "date": 2023-11-22T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON.KARANJA VIRGINIA  -PM",
-        "phone": undefined,
-        "url": "https://www.shorturl.at/bmqPV",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E052/2023",
               "num": "1",
@@ -1924,10 +1912,22 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: bc314544
               "partyB": "Evans Kosgei Chelanga",
             },
           ],
-          "dateTime": 2023-11-23T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-23T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
       ],
+      "header": {
+        "court": [
+          "ITEN MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 2",
+        "date": "2023-11-23",
+        "email": undefined,
+        "judge": "HON.KARANJA VIRGINIA  -PM",
+        "phone": undefined,
+        "url": "https://www.shorturl.at/bmqPV",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -1938,21 +1938,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d3635fca
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "KARABA UNDER WANGURU MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "1",
-        "date": 2023-11-20T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. MARTHA OPANGA (PM)",
-        "phone": undefined,
-        "url": "https://tinyurl.com/ysrf5tj7",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E004/2022",
               "num": "1",
@@ -1960,28 +1948,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d3635fca
               "partyB": "Isaac Nganga Kamau",
             },
           ],
-          "dateTime": 2023-11-21T07:00:00.000Z,
-          "section": "RULING",
+          "dateTime": 2023-11-21T06:00:00.000Z,
+          "typeOfCause": "RULING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "KARABA UNDER WANGURU MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "1",
-        "date": 2023-11-22T22:00:00.000Z,
+        "date": "2023-11-21",
         "email": undefined,
         "judge": "HON. MARTHA OPANGA (PM)",
         "phone": undefined,
         "url": "https://tinyurl.com/ysrf5tj7",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E010/2021",
               "num": "1",
@@ -2067,11 +2055,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d3635fca
               "partyB": "Eric Mwaka Nzioka",
             },
           ],
-          "dateTime": 2023-11-23T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-23T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E212/2023",
               "num": "15",
@@ -2086,10 +2074,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d3635fca
             },
           ],
           "dateTime": undefined,
-          "section": "PRE-TRIAL CONFERENCE",
+          "typeOfCause": "PRE-TRIAL CONFERENCE",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/116/2019",
               "num": "17",
@@ -2116,9 +2104,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d3635fca
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
+      "header": {
+        "court": [
+          "KARABA UNDER WANGURU MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "1",
+        "date": "2023-11-23",
+        "email": undefined,
+        "judge": "HON. MARTHA OPANGA (PM)",
+        "phone": undefined,
+        "url": "https://tinyurl.com/ysrf5tj7",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -2129,21 +2129,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab7
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 1",
-        "date": 2023-11-19T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. EDWARD TOO",
-        "phone": undefined,
-        "url": "https://bit.ly/3TwHDlF",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E028/2022",
               "num": "1",
@@ -2175,28 +2163,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab7
               "partyB": "Andrew Kitheka Ayub And Amos Oseko Bogechu  And 1 Others",
             },
           ],
-          "dateTime": 2023-11-20T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-20T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT 1",
-        "date": 2023-11-20T22:00:00.000Z,
+        "date": "2023-11-20",
         "email": undefined,
         "judge": "HON. EDWARD TOO",
         "phone": undefined,
         "url": "https://bit.ly/3TwHDlF",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCHCC/E001/2023",
               "num": "1",
@@ -2204,11 +2192,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab7
               "partyB": "Abel Ingati",
             },
           ],
-          "dateTime": 2023-11-21T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-21T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E002/2023",
               "num": "2",
@@ -2217,10 +2205,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab7
             },
           ],
           "dateTime": undefined,
-          "section": "RULING",
+          "typeOfCause": "RULING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E063/2023",
               "num": "3",
@@ -2229,27 +2217,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab7
             },
           ],
           "dateTime": undefined,
-          "section": "SENTENCING",
+          "typeOfCause": "SENTENCING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
           "MAGISTRATE COURT",
         ],
-        "courtRoom": "COURT 2",
-        "date": 2023-11-21T22:00:00.000Z,
+        "courtRoom": "COURT 1",
+        "date": "2023-11-21",
         "email": undefined,
-        "judge": "HON. B. KABANGA (SRM)",
+        "judge": "HON. EDWARD TOO",
         "phone": undefined,
-        "url": "https://bit.ly/3Ubaddm",
+        "url": "https://bit.ly/3TwHDlF",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E061/2023",
               "num": "1",
@@ -2257,28 +2245,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab7
               "partyB": "Abass Ghotiko Abdirahman",
             },
           ],
-          "dateTime": 2023-11-22T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-22T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
           "MAGISTRATE COURT",
         ],
-        "courtRoom": "COURT 1",
-        "date": 2023-11-22T22:00:00.000Z,
+        "courtRoom": "COURT 2",
+        "date": "2023-11-22",
         "email": undefined,
-        "judge": "HON. EDWARD TOO",
+        "judge": "HON. B. KABANGA (SRM)",
         "phone": undefined,
-        "url": "https://bit.ly/3TwHDlF",
+        "url": "https://bit.ly/3Ubaddm",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E019/2023",
               "num": "1",
@@ -2292,10 +2280,22 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: d8205ab7
               "partyB": "Charles Maina Jaramba",
             },
           ],
-          "dateTime": 2023-11-23T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-23T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
       ],
+      "header": {
+        "court": [
+          "IJARA MOBILE COURT UNDER HOLA LAW COURTS",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": "2023-11-23",
+        "email": undefined,
+        "judge": "HON. EDWARD TOO",
+        "phone": undefined,
+        "url": "https://bit.ly/3TwHDlF",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -2306,21 +2306,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "MOYALE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT ROOM 2",
-        "date": 2023-10-29T22:00:00.000Z,
-        "email": undefined,
-        "judge": "HON. KOMBE LARRY MATAWI (RM)",
-        "phone": undefined,
-        "url": "https://shorturl.at/cyDTY",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E058/2023",
               "num": "1",
@@ -2358,28 +2346,28 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
               "partyB": "Abdi Dida Alias Abdub Dida",
             },
           ],
-          "dateTime": 2023-10-30T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-10-30T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
-          "SOLOLO MOBILE COURT UNDER MOYALE",
+          "MOYALE MAGISTRATE COURT",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT ROOM 2",
-        "date": 2023-11-01T22:00:00.000Z,
+        "date": "2023-10-30",
         "email": undefined,
         "judge": "HON. KOMBE LARRY MATAWI (RM)",
         "phone": undefined,
         "url": "https://shorturl.at/cyDTY",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E059/2023",
               "num": "1",
@@ -2387,11 +2375,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
               "partyB": "Wario Boru",
             },
           ],
-          "dateTime": 2023-11-02T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-02T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E006/2023",
               "num": "2",
@@ -2400,10 +2388,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
             },
           ],
           "dateTime": undefined,
-          "section": "PART HEARD HEARING",
+          "typeOfCause": "PART HEARD HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E052/2023",
               "num": "3",
@@ -2412,27 +2400,27 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
       ],
-      "type": "CAUSE LIST",
-    },
-    {
       "header": {
         "court": [
           "SOLOLO MOBILE COURT UNDER MOYALE",
           "MAGISTRATE COURT",
         ],
         "courtRoom": "COURT ROOM 2",
-        "date": 2023-11-01T22:00:00.000Z,
+        "date": "2023-11-2",
         "email": undefined,
-        "judge": "HON. WILLY K. CHERUIYOT (PM)",
+        "judge": "HON. KOMBE LARRY MATAWI (RM)",
         "phone": undefined,
-        "url": "https://t.ly/wH_CP",
+        "url": "https://shorturl.at/cyDTY",
       },
-      "sections": [
+      "type": "CAUSE LIST",
+    },
+    {
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E045/2023",
               "num": "1",
@@ -2446,11 +2434,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
               "partyB": "Abdi Boru Bora",
             },
           ],
-          "dateTime": 2023-11-02T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-02T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E040/2023",
               "num": "3",
@@ -2459,10 +2447,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
             },
           ],
           "dateTime": undefined,
-          "section": "DEFENSE HEARING",
+          "typeOfCause": "DEFENSE HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E032/2023",
               "num": "4",
@@ -2471,10 +2459,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
             },
           ],
           "dateTime": undefined,
-          "section": "PART HEARD HEARING",
+          "typeOfCause": "PART HEARD HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E053/2023",
               "num": "5",
@@ -2483,10 +2471,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCR/E056/2022",
               "num": "6",
@@ -2495,10 +2483,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSO/E003/2023",
               "num": "7",
@@ -2507,9 +2495,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: dc731f87
             },
           ],
           "dateTime": undefined,
-          "section": "RULING",
+          "typeOfCause": "RULING",
         },
       ],
+      "header": {
+        "court": [
+          "SOLOLO MOBILE COURT UNDER MOYALE",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT ROOM 2",
+        "date": "2023-11-2",
+        "email": undefined,
+        "judge": "HON. WILLY K. CHERUIYOT (PM)",
+        "phone": undefined,
+        "url": "https://t.ly/wH_CP",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -2520,32 +2520,20 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "BUTERE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 1",
-        "date": 2023-11-22T22:00:00.000Z,
-        "email": undefined,
-        "judge": "EDWIN NYONGESA",
-        "phone": undefined,
-        "url": "https://shorturl.at/yPZ35",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E043/2022",
               "description": "In The Estate Of Rahema Shihundu Manya",
               "num": "1",
             },
           ],
-          "dateTime": 2023-11-23T07:00:00.000Z,
-          "section": "RECTIFICATION OF GRANT",
+          "dateTime": 2023-11-23T06:00:00.000Z,
+          "typeOfCause": "RECTIFICATION OF GRANT",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/73/2015",
               "num": "2",
@@ -2591,10 +2579,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "MENTION",
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E020/2022",
               "num": "10",
@@ -2603,10 +2591,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "PRE-TRIAL CONFERENCE",
+          "typeOfCause": "PRE-TRIAL CONFERENCE",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/E040/2023",
               "num": "11",
@@ -2615,10 +2603,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "PART HEARD HEARING",
+          "typeOfCause": "PART HEARD HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/97/2015",
               "num": "12",
@@ -2627,10 +2615,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "INTERLOCUTORY APPLICATION",
+          "typeOfCause": "INTERLOCUTORY APPLICATION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/17/2019",
               "num": "13",
@@ -2656,10 +2644,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E247/2022",
               "description": "In The Estate Of Amakobe Ngota",
@@ -2667,10 +2655,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING- APPLICATION",
+          "typeOfCause": "HEARING- APPLICATION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/E009/2021",
               "num": "18",
@@ -2690,10 +2678,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "RULING",
+          "typeOfCause": "RULING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/42/2020",
               "num": "21",
@@ -2702,9 +2690,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: faed02ba
             },
           ],
           "dateTime": undefined,
-          "section": "ASSESSMENT OF COSTS",
+          "typeOfCause": "ASSESSMENT OF COSTS",
         },
       ],
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": "2023-11-23",
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://shorturl.at/yPZ35",
+      },
       "type": "CAUSE LIST",
     },
   ],
@@ -2715,21 +2715,9 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: fb019589
 {
   "documents": ParserArray [
     {
-      "header": {
-        "court": [
-          "BUTERE MAGISTRATE COURT",
-          "MAGISTRATE COURT",
-        ],
-        "courtRoom": "COURT 1",
-        "date": 2023-11-27T22:00:00.000Z,
-        "email": undefined,
-        "judge": "EDWIN NYONGESA",
-        "phone": undefined,
-        "url": "https://urlshortner.org/LAYN7",
-      },
-      "sections": [
+      "causeLists": [
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/93/2018",
               "num": "1",
@@ -2760,11 +2748,11 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: fb019589
               "partyB": "Gilbert Nyaondo Airo",
             },
           ],
-          "dateTime": 2023-11-28T07:00:00.000Z,
-          "section": "MENTION",
+          "dateTime": 2023-11-28T06:00:00.000Z,
+          "typeOfCause": "MENTION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCCC/19(A)/2019",
               "num": "6",
@@ -2802,10 +2790,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: fb019589
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING",
+          "typeOfCause": "HEARING",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCSUCC/E190/2022",
               "description": "In The Estate Of Cleophas Odhoji",
@@ -2823,10 +2811,10 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: fb019589
             },
           ],
           "dateTime": undefined,
-          "section": "HEARING- APPLICATION",
+          "typeOfCause": "HEARING- APPLICATION",
         },
         {
-          "causelist": [
+          "cases": [
             {
               "caseNumber": "MCELC/E023/2023",
               "num": "15",
@@ -2835,9 +2823,21 @@ exports[`parsing CauselistMultiDocumentParser should parse textContent: fb019589
             },
           ],
           "dateTime": undefined,
-          "section": "RULING",
+          "typeOfCause": "RULING",
         },
       ],
+      "header": {
+        "court": [
+          "BUTERE MAGISTRATE COURT",
+          "MAGISTRATE COURT",
+        ],
+        "courtRoom": "COURT 1",
+        "date": "2023-11-28",
+        "email": undefined,
+        "judge": "EDWIN NYONGESA",
+        "phone": undefined,
+        "url": "https://urlshortner.org/LAYN7",
+      },
       "type": "CAUSE LIST",
     },
   ],

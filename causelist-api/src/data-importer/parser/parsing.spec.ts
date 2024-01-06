@@ -20,7 +20,7 @@ describe('parsing', () => {
       // We must have consumed all text
       expect(parser.file.end()).toBe(true);
 
-      expect(parser.getParsed()).toMatchSnapshot(document.textContentMd5);
+      expect(parser.getParsed()).toMatchSnapshot(document.textContentHash);
     });
   });
 });

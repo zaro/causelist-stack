@@ -9,7 +9,7 @@ export default function ContactEmailLink({ contact }: { contact?: boolean }) {
   const [email, setEmail] = useState("???");
   useEffect(() => {
     setEmail((contact ? contactEmail : supportEmail).replaceAll(":", ""));
-  }, []);
+  }, [contact]);
   return (
     <Link color="inherit" href={`mailto:${email}`}>
       {email}

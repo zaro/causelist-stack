@@ -1,12 +1,50 @@
 import crypto from 'crypto';
 import parsePhoneNumber from 'libphonenumber-js';
-import { Injectable, Logger } from '@nestjs/common';
-import { User } from '../schemas/user.schema.js';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import { User, UserRole } from '../schemas/user.schema.js';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Otp } from '../schemas/otp.schema.js';
+import { ICreateUserDataParams } from '../interfaces/users.js';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsNumberString,
+  IsPhoneNumber,
+  IsString,
+  Max,
+  Min,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 
 const SPECIAL_LOGIN = ['+254768628673', '+254799880299'];
+
+export class CreateUserDataParams implements ICreateUserDataParams {
+  @IsPhoneNumber('KE', {
+    message: 'Must be valid Kenya phone number',
+  })
+  phone: string;
+
+  @IsNotEmpty({
+    message: 'First Name is required',
+  })
+  firstName: string;
+
+  @IsNotEmpty({
+    message: 'Last Name is required',
+  })
+  lastName: string;
+
+  @IsEmail(
+    {},
+    {
+      message: 'Must be valid email',
+    },
+  )
+  email: string;
+}
 
 @Injectable()
 export class UsersService {
@@ -41,9 +79,23 @@ export class UsersService {
     });
   }
 
+  async createUser(userData: CreateUserDataParams): Promise<User> {
+    const existing = await this.findOneByPhone(userData.phone);
+    if (existing) {
+      throw new ConflictException('Phone is already used by another user');
+    }
+    const newUser = new this.userModel({
+      ...userData,
+      phone: this.normalizePhone(userData.phone),
+      role: UserRole.Lawyer,
+    });
+    await newUser.save();
+    return newUser;
+  }
+
   async makeOtp(
     userPhone: string,
-    expiresInSeconds = 600,
+    expiresInSeconds = 180,
   ): Promise<Otp | null> {
     const phone = this.normalizePhone(userPhone);
     const user = await this.findOneByPhone(userPhone);

@@ -16,7 +16,9 @@ import { IsPhoneNumber } from 'class-validator';
 import { SmsApiService } from '../sms-api/sms-api.service.js';
 
 export class SendOtpParams {
-  @IsPhoneNumber('KE')
+  @IsPhoneNumber('KE', {
+    message: 'Must be valid Kenya phone number',
+  })
   phone: string;
 }
 

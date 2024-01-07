@@ -28,6 +28,13 @@ export default function SignIn() {
     }
   }, [isLoading, isValidating, router, user]);
 
+  const submitSendOtp = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const phone = data.get("phone") as string;
+    return sendOtp(phone);
+  };
+
   return (
     <Container maxWidth="xs">
       <Box
@@ -44,17 +51,25 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" noValidate onSubmit={sendOtp} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={submitSendOtp}
+          sx={{ mt: 3 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <PhoneTextField
+                error={!!userMissing}
                 required
                 fullWidth
                 id="phone"
                 label="Phone"
                 name="phone"
+                type="tel"
                 autoComplete="phone"
                 disabled={working}
+                helperText={userMissing}
               />
             </Grid>
           </Grid>
@@ -67,13 +82,6 @@ export default function SignIn() {
           >
             Sign In
           </LoadingButton>
-          {userMissing && (
-            <Alert severity="error" sx={{ mt: 1, mb: 2 }}>
-              <AlertTitle>User Not Found</AlertTitle>
-              <strong>{userMissing}</strong> is is not registered. Please{" "}
-              <AppLink href="/sign-up">sign up</AppLink> first
-            </Alert>
-          )}
           {error?.length && (
             <Alert severity="error" sx={{ mt: 1, mb: 2 }}>
               <AlertTitle>Error</AlertTitle>

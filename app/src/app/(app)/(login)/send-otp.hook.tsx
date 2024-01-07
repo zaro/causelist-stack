@@ -7,39 +7,41 @@ export default function useSendOtp() {
   const [userMissing, setUserMissing] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string[] | null>(null);
   const router = useRouter();
-  const sendOtp = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const phone = data.get("phone");
+  const sendOtp = (phone: string) => {
     setUserMissing(null);
     setError(null);
     setWorking(true);
-    fetch("/api/auth/send-otp", {
+    return fetch("/api/auth/send-otp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ phone }),
     })
-      .then((r) => r.json())
-      .then((r) => {
-        if (r?.userMissing) {
-          setUserMissing(r?.phone ?? phone);
-        }
-        if (r?.expiresAt) {
+      .then(async (response) => {
+        const r = await response.json();
+        if (response.status == 400) {
+          setUserMissing(r?.phone?.[0] ?? r?.phone);
+        } else if (r?.userMissing) {
+          setUserMissing(
+            `${r?.phone ?? phone} is not a registered phone number`
+          );
+        } else if (r?.expiresAt) {
           loginStore.set.otpExpiresAt(new Date(r.expiresAt));
           loginStore.set.phoneForOtp(r.phone);
           router.push("/check-otp");
+          return;
         } else if (r?.statusCode === 400) {
           setError(r?.message ?? [r?.error]);
         } else {
           setError(["Invalid server response"]);
         }
+        setWorking(false);
       })
       .catch((e) => {
         setError(e.toString());
-      })
-      .finally(() => setWorking(false));
+        setWorking(false);
+      });
   };
   return {
     working,

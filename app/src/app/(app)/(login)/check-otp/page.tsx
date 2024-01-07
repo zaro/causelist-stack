@@ -13,16 +13,40 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Copyright from "../../_components/copyright.tsx";
 import { AppLink } from "../../_components/app-link.tsx";
 import { loginStore, userStore } from "../../_store/index.ts";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import formatDistance from "date-fns/formatDistance";
 import { useRouter } from "next/navigation";
 import { useRevalidateUser } from "../../(main)/use-user.hook.ts";
 
 function ExpiresIn({ expiresIn }: { expiresIn: Date | null }) {
+  const [cnt, setCnt] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setCnt((v) => v + 1);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  });
+
   if (!expiresIn) {
     return <span>Invalid code</span>;
   }
+
+  const now = new Date();
+  if (now >= expiresIn) {
+    return (
+      <AppLink href="/sign-in">Code expired, click to get a new one</AppLink>
+    );
+  }
+
   return (
-    <span>{formatDistanceToNow(expiresIn, { includeSeconds: true })}</span>
+    <span>
+      Code expires{" "}
+      {formatDistance(expiresIn, now, {
+        includeSeconds: true,
+        addSuffix: true,
+      })}
+    </span>
   );
 }
 
@@ -67,16 +91,17 @@ export default function CheckOtp() {
         } else {
           setError(["Invalid server response"]);
         }
+        setWorking(false);
       })
       .catch((e) => {
         setError([e.toString()]);
-      })
-      .finally(() => setWorking(false));
+        setWorking(false);
+      });
   };
   React.useEffect(() => {
     if (signedIn) {
-      console.log("Signed in, redirect to /calendar");
-      router.push("/calendar");
+      console.log("Signed in, redirect to /home");
+      router.push("/home");
     }
   }, [signedIn, router]);
 
@@ -101,7 +126,6 @@ export default function CheckOtp() {
           it below to continue
         </Typography>
         <Typography variant="body2">
-          Code expires in :{" "}
           <ExpiresIn expiresIn={loginStore.get.otpExpiresAt()} />
         </Typography>
         <Box component="form" noValidate onSubmit={checkOtp} sx={{ mt: 3 }}>

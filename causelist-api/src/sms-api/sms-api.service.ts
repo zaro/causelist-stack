@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ZettatelSmsApiService } from './zettatel.sms-api.service.js';
 import { DebugLogSmsApiService } from './debug-log.sms-api.service.js';
 import { BaseSmsApiService } from './base.sms-api.service.js';
@@ -19,16 +19,19 @@ export interface SmsSendResult {
 
 @Injectable()
 export class SmsApiService {
+  private log = new Logger(SmsApiService.name);
   protected backends: BaseSmsApiService[] = [];
   constructor(
     protected zettatel: ZettatelSmsApiService,
     protected debugLog: DebugLogSmsApiService,
   ) {
     if (debugLog.configValid()) {
+      this.log.log(`Adding DebugLogSmsApiService`);
       this.backends.push(debugLog);
     }
 
     if (zettatel.configValid()) {
+      this.log.log(`Adding ZettatelSmsApiService`);
       this.backends.push(zettatel);
     }
   }

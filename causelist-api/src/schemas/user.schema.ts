@@ -3,6 +3,11 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
+export enum UserRole {
+  Admin = 'admin',
+  Lawyer = 'lawyer',
+}
+
 @Schema({ timestamps: true })
 export class User {
   @Prop({
@@ -20,6 +25,14 @@ export class User {
 
   @Prop()
   phone: string;
+
+  @Prop()
+  email: string;
+
+  @Prop({
+    enum: UserRole,
+  })
+  role: UserRole;
 
   @Prop()
   createdAt?: Date;

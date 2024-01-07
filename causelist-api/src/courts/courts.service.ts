@@ -29,7 +29,7 @@ export class CourtsService {
 
   async findAll(): Promise<ICourt[]> {
     const courts = await this.courtModel
-      .find(
+      .find<ICourt>(
         {},
         {
           name: 1,
@@ -184,7 +184,7 @@ export class CourtsService {
       .exec();
 
     const court = await this.courtModel
-      .findOne(
+      .findOne<ICourt>(
         {
           path: courtPath,
         },
@@ -192,6 +192,7 @@ export class CourtsService {
           name: 1,
           type: 1,
           path: 1,
+          hasData: { $gt: ['$documentsCount', 0] },
         },
       )
       .exec();

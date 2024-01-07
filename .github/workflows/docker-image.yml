@@ -40,11 +40,11 @@ jobs:
             type=ref,event=tag
       - name: Run pre-build scripts
         run: ./pre-build.sh
-      - name: Build and push api image
+      - name: Build and push ${{ matrix.context }}
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }},SENTRY_RELEASE=${{ steps.meta.outputs.tags[0] }}
+          build-args: SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }},SENTRY_RELEASE=${{ github.ref_name }}

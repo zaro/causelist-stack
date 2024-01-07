@@ -23,8 +23,6 @@ RUN \
 
 # 2. Rebuild the source code only when needed
 FROM base AS development
-ARG SENTRY_AUTH_TOKEN
-ARG SENTRY_RELEASE
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -35,6 +33,8 @@ COPY . .
 FROM development AS builder
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_RELEASE
+ENV NEXT_PUBLIC_APP_VERSION=$SENTRY_RELEASE
+
 WORKDIR /app
 RUN yarn build
 

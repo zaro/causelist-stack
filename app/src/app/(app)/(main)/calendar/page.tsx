@@ -13,7 +13,7 @@ export default function Page() {
   const selectedDate = causeListStore.use.selectedDate();
 
   return (
-    <Stack height={"100%"}>
+    <Stack height={"100%"} justifyContent="space-between">
       <CourtSelector />
       {selectedCourt ? (
         selectedCourt.hasData ? (
@@ -25,13 +25,15 @@ export default function Page() {
             </Suspense>
           </>
         ) : (
-          <Centered>
+          <Centered sx={{ marginBottom: "10em" }}>
             We do not support this court yet, but we are working hard to add it
             to our database.
           </Centered>
         )
       ) : (
-        <Centered>Select court to view data</Centered>
+        <Centered sx={{ marginBottom: "10em" }}>
+          Select court to view data
+        </Centered>
       )}
     </Stack>
   );

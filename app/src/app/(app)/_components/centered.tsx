@@ -1,6 +1,6 @@
-import { Grid } from "@mui/material";
+import Grid, { GridProps } from "@mui/material/Grid";
 
-export default function Centered({ children }: { children: React.ReactNode }) {
+export default function Centered(props: GridProps) {
   return (
     <Grid
       container
@@ -8,8 +8,9 @@ export default function Centered({ children }: { children: React.ReactNode }) {
       justifyContent="center"
       alignItems="center"
       paddingTop="5em"
+      {...props}
     >
-      {children}
+      {props.children}
     </Grid>
   );
 }

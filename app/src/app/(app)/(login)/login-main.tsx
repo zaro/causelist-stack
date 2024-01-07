@@ -45,8 +45,17 @@ export default function LoginMain({ children }: { children: React.ReactNode }) {
           </Typography>
         </Toolbar>
       </MuiAppBar>
-      <Main>{children}</Main>
-      <AppFooter />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Main>{children}</Main>
+        <AppFooter sx={{ marginTop: "3em" }} />
+      </Box>
     </Box>
   );
 }

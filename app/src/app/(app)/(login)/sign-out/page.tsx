@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Copyright from "../../_components/copyright.tsx";
+import AppFooter from "../../_components/app-footer.tsx";
 import { userStore } from "../../_store/index.ts";
 import { useRouter } from "next/navigation";
 
@@ -35,7 +35,6 @@ export default function SignOut() {
           Signing out
         </Typography>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }

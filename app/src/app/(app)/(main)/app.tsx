@@ -35,6 +35,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import useUser from "./use-user.hook.ts";
 import { userStore } from "../_store/index.ts";
+import AppFooter from "../_components/app-footer.tsx";
 
 const drawerWidth = 240;
 
@@ -213,7 +214,6 @@ export default function App({ children }: { children: React.ReactNode }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ display: "flex", height: "100%" }}>
-        {/* <div style={{ display: "none" }}>{!!accessToken}</div> */}
         <AppBar
           position="fixed"
           sx={{
@@ -273,16 +273,26 @@ export default function App({ children }: { children: React.ReactNode }) {
           </Drawer>
         </Box>
         <Box
-          component="main"
           sx={{
             flexGrow: 1,
             p: 3,
             width: { sm: `calc(100% - ${drawerWidth}px)` },
             margin: "5px",
+            height: "100%",
           }}
         >
-          <DrawerHeader />
-          {children}
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <DrawerHeader />
+            {children}
+            <AppFooter sx={{ marginTop: "3em" }} />
+          </Box>
         </Box>
       </Box>
     </LocalizationProvider>

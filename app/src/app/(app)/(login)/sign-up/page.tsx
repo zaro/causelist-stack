@@ -13,7 +13,6 @@ import AlertTitle from "@mui/material/AlertTitle";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Copyright from "../../_components/copyright.tsx";
 import { AppLink } from "../../_components/app-link.tsx";
 import Link from "@mui/material/Link";
 import PhoneTextField from "../../_components/phone-text-field.tsx";
@@ -190,7 +189,6 @@ export default function SignUp() {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }

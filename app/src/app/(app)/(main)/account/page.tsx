@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Copyright from "../../_components/copyright.tsx";
+import AppFooter from "../../_components/app-footer.tsx";
 import { AppLink } from "../../_components/app-link.tsx";
 import Link from "@mui/material/Link";
 

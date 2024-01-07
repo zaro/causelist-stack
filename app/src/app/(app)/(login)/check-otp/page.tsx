@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import Copyright from "../../_components/copyright.tsx";
+import AppFooter from "../../_components/app-footer.tsx";
 import { AppLink } from "../../_components/app-link.tsx";
 import { loginStore, userStore } from "../../_store/index.ts";
 import formatDistance from "date-fns/formatDistance";
@@ -169,7 +169,6 @@ export default function CheckOtp() {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }

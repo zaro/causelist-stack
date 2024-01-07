@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import LoginIcon from "@mui/icons-material/Login";
 import { usePathname, useRouter } from "next/navigation";
+import AppFooter from "../_components/app-footer.tsx";
 
 const Main = styled("main")(({ theme }) => ({
   flexGrow: 1,
@@ -45,6 +46,7 @@ export default function LoginMain({ children }: { children: React.ReactNode }) {
         </Toolbar>
       </MuiAppBar>
       <Main>{children}</Main>
+      <AppFooter />
     </Box>
   );
 }

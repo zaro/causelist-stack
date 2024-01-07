@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Copyright from "../../_components/copyright.tsx";
+import AppFooter from "../../_components/app-footer.tsx";
 import { AppLink } from "../../_components/app-link.tsx";
 
 export default function SessionExpired() {
@@ -34,7 +34,6 @@ export default function SessionExpired() {
           </Grid>
         </Grid>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }

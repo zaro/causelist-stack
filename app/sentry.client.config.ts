@@ -4,7 +4,13 @@
 
 import * as Sentry from "@sentry/nextjs";
 
-const environment = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "development";
+const environment =
+  process.env.NEXT_PUBLIC_SENTRY_STAGING_DOMAIN === window.location.hostname
+    ? "staging"
+    : process.env.NEXT_PUBLIC_SENTRY_PRODUCTION_DOMAIN ===
+      window.location.hostname
+    ? "production"
+    : "development";
 
 Sentry.init({
   dsn: "https://c133c3c44c977267e406f0ddd22cd93c@o4506511401484288.ingest.sentry.io/4506511411052544",

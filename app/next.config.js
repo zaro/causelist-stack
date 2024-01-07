@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  env: {
+    NEXT_PUBLIC_SENTRY_STAGING_DOMAIN: "causelist.codesmart.space",
+    NEXT_PUBLIC_SENTRY_PRODUCTION_DOMAIN: "causelist.co.ke",
+  },
   async rewrites() {
     return [
       {

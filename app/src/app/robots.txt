@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /check-otp

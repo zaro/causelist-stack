@@ -1,9 +1,12 @@
 import { MetadataRoute } from "next";
 
-export default function manifest(): MetadataRoute.Manifest {
+const env = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "dev";
+const envTitle = env !== "production" ? `[${env.toUpperCase()}] ` : "";
+
+function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Causelist App",
-    short_name: "Causelist",
+    name: envTitle + "Causelist App",
+    short_name: envTitle + "Causelist",
     description: "Kenya Causelists made easy",
     start_url: "/home?pwa=1",
     display: "standalone",
@@ -22,4 +25,9 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
   };
+}
+
+const data = manifest();
+export async function GET(request: Request) {
+  return Response.json(data);
 }

@@ -1,6 +1,6 @@
 import { Processor, Process, OnQueueFailed } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { Job } from 'bull';
+import { Job, JobOptions } from 'bull';
 import k8s from '@kubernetes/client-node';
 import { readFileSync } from 'fs';
 import stream from 'stream';
@@ -8,9 +8,13 @@ import { ConfigService } from '@nestjs/config';
 import { S3Service } from '../s3/s3.service.js';
 
 export const CRAWLER_JOB_QUEUE_NAME = 'crawler-job';
+export const CRAWLER_JOB_DEFAULT_OPTIONS: JobOptions = {
+  timeout: 60 * 60 * 1000,
+  attempts: 1,
+};
 
 export interface CrawlJobParams {
-  something?: boolean;
+  crawlerTest?: 'job' | 'dev' | 'no';
 }
 
 const POD_FINISHED_PHASES = {
@@ -64,41 +68,42 @@ export class CrawlerJobProcessor {
     k8sJob.metadata = {
       name,
     };
+    const env = [
+      {
+        name: 'FORCE_CRAWL_TIME',
+        value: crawlTime,
+      },
+    ].concat(
+      Object.entries(this.podEnv).map(([name, value]) => ({
+        name,
+        value,
+      })),
+    );
+    if (job.data.crawlerTest && job.data.crawlerTest !== 'no') {
+      env.push({ name: 'CRAWLER_TEST', value: job.data.crawlerTest });
+    }
     k8sJob.spec = {
       containers: [
         {
           name: containerName,
           image: this.crawlerImage,
           imagePullPolicy: 'IfNotPresent',
-          env: [
-            { name: 'CRAWLER_TEST', value: 'job' },
-            {
-              name: 'FORCE_CRAWL_TIME',
-              value: crawlTime,
-            },
-          ].concat(
-            Object.entries(this.podEnv).map(([name, value]) => ({
-              name,
-              value,
-            })),
-          ),
+          env,
         },
       ],
       restartPolicy: 'Never',
     };
-    this.log.log('Creating k8s job ');
+    this.log.log(`Creating k8s pod : ${this.namespace}/${name}`);
     let podRes = await this.coreApi.createNamespacedPod(this.namespace, k8sJob);
 
     while (!POD_FINISHED_PHASES[podRes.body.status.phase]) {
-      this.log.log(
-        `k8s job status ${JSON.stringify(podRes.body.status.phase)}`,
-      );
       await new Promise((ok) => setTimeout(ok, 5000));
       podRes = await this.coreApi.readNamespacedPodStatus(
         podRes.body.metadata.name,
         podRes.body.metadata.namespace,
       );
     }
+    this.log.log(`K8s pod status ${JSON.stringify(podRes.body.status.phase)}`);
 
     const logStream = new stream.PassThrough();
 
@@ -122,17 +127,26 @@ export class CrawlerJobProcessor {
       key: podLogKey,
       mimeType: 'text/plain',
     });
+
+    // Delete pod if run was successful
+    if (podRes.body.status.phase === 'Succeeded') {
+      await this.coreApi.deleteNamespacedPod(
+        podRes.body.metadata.name,
+        podRes.body.metadata.namespace,
+      );
+    }
+
     return {
       namespace: this.namespace,
+      name,
       crawlerImage: this.crawlerImage,
-      k8sPodData: podRes,
+      k8sPodData: podRes.body,
       podLogKey,
     };
   }
 
   @OnQueueFailed()
   handleError(bullJob: Job<CrawlJobParams>, e: Error) {
-    console.dir(e);
     this.log.error(e);
   }
 }

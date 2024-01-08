@@ -1,4 +1,4 @@
-import { Command } from 'nestjs-command/dist/index.js';
+import { Command, Option } from 'nestjs-command/dist/index.js';
 import { Injectable, Logger } from '@nestjs/common';
 import * as util from 'node:util';
 import * as child_process from 'node:child_process';
@@ -26,9 +26,22 @@ export class CrawlerCommand {
     command: 'crawler:start',
     describe: 'Start a new crawler job',
   })
-  async crawlerStart() {
-    const job = await this.crawlerQueue.add({ something: false });
+  async crawlerStart(
+    @Option({
+      name: 'test',
+      describe: 'mark crawl job as test job',
+      type: 'string',
+      choices: ['job', 'dev', 'no'],
+      requiresArg: true,
+    })
+    crawlerTest: string,
+  ) {
+    const job = await this.crawlerQueue.add({
+      crawlerTest: crawlerTest as CrawlJobParams['crawlerTest'],
+    });
     const r = await job.finished();
-    console.log(r);
+    this.log.log(
+      `Pod ${r.k8sPodData.metadata.name} completed in phase: ${r.k8sPodData.status.phase}`,
+    );
   }
 }

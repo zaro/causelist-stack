@@ -15,7 +15,10 @@ import { UpdateCommand } from './update.command.js';
 import { DataImporterModule } from '../data-importer/data-importer.module.js';
 import { BullModule, BullRootModuleOptions } from '@nestjs/bull';
 import { CrawlerCommand } from './crawler.command .js';
-import { CRAWLER_JOB_QUEUE_NAME } from '../crawler/crawler-job.processor.js';
+import {
+  CRAWLER_JOB_DEFAULT_OPTIONS,
+  CRAWLER_JOB_QUEUE_NAME,
+} from '../crawler/crawler-job.processor.js';
 
 @Module({
   imports: [
@@ -65,6 +68,7 @@ import { CRAWLER_JOB_QUEUE_NAME } from '../crawler/crawler-job.processor.js';
     }),
     BullModule.registerQueue({
       name: CRAWLER_JOB_QUEUE_NAME,
+      defaultJobOptions: CRAWLER_JOB_DEFAULT_OPTIONS,
     }),
 
     DataImporterModule,

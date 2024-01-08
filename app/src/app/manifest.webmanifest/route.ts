@@ -30,6 +30,13 @@ function manifest(): MetadataRoute.Manifest {
         sizes: "512x512",
       },
     ],
+    screenshots: [
+      {
+        src: "screenshot1.png",
+        sizes: "1280x800",
+        type: "image/png",
+      },
+    ],
   };
 }
 

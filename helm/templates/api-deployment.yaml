@@ -51,6 +51,9 @@ spec:
             httpGet:
               path: /health
               port: http
+          env:
+            - name: CRAWLER_IMAGE
+              value:  "{{ .Values.api.crawlerImage }}"
           envFrom:
             - configMapRef:
                 name: "{{- include "causelist-stack.cmNameForApi" .Values.api }}"

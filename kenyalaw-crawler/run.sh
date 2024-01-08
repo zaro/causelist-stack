@@ -2,8 +2,8 @@
 
 set -e
 
-if [ -z "$S3_ACCESS_KEY" -o -z "$S3_SECRET" ]; then
-  echo "S3_ACCESS_KEY and S3_SECRET must be set"
+if [ -z "$S3_ACCESS_KEY" -o -z "$S3_SECRET" -o -z "$S3_REGION"  -o -z "$S3_ENDPOINT" ]; then
+  echo "S3_REGION, S3_ENDPOINT, S3_ACCESS_KEY and S3_SECRET must be set"
   exit 1
 fi
 

@@ -11,7 +11,7 @@ import { Queue } from 'bull';
 import {
   CRAWLER_JOB_QUEUE_NAME,
   CrawlJobParams,
-} from '../data-importer/crawler-job.processor.js';
+} from '../crawler/crawler-job.processor.js';
 
 @Injectable()
 export class CrawlerCommand {

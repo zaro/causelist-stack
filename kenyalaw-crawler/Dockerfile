@@ -32,6 +32,8 @@ FROM builder as development
 #COPY --from=runner-base /usr/local/bin/mc /usr/local/bin/mc
 
 
+CMD /crawler-dev/run.sh
+
 # Create final image
 FROM runner-base
 

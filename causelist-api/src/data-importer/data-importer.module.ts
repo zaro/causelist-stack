@@ -10,11 +10,6 @@ import { Court, CourtSchema } from '../schemas/court.schema.js';
 import { UpdateStatsService } from './update-stats.service.js';
 import { KenyaLawImporterService } from './kenya-law-importer.service.js';
 import { KenyaLawParserService } from './kenya-law-parser.service.js';
-import { BullModule } from '@nestjs/bull';
-import {
-  CRAWLER_JOB_QUEUE_NAME,
-  CrawlerJobProcessor,
-} from './crawler-job.processor.js';
 
 @Module({
   imports: [
@@ -26,21 +21,12 @@ import {
       { name: User.name, schema: UserSchema },
       { name: Court.name, schema: CourtSchema },
     ]),
-    BullModule.registerQueue({
-      name: CRAWLER_JOB_QUEUE_NAME,
-    }),
   ],
   providers: [
     KenyaLawImporterService,
     KenyaLawParserService,
     UpdateStatsService,
-    CrawlerJobProcessor,
   ],
-  exports: [
-    BullModule,
-    KenyaLawImporterService,
-    KenyaLawParserService,
-    UpdateStatsService,
-  ],
+  exports: [KenyaLawImporterService, KenyaLawParserService, UpdateStatsService],
 })
 export class DataImporterModule {}

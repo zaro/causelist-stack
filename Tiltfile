@@ -31,7 +31,7 @@ docker_build('causelist-api', 'causelist-api',
 docker_build('kenyalaw-crawler', 'kenyalaw-crawler',
   target='development',
   entrypoint='sleep 365d',
-  extra_tag='cawler-test',
+  extra_tag='crawler-test',
   live_update=[
       sync('kenyalaw-crawler/', '/crawler-dev/'),
   ])

@@ -21,6 +21,7 @@ import { UsersModule } from './users/users.module.js';
 import { HealthModule } from './health/health.module.js';
 import { SmsApiModule } from './sms-api/sms-api.module.js';
 import { DataImporterModule } from './data-importer/data-importer.module.js';
+import { CrawlerModule } from './crawler/crawler.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -112,6 +113,7 @@ AdminJS.registerAdapter({
     HealthModule,
     SmsApiModule,
     DataImporterModule,
+    CrawlerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

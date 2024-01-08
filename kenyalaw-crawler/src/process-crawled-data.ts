@@ -79,6 +79,14 @@ function textMd5(text: string) {
 }
 
 function getCrawlTime(storageDir: string) {
+  if (process.env.FORCE_CRAWL_TIME) {
+    const forced = new Date(process.env.FORCE_CRAWL_TIME);
+    if (isNaN(forced.getTime())) {
+      log.error(`Invalid FORCE_CRAWL_TIME: ${process.env.FORCE_CRAWL_TIME}`);
+      process.exit(1);
+    }
+    return forced;
+  }
   const reqDir = path.join(storageDir, "request_queues", "default");
   const fileTimes = fs
     .readdirSync(reqDir)
@@ -271,7 +279,8 @@ class SimpleS3 {
       await this.s3.send(command);
       return true;
     } catch (e: any) {
-      log.error(`uploadLogFile(${fileName}):`, e);
+      log.error(`uploadLogFile(${fileName}):`);
+      log.error(e);
       return false;
     }
   }
@@ -385,6 +394,7 @@ async function processData(storageDir: string, crawlTime: Date) {
   fs.mkdirSync(convertedDir, { recursive: true });
   await processFiles(s3, storageDir, convertedDir);
   await processMenuEntries(s3, storageDir, crawlTime);
+  return true;
 }
 
 async function uploadLogs(storageDir: string, crawlTime: Date) {
@@ -392,10 +402,20 @@ async function uploadLogs(storageDir: string, crawlTime: Date) {
   const logsFiles = fs
     .readdirSync(storageDir)
     .filter((e) => e.endsWith(".txt"));
+  let allFileUploaded = true;
   for (const logFile of logsFiles) {
-    await s3.uploadLogFile(path.join(storageDir, logFile), logFile, crawlTime);
+    allFileUploaded &&= await s3.uploadLogFile(
+      path.join(storageDir, logFile),
+      logFile,
+      crawlTime
+    );
   }
-  log.info(`Uploaded ${logsFiles.length} log files`);
+  if (allFileUploaded) {
+    log.info(`Uploaded ${logsFiles.length} log files`);
+  } else {
+    log.error(`Failed to upload all log files`);
+  }
+  return allFileUploaded;
 }
 
 const allowedCommands = [processData, uploadLogs];
@@ -422,7 +442,15 @@ if (!crawlTime) {
 }
 log.info(`Detected crawTime: ${crawlTime.toISOString()}`);
 
-cmd(storageDir, crawlTime).catch((e) => {
-  log.error(`Error while processing : ${storageDir}`);
-  log.error(e);
-});
+cmd(storageDir, crawlTime)
+  .then((r) => {
+    if (!r) {
+      log.error("Command finished unsuccessfully!");
+      process.exit(1);
+    }
+  })
+  .catch((e) => {
+    log.error(`Error while processing : ${storageDir}`);
+    log.error(e);
+    process.exit(1);
+  });

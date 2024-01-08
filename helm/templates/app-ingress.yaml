@@ -34,13 +34,6 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          - path: /api/(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: api
-                port:
-                  number: {{ $svcPort }}
           - path: /(.*)
             pathType: ImplementationSpecific
             backend:
@@ -52,6 +45,50 @@ spec:
       http:
         paths:
           - path: /admin/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: api
+                port:
+                  number: {{ $svcPort }}
+    {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-api
+  labels:
+    {{- include "causelist-stack.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  {{- with .Values.app.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.app.ingress.tls }}
+  tls:
+    {{- range .Values.app.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.app.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          - path: /(manifest.webmanifest)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: app
+                port:
+                  number: {{ $svcPort }}
+          - path: /api/(.*)
             pathType: ImplementationSpecific
             backend:
               service:

@@ -10,7 +10,7 @@ async function main() {
   }); // will output a 64x64 ico image (with 32x32 and 24x24 sizes)
 
   await sharp(svgIcon).resize(180, 180).png().toFile("src/app/apple-icon.png");
-  await sharp(svgIcon).resize(192, 192).png().toFile("src/app/icon-192.png ");
+  await sharp(svgIcon).resize(192, 192).png().toFile("src/app/icon-192.png");
   await sharp(svgIcon).resize(512, 512).png().toFile("src/app/icon-512.png");
 }
 

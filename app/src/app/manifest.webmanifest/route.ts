@@ -6,6 +6,8 @@ import {
   description,
 } from "../_common/metadata.ts";
 
+export const dynamic = "force-dynamic";
+
 const env = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "dev";
 const envTitle = env !== "production" ? `[${env.toUpperCase()}] ` : "";
 

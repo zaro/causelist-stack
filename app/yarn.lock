@@ -3133,6 +3133,7 @@ __metadata:
     fuse.js: "npm:^7.0.0"
     libphonenumber-js: "npm:^1.10.52"
     next: "npm:14.0.4"
+    posthog-js: "npm:^1.96.1"
     react: "npm:^18"
     react-dom: "npm:^18"
     sharp: "npm:^0.33.1"
@@ -4408,6 +4409,13 @@ __metadata:
   dependencies:
     reusify: "npm:^1.0.4"
   checksum: 5ce4f83afa5f88c9379e67906b4d31bc7694a30826d6cc8d0f0473c966929017fda65c2174b0ec89f064ede6ace6c67f8a4fe04cef42119b6a55b0d465554c24
+  languageName: node
+  linkType: hard
+
+"fflate@npm:^0.4.1":
+  version: 0.4.8
+  resolution: "fflate@npm:0.4.8"
+  checksum: 29d1eddaaa5deab61b1c6b0d21282adacadbc4d2c01e94d8b1ee784398151673b9c563e53f97a801bc410a1ae55e8de5378114a743430e643e7a0644ba8e5a42
   languageName: node
   linkType: hard
 
@@ -6419,6 +6427,15 @@ __metadata:
     picocolors: "npm:^1.0.0"
     source-map-js: "npm:^1.0.2"
   checksum: 748b82e6e5fc34034dcf2ae88ea3d11fd09f69b6c50ecdd3b4a875cfc7cdca435c958b211e2cb52355422ab6fccb7d8f2f2923161d7a1b281029e4a913d59acf
+  languageName: node
+  linkType: hard
+
+"posthog-js@npm:^1.96.1":
+  version: 1.96.1
+  resolution: "posthog-js@npm:1.96.1"
+  dependencies:
+    fflate: "npm:^0.4.1"
+  checksum: 1ef5339a4bb1ca2a107de1d348a7ceffa0d3d1e62d413abba05b8bbda290f14cf157b7975b444685b6afc79d24372b0c03d7fc7f62b81d0dd49eeba059c67d9d
   languageName: node
   linkType: hard
 

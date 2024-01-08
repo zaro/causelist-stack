@@ -26,6 +26,7 @@
     "fuse.js": "^7.0.0",
     "libphonenumber-js": "^1.10.52",
     "next": "14.0.4",
+    "posthog-js": "^1.96.1",
     "react": "^18",
     "react-dom": "^18",
     "sharp": "^0.33.1",

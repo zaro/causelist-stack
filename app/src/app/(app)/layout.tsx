@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 
 import "./app.css";
 import "@fontsource/roboto/300.css";
@@ -6,6 +7,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import ProvideTheme from "./provide-theme.tsx";
+import { PHProvider, PostHogPageview } from "../providers";
 import sharedMetadata from "../_common/metadata.ts";
 
 export const metadata: Metadata = sharedMetadata;
@@ -23,9 +25,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <ProvideTheme>{children}</ProvideTheme>
-      </body>
+      <Suspense>
+        <PostHogPageview />
+      </Suspense>
+      <PHProvider>
+        <body>
+          <ProvideTheme>{children}</ProvideTheme>
+        </body>
+      </PHProvider>
     </html>
   );
 }

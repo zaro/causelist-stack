@@ -1,4 +1,3 @@
-{{ if .Values.useDevMode }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,8 +40,13 @@ spec:
           configMap:
             name: shared-init-data
             items:
-            - key: nginx-proxy.conf
-              path: nginx-proxy.conf
+            - path: nginx-proxy.conf
+              {{- if .Values.useDevMode }}
+              key: nginx-proxy-dev.conf
+              {{- else }}
+              key: nginx-proxy.conf
+              {{- end }}
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -85,4 +89,3 @@ spec:
     name: proxy-nodeport
   selector:
     {{- include "causelist-stack.selectorLabels" (list . "proxy" ) | nindent 4 }}
-{{ end }}

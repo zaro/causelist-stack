@@ -20,6 +20,7 @@ app:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  env: {}
 
 api:
   replicaCount: 1

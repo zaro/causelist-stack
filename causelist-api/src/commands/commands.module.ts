@@ -13,6 +13,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Court, CourtSchema } from '../schemas/court.schema.js';
 import { UpdateCommand } from './update.command.js';
 import { DataImporterModule } from '../data-importer/data-importer.module.js';
+import { BullModule, BullRootModuleOptions } from '@nestjs/bull';
+import { CrawlerCommand } from './crawler.command .js';
 
 @Module({
   imports: [
@@ -51,8 +53,17 @@ import { DataImporterModule } from '../data-importer/data-importer.module.js';
       { name: User.name, schema: UserSchema },
       { name: Court.name, schema: CourtSchema },
     ]),
-    CommandModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<BullRootModuleOptions> => ({
+        url: configService.getOrThrow('REDIS_URL'),
+      }),
+      inject: [ConfigService],
+    }),
     DataImporterModule,
+    CommandModule,
   ],
   controllers: [],
   providers: [
@@ -61,6 +72,7 @@ import { DataImporterModule } from '../data-importer/data-importer.module.js';
     TestsCommand,
     DbCommand,
     UpdateCommand,
+    CrawlerCommand,
   ],
 })
 export class CommandsModule {}

@@ -22,6 +22,7 @@ api:
     repository: causelist-api
   env:
     PROXY_URL: "http://proxy:3128"
+    REDIS_URL: "redis://redis"
     MONGO_URL: "mongodb://causelist:causelist@mongo/causelist"
     S3_ACCESS_KEY: BcPgXgoVU1J6D6sdit32
     S3_SECRET: obQNHBAOCiR8LdYu4X9r4njHCMVMPVWWElU7laEO

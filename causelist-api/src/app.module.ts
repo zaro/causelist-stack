@@ -1,5 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import {
+  BullModule,
+  BullRootModuleOptions,
+  SharedBullAsyncConfiguration,
+} from '@nestjs/bull';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
@@ -50,6 +55,15 @@ AdminJS.registerAdapter({
           return connection;
         },
       }),
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<BullRootModuleOptions> => ({
+        url: configService.getOrThrow('REDIS_URL'),
+      }),
+      inject: [ConfigService],
     }),
     AdminModule.createAdminAsync({
       inject: [getModelToken(MenuEntry.name)],

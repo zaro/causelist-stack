@@ -16,7 +16,14 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// next-pwa
+
+const withPWA = require("next-pwa")({
+  dest: "public",
+  dynamicStartUrl: true,
+});
+
+module.exports = withPWA(nextConfig);
 
 // Injected content via Sentry wizard below
 

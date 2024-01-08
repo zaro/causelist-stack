@@ -1,17 +1,23 @@
 import { MetadataRoute } from "next";
+import {
+  themeColor,
+  title,
+  shortName,
+  description,
+} from "../_common/metadata.ts";
 
 const env = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "dev";
 const envTitle = env !== "production" ? `[${env.toUpperCase()}] ` : "";
 
 function manifest(): MetadataRoute.Manifest {
   return {
-    name: envTitle + "Causelist App",
-    short_name: envTitle + "Causelist",
-    description: "Kenya Causelists made easy",
+    name: envTitle + title,
+    short_name: envTitle + shortName,
+    description,
     start_url: "/home?pwa=1",
     display: "standalone",
-    background_color: "#fff",
-    theme_color: "#fff",
+    background_color: themeColor,
+    theme_color: themeColor,
     icons: [
       {
         src: "/icon-192.png",

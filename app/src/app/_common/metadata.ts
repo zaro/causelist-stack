@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 
+export const themeColor = "#fff";
+export const title = "Causelist Kenya";
+export const shortName = "Causelist";
+export const description = "Access Kenya Causelists";
+
 const metadata: Metadata = {
-  title: "Causelist Kenya",
-  description: "Access Kenya Causelist",
+  title,
+  description,
   manifest: "/manifest.webmanifest",
+  applicationName: title,
+  appleWebApp: true,
+  formatDetection: {},
+  themeColor,
 };
 
 export default metadata;

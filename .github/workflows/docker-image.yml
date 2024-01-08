@@ -47,4 +47,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }},SENTRY_RELEASE=${{ github.ref_name }}
+          build-args: SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }},NEXT_PUBLIC_APP_VERSION=${{ github.ref_name }}

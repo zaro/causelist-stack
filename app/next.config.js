@@ -2,6 +2,7 @@
 const nextConfig = {
   output: "standalone",
   env: {
+    NEXT_PUBLIC_APP_VERSION: process.env.NEXT_PUBLIC_APP_VERSION,
     NEXT_PUBLIC_SENTRY_STAGING_DOMAIN: "causelist.codesmart.space",
     NEXT_PUBLIC_SENTRY_PRODUCTION_DOMAIN: "causelist.co.ke",
   },
@@ -31,6 +32,7 @@ module.exports = withSentryConfig(
     silent: true,
     org: "codesmart-technologies",
     project: "causelist-app",
+    release: process.env.NEXT_PUBLIC_APP_VERSION,
   },
   {
     // For all available options, see:

@@ -25,8 +25,8 @@ if [ "$CRAWLER_TEST" = "job" ]; then
   touch ${STORAGE_DIR}/request_queues/default/dummy.json
   echo "Job test run at $(date -Is)" > ${STORAGE_DIR}/crawler.log.txt
 else
-  yarn start:${V} ${STORAGE_DIR} ${STORAGE_DIR}/crawler.log.txt 2>${STORAGE_DIR}/crawler.error.txt
-  yarn process:${V} ${STORAGE_DIR} ${STORAGE_DIR}/process.log.txt 2>${STORAGE_DIR}/process.error.txt
+  yarn start:${V} ${STORAGE_DIR} > ${STORAGE_DIR}/crawler.log.txt 2>${STORAGE_DIR}/crawler.error.txt
+  yarn process:${V} ${STORAGE_DIR} > ${STORAGE_DIR}/process.log.txt 2>${STORAGE_DIR}/process.error.txt
 fi
 
 yarn upload-logs:${V} ${STORAGE_DIR}

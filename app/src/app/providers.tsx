@@ -12,7 +12,6 @@ if (typeof window !== "undefined") {
       ? (process.env.NEXT_PUBLIC_POSTHOG_KEY as string)
       : "xxx";
   posthog.init(phKey, {
-    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     capture_pageview: false, // Disable automatic pageview capture, as we capture manually
     // Capture only in production
     ...(environment !== "production"
@@ -22,8 +21,13 @@ if (typeof window !== "undefined") {
             ph.opt_out_capturing();
           },
         }
-      : {}),
+      : {
+          api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+        }),
   });
+  if (environment !== "production") {
+    posthog.opt_out_capturing();
+  }
 }
 
 export function PostHogPageview(): JSX.Element {

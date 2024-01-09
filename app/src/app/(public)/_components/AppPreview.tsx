@@ -26,7 +26,7 @@ function getDefaultDay(data: undefined | RandomCourtData) {
   const keys = Object.keys(data.causelist);
   if (keys.length) {
     keys.sort();
-    return keys[0];
+    return keys[keys.length - 1];
   }
 }
 

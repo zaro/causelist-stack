@@ -34,6 +34,11 @@ export default function SignIn() {
     const phone = data.get("phone") as string;
     return sendOtp(phone);
   };
+  const disableButton =
+    working ||
+    isLoading ||
+    isValidating ||
+    (!isLoading && !isValidating && user);
 
   return (
     <Container maxWidth="xs">
@@ -74,7 +79,7 @@ export default function SignIn() {
             </Grid>
           </Grid>
           <LoadingButton
-            loading={working}
+            loading={disableButton}
             type="submit"
             fullWidth
             variant="contained"

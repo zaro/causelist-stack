@@ -19,8 +19,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import classes from "./common.module.css";
 
 // import useStyles from "../_styles/styles";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { AppLink } from "../../(app)/_components/app-link.tsx";
 
 interface ElevationScrollProps {
@@ -92,9 +90,6 @@ const Header = (props: any) => {
     </Box>
   );
 
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down("sm"));
-
   return (
     <Box sx={{ marginBottom: "120px" }}>
       <ElevationScroll {...props}>
@@ -106,43 +101,42 @@ const Header = (props: any) => {
               </Typography>
             </AppLink>
 
-            {matches ? (
-              <Box>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  color="inherit"
-                  aria-label="menu"
-                  onClick={toggleDrawer("right", true)}
-                >
-                  <MenuIcon className={classes.menuIcon} />
-                </IconButton>
-
-                <Drawer
-                  anchor="right"
-                  open={state["right"]}
-                  onClose={toggleDrawer("right", false)}
-                >
-                  {list("right")}
-                </Drawer>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  flexGrow: "0.1",
-                }}
+            <Box
+              sx={{
+                display: { xs: "block", sm: "none" },
+              }}
+            >
+              <IconButton
+                size="large"
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer("right", true)}
               >
-                {links.map((link) => (
-                  <AppLink href={link.url} underline="none" key={link.id}>
-                    <Typography className={classes.link}>
-                      {link.route}
-                    </Typography>
-                  </AppLink>
-                ))}
-              </Box>
-            )}
+                <MenuIcon className={classes.menuIcon} />
+              </IconButton>
+
+              <Drawer
+                anchor="right"
+                open={state["right"]}
+                onClose={toggleDrawer("right", false)}
+              >
+                {list("right")}
+              </Drawer>
+            </Box>
+            <Box
+              sx={{
+                justifyContent: "space-between",
+                flexGrow: "0.1",
+                display: { xs: "none", sm: "flex" },
+              }}
+            >
+              {links.map((link) => (
+                <AppLink href={link.url} underline="none" key={link.id}>
+                  <Typography className={classes.link}>{link.route}</Typography>
+                </AppLink>
+              ))}
+            </Box>
           </Toolbar>
         </AppBar>
       </ElevationScroll>

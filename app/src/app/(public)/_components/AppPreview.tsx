@@ -6,8 +6,13 @@ import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
 import IconButton from "@mui/material/IconButton";
 
 import classes from "./common.module.css";
@@ -17,7 +22,7 @@ import { Paper } from "@mui/material";
 import { RandomCourtData } from "@/api/ssr.ts";
 import useSWR from "swr";
 import { APP_PREVIEW_PATH, getAppPreviewData } from "./app-preview-data.ts";
-import { AppLink } from "../../(app)/_components/app-link.tsx";
+import { AppButtonLink } from "../../(app)/_components/app-link.tsx";
 
 function getDefaultDay(data: undefined | RandomCourtData) {
   if (!data?.causelist) {
@@ -35,11 +40,16 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
   bgcolor: "background.paper",
   // border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+  width: {
+    xs: "100%",
+    sm: "80%",
+    md: "50%",
+    lg: "30%",
+  },
 };
 
 export default function AppPreview() {
@@ -109,7 +119,7 @@ export default function AppPreview() {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Typography variant="h3" component="h3">
+            <Typography variant="h4" component="h4">
               Sign up now
               <IconButton
                 onClick={handleClose}
@@ -123,13 +133,25 @@ export default function AppPreview() {
                 <ClearIcon />
               </IconButton>
             </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              <ul>
-                <li>Browse caueslists by court and date</li>
-                <li>Search parties and case numbers</li>
-              </ul>
+            <List sx={{ marginY: "1em" }}>
+              <ListItem>
+                <ListItemIcon>
+                  <CheckIcon color="success" />
+                </ListItemIcon>
+                <ListItemText primary="Browse caueslists by court and date" />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <CheckIcon color="success" />
+                </ListItemIcon>
+                <ListItemText primary="Search parties and case numbers" />
+              </ListItem>
+            </List>
+            <Typography textAlign="center">
+              <AppButtonLink size="large" variant="contained" href="/sign-up">
+                Sign up
+              </AppButtonLink>
             </Typography>
-            <AppLink href="/sign-up">Sign up</AppLink>
           </Box>
         </Fade>
       </Modal>

@@ -4,11 +4,25 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { environment } from "@/utils/client-environment.ts";
 
 if (typeof window !== "undefined") {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
+  const phKey =
+    environment !== "development"
+      ? (process.env.NEXT_PUBLIC_POSTHOG_KEY as string)
+      : "xxx";
+  posthog.init(phKey, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     capture_pageview: false, // Disable automatic pageview capture, as we capture manually
+    // Capture only in production
+    ...(environment !== "production"
+      ? {
+          autocapture: false,
+          loaded: function (ph) {
+            ph.opt_out_capturing();
+          },
+        }
+      : {}),
   });
 }
 

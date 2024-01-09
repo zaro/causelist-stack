@@ -24,6 +24,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import WebIcon from "@mui/icons-material/Web";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
@@ -73,7 +74,7 @@ const drawerMenu: DrawerMenuItemType[] = [
   {
     name: "Website",
     path: "/",
-    icon: HomeIcon,
+    icon: WebIcon,
     target: "_blank",
   },
   {

@@ -37,16 +37,19 @@ export abstract class K8sJobProcessorBase {
   abstract buildPodName(job: Job<any>): string;
   abstract buildContainerImage(job: Job<any>): string;
   abstract buildContainerName(job: Job<any>): string;
+  abstract buildContainerCommand(job: Job<any>): string[] | undefined;
 
   abstract handlePodLogs(job: Job<any>, logContent: string): Promise<any>;
 
+  async beforePodCreate(k8sPod: k8s.V1Pod, job: Job<any>): Promise<void> {}
+
   async startJobAsPod(job: Job<any>) {
     this.log.log('Starting job as pod with data: ', job.data);
-    const k8sJob = new k8s.V1Pod();
+    const k8sPod = new k8s.V1Pod();
     const name = this.buildPodName(job);
-    k8sJob.apiVersion = 'v1';
-    k8sJob.kind = 'Pod';
-    k8sJob.metadata = {
+    k8sPod.apiVersion = 'v1';
+    k8sPod.kind = 'Pod';
+    k8sPod.metadata = {
       name,
     };
     const podEnv = await this.buildPodEnv(job);
@@ -56,19 +59,22 @@ export abstract class K8sJobProcessorBase {
     }));
     const containerImage = this.buildContainerImage(job);
     const containerName = this.buildContainerName(job);
-    k8sJob.spec = {
+    const command = this.buildContainerCommand(job);
+    k8sPod.spec = {
       containers: [
         {
           name: containerName,
           image: containerImage,
+          command,
           imagePullPolicy: 'IfNotPresent',
           env,
         },
       ],
       restartPolicy: 'Never',
     };
+    this.beforePodCreate(k8sPod, job);
     this.log.log(`Creating k8s pod : ${this.namespace}/${name}`);
-    let podRes = await this.coreApi.createNamespacedPod(this.namespace, k8sJob);
+    let podRes = await this.coreApi.createNamespacedPod(this.namespace, k8sPod);
 
     while (!POD_FINISHED_PHASES[podRes.body.status.phase]) {
       await new Promise((ok) => setTimeout(ok, 5000));
@@ -96,6 +102,7 @@ export abstract class K8sJobProcessorBase {
 
     const logContent = Buffer.concat(logBuffers).toString();
     const logs = await this.handlePodLogs(job, logContent);
+    let failed = true;
 
     // Delete pod if run was successful
     if (podRes.body.status.phase === 'Succeeded') {
@@ -103,9 +110,11 @@ export abstract class K8sJobProcessorBase {
         podRes.body.metadata.name,
         podRes.body.metadata.namespace,
       );
+      failed = false;
     }
 
     return {
+      failed,
       namespace: this.namespace,
       name,
       containerImage,

@@ -19,6 +19,10 @@ import {
   CRAWLER_JOB_DEFAULT_OPTIONS,
   CRAWLER_JOB_QUEUE_NAME,
 } from '../k8s-jobs/crawler-job.processor.js';
+import {
+  PARSE_CRAWLED_JOB_DEFAULT_OPTIONS,
+  PARSE_CRAWLED_JOB_QUEUE_NAME,
+} from '../k8s-jobs/parse-crawled-job.processor.js';
 
 @Module({
   imports: [
@@ -66,11 +70,16 @@ import {
       }),
       inject: [ConfigService],
     }),
-    BullModule.registerQueue({
-      name: CRAWLER_JOB_QUEUE_NAME,
-      defaultJobOptions: CRAWLER_JOB_DEFAULT_OPTIONS,
-    }),
-
+    BullModule.registerQueue(
+      {
+        name: CRAWLER_JOB_QUEUE_NAME,
+        defaultJobOptions: CRAWLER_JOB_DEFAULT_OPTIONS,
+      },
+      {
+        name: PARSE_CRAWLED_JOB_QUEUE_NAME,
+        defaultJobOptions: PARSE_CRAWLED_JOB_DEFAULT_OPTIONS,
+      },
+    ),
     DataImporterModule,
     CommandModule,
   ],

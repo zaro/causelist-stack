@@ -1,4 +1,4 @@
-import { Command, Option } from 'nestjs-command/dist/index.js';
+import { Command, Option, Positional } from 'nestjs-command/dist/index.js';
 import { Injectable, Logger } from '@nestjs/common';
 import * as util from 'node:util';
 import * as child_process from 'node:child_process';
@@ -12,6 +12,10 @@ import {
   CRAWLER_JOB_QUEUE_NAME,
   CrawlJobParams,
 } from '../k8s-jobs/crawler-job.processor.js';
+import {
+  PARSE_CRAWLED_JOB_QUEUE_NAME,
+  ParseJobParams,
+} from '../k8s-jobs/parse-crawled-job.processor.js';
 
 @Injectable()
 export class CrawlerCommand {
@@ -20,7 +24,18 @@ export class CrawlerCommand {
   constructor(
     @InjectQueue(CRAWLER_JOB_QUEUE_NAME)
     private crawlerQueue: Queue<CrawlJobParams>,
+    @InjectQueue(PARSE_CRAWLED_JOB_QUEUE_NAME)
+    private parserQueue: Queue<ParseJobParams>,
   ) {}
+
+  logK8sResult(r: any) {
+    const msg = `Pod ${r.k8sPodData.metadata.name} completed in phase: ${r.k8sPodData.status.phase}`;
+    if (r.failed) {
+      this.log.error(msg);
+    } else {
+      this.log.log(msg);
+    }
+  }
 
   @Command({
     command: 'crawler:start',
@@ -41,8 +56,25 @@ export class CrawlerCommand {
       crawlTime: new Date().toISOString(),
     });
     const r = await job.finished();
-    this.log.log(
-      `Pod ${r.k8sPodData.metadata.name} completed in phase: ${r.k8sPodData.status.phase}`,
-    );
+    this.logK8sResult(r);
+  }
+
+  @Command({
+    command: 'parse:crawled crawlTime',
+    describe: 'Parse latest crawled data',
+  })
+  async parseCrawledStart(
+    @Positional({
+      name: 'crawlTime',
+      describe: 'crawlTime key from crawler',
+      type: 'string',
+    })
+    crawlTime: string,
+  ) {
+    const job = await this.parserQueue.add({
+      crawlTime,
+    });
+    const r = await job.finished();
+    this.logK8sResult(r);
   }
 }

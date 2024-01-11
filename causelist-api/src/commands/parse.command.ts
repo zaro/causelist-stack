@@ -62,6 +62,15 @@ export class ParseCommand {
   ) {}
 
   @Command({
+    command: 'parse:crawled',
+    describe: 'Parse last crawled data',
+  })
+  async parseCrawled() {
+    await this.parserService.parseCourts();
+    await this.parseFiles('.', null, null, true, false);
+  }
+
+  @Command({
     command: 'parse:courts',
     describe: 'Parse Courts from Menu',
   })
@@ -73,7 +82,7 @@ export class ParseCommand {
     command: 'parse:files <path>',
     describe: 'Parse Cuaselists under path',
   })
-  async parse(
+  async parseFiles(
     @Positional({
       name: 'path',
       describe: 'menu path to parse',
@@ -100,14 +109,14 @@ export class ParseCommand {
       type: 'boolean',
       required: false,
     })
-    write: string,
+    write: boolean,
     @Option({
       name: 'stats',
       describe: 'Output more stats',
       type: 'boolean',
       required: false,
     })
-    stats: string,
+    stats: boolean,
   ) {
     const parsedList = await this.parserService.parseFilesAsData({
       docId,

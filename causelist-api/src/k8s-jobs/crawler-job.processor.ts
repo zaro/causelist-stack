@@ -19,11 +19,6 @@ export interface CrawlJobParams {
   crawlTime: string;
 }
 
-const POD_FINISHED_PHASES = {
-  Succeeded: true,
-  Failed: true,
-};
-
 @Processor(CRAWLER_JOB_QUEUE_NAME)
 export class CrawlerJobProcessor extends K8sJobProcessorBase {
   protected batchV1Api: k8s.BatchV1Api;
@@ -67,6 +62,10 @@ export class CrawlerJobProcessor extends K8sJobProcessorBase {
 
   buildContainerName(job: Job<any>): string {
     return 'crawler';
+  }
+
+  buildContainerCommand(job: Job<any>): string[] | undefined {
+    return;
   }
 
   async handlePodLogs(

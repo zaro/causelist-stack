@@ -18,4 +18,4 @@ import {
   providers: [CrawlerJobProcessor],
   exports: [BullModule],
 })
-export class CrawlerModule {}
+export class K8sJobsModule {}

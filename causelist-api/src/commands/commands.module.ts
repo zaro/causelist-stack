@@ -18,7 +18,7 @@ import { CrawlerCommand } from './crawler.command .js';
 import {
   CRAWLER_JOB_DEFAULT_OPTIONS,
   CRAWLER_JOB_QUEUE_NAME,
-} from '../crawler/crawler-job.processor.js';
+} from '../k8s-jobs/crawler-job.processor.js';
 
 @Module({
   imports: [

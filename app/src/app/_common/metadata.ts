@@ -12,7 +12,6 @@ const metadata: Metadata = {
   applicationName: title,
   appleWebApp: true,
   formatDetection: {},
-  themeColor,
 };
 
 export default metadata;

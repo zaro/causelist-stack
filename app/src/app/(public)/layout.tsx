@@ -1,5 +1,5 @@
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import ThemeRegistry from "./_components/ThemeRegistry/ThemeRegistry";
 import { Suspense } from "react";
 import { WebVitals } from "./_components/web-vitals";
@@ -11,9 +11,14 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import App from "./app.tsx";
 import { PHProvider, PostHogPageview } from "../providers";
-import sharedMetadata from "../_common/metadata.ts";
+import sharedMetadata, { themeColor } from "../_common/metadata.ts";
 
 export const metadata: Metadata = sharedMetadata;
+export const viewport: Viewport = {
+  initialScale: 1,
+  width: "device-width",
+  themeColor,
+};
 
 export default function RootLayout({
   children,

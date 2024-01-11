@@ -8,14 +8,14 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import ProvideTheme from "./provide-theme.tsx";
 import { PHProvider, PostHogPageview } from "../providers";
-import sharedMetadata from "../_common/metadata.ts";
+import sharedMetadata, { themeColor } from "../_common/metadata.ts";
 
 export const metadata: Metadata = sharedMetadata;
 
 export const viewport: Viewport = {
-  //viewport: "initial-scale=1, width=device-width",
   initialScale: 1,
   width: "device-width",
+  themeColor,
 };
 
 export default function RootLayout({

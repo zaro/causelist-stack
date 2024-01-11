@@ -29,7 +29,9 @@ api:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: "latest"
-  crawlerImage: ghcr.io/zaro/kenyalaw-crawler
+  crawlerImage:
+    repository: ghcr.io/zaro/kenyalaw-crawler
+    tag: "latest"
   env:
     {}
     # KEY: "replace-with-random-value"

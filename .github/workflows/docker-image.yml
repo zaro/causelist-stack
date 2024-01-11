@@ -18,6 +18,8 @@ jobs:
             image: ghcr.io/zaro/causelist-app
           - context: ./causelist-api/
             image: ghcr.io/zaro/causelist-api
+          - context: ./kenyalaw-crawler/
+            image: ghcr.io/zaro/kenyalaw-crawler
 
     permissions:
       contents: read

@@ -21,7 +21,8 @@ app:
 api:
   image:
     repository: causelist-api
-  crawlerImage: "crawler-test"
+  crawlerImage:
+    repository: crawler-test
   env:
     NEXT_PUBLIC_ENVIRONMENT: "development"
     PROXY_URL: "http://proxy:3128"

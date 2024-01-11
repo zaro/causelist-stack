@@ -67,7 +67,7 @@ spec:
             - name: CURRENT_CONTAINER_IMAGE
               value: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
             - name: CRAWLER_IMAGE
-              value:  "{{ .Values.api.crawlerImage }}"
+              value:  "{{ .Values.api.crawlerImage.repository }}:{{ .Values.api.crawlerImage.tag }}"
           envFrom:
             - configMapRef:
                 name: "{{- include "causelist-stack.cmNameForApi" .Values.api }}"

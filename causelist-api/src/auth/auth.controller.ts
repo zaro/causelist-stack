@@ -14,6 +14,7 @@ import { Public } from './public.decorator.js';
 import { UsersService } from '../users/users.service.js';
 import { IsPhoneNumber } from 'class-validator';
 import { SmsApiService } from '../sms-api/sms-api.service.js';
+import { UserRole } from '../schemas/user.schema.js';
 
 export class SendOtpParams {
   @IsPhoneNumber('KE', {
@@ -57,6 +58,23 @@ export class AuthController {
       };
     }
     this.log.log(`Sending OTP for ${params.phone} => ${otp.code}`);
+    if (
+      process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging' ||
+      process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
+    ) {
+      const user = await this.userService.findOneByPhone(params.phone);
+      if (user.role === UserRole.Admin) {
+        this.log.log(
+          `Skip Sending OTP for ${params.phone}, env is ${process.env.NEXT_PUBLIC_ENVIRONMENT} and user is admin`,
+        );
+        return {
+          phone: otp.phone,
+          expiresAt: otp.expiresAt,
+          smsSuccess: true,
+        };
+      }
+    }
+
     const msg = `Login code for causelist.co.ke : ${otp.code}`;
     const smsResult = await this.smsService.sendMessage(params.phone, msg);
     return {

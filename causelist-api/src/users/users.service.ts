@@ -19,8 +19,6 @@ import {
   ValidateIf,
 } from 'class-validator';
 
-const SPECIAL_LOGIN = ['+254768628673', '+254799880299'];
-
 export class CreateUserDataParams implements ICreateUserDataParams {
   @IsPhoneNumber('KE', {
     message: 'Must be valid Kenya phone number',
@@ -112,15 +110,23 @@ export class UsersService {
   }
 
   async checkOtp(userPhone: string, code: string): Promise<User | null> {
-    const phone = this.normalizePhone(userPhone);
-    // Handle special dev login
-    if (SPECIAL_LOGIN.includes(phone) && code === '369369') {
-      return this.userModel.findOne({ phone });
+    const user = await this.findOneByPhone(userPhone);
+    if (!user) {
+      return null;
+    }
+    // Handle special dev/staging login
+    if (
+      process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging' ||
+      process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
+    ) {
+      if (user.role === UserRole.Admin && code === '369369') {
+        return user;
+      }
     }
 
     const found = await this.otpModel.findOne(
       {
-        phone,
+        phone: user.phone,
         code,
         used: false,
         expiresAt: { $gte: new Date() },
@@ -136,7 +142,7 @@ export class UsersService {
       await found.save();
       result = found.user;
     }
-    this.log.debug(`checkOtp(${phone}, ${code}) => ${!!result}`);
+    this.log.debug(`checkOtp(${user.phone}, ${code}) => ${!!result}`);
     return result;
   }
 }

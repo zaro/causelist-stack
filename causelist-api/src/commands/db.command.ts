@@ -5,7 +5,7 @@ import * as child_process from 'node:child_process';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from '../schemas/user.schema.js';
+import { User, UserDocument, UserRole } from '../schemas/user.schema.js';
 
 @Injectable()
 export class DbCommand {
@@ -28,6 +28,7 @@ export class DbCommand {
       {
         firstName: 'Svetlozar',
         lastName: 'Argirov',
+        role: UserRole.Admin,
       },
       { upsert: true, new: true },
     );
@@ -39,6 +40,7 @@ export class DbCommand {
       {
         firstName: 'Robinson',
         lastName: 'Kemwamu',
+        role: UserRole.Admin,
       },
       { upsert: true, new: true },
     );

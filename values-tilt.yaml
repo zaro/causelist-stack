@@ -16,12 +16,14 @@ app:
             pathType: ImplementationSpecific
   env:
     DISABLE_SENTRY: 1
+    NEXT_PUBLIC_ENVIRONMENT: "development"
 
 api:
   image:
     repository: causelist-api
   crawlerImage: "crawler-test"
   env:
+    NEXT_PUBLIC_ENVIRONMENT: "development"
     PROXY_URL: "http://proxy:3128"
     REDIS_URL: "redis://redis"
     MONGO_URL: "mongodb://causelist:causelist@mongo/causelist"

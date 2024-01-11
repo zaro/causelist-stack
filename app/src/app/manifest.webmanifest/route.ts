@@ -8,7 +8,7 @@ import {
 
 export const dynamic = "force-dynamic";
 
-const env = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "dev";
+const env = process.env.NEXT_PUBLIC_ENVIRONMENT ?? "development";
 const envTitle = env !== "production" ? `[${env.toUpperCase()}] ` : "";
 
 function manifest(): MetadataRoute.Manifest {

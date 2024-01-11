@@ -6,6 +6,7 @@ import { readFileSync } from 'fs';
 import stream from 'stream';
 import { ConfigService } from '@nestjs/config';
 import { S3Service } from '../s3/s3.service.js';
+import { K8sJobProcessorBase } from './k8s-job-processor-base.js';
 
 export const CRAWLER_JOB_QUEUE_NAME = 'crawler-job';
 export const CRAWLER_JOB_DEFAULT_OPTIONS: JobOptions = {
@@ -15,6 +16,7 @@ export const CRAWLER_JOB_DEFAULT_OPTIONS: JobOptions = {
 
 export interface CrawlJobParams {
   crawlerTest?: 'job' | 'dev' | 'no';
+  crawlTime: string;
 }
 
 const POD_FINISHED_PHASES = {
@@ -23,13 +25,9 @@ const POD_FINISHED_PHASES = {
 };
 
 @Processor(CRAWLER_JOB_QUEUE_NAME)
-export class CrawlerJobProcessor {
-  protected log = new Logger(CrawlerJobProcessor.name);
+export class CrawlerJobProcessor extends K8sJobProcessorBase {
   protected batchV1Api: k8s.BatchV1Api;
-  protected coreApi: k8s.CoreV1Api;
-  protected k8sLog: k8s.Log;
-  protected readonly namespace: string;
-  protected readonly crawlerImage: string;
+  protected crawlerImage: string;
   protected readonly logsPrefix = 'logs/';
   protected podEnv: Record<string, string>;
 
@@ -37,15 +35,7 @@ export class CrawlerJobProcessor {
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
-    const kc = new k8s.KubeConfig();
-    kc.loadFromCluster();
-
-    this.k8sLog = new k8s.Log(kc);
-    this.batchV1Api = kc.makeApiClient(k8s.BatchV1Api);
-    this.coreApi = kc.makeApiClient(k8s.CoreV1Api);
-    this.namespace = readFileSync(
-      '/var/run/secrets/kubernetes.io/serviceaccount/namespace',
-    ).toString();
+    super(new Logger(CrawlerJobProcessor.name));
     this.crawlerImage = configService.getOrThrow('CRAWLER_IMAGE');
     this.podEnv = {
       S3_ACCESS_KEY: configService.getOrThrow('S3_ACCESS_KEY'),
@@ -56,93 +46,50 @@ export class CrawlerJobProcessor {
     };
   }
 
-  @Process()
-  async startCrawlJob(job: Job<CrawlJobParams>) {
-    this.log.log('Starting crawler job with data ');
-    const k8sJob = new k8s.V1Pod();
-    const name = `crawl-job-${job.id}`;
-    const containerName = 'crawler';
-    const crawlTime = new Date().toISOString();
-    k8sJob.apiVersion = 'v1';
-    k8sJob.kind = 'Pod';
-    k8sJob.metadata = {
-      name,
+  async buildPodEnv(job: Job<CrawlJobParams>): Promise<Record<string, string>> {
+    const env: Record<string, string> = {
+      ...this.podEnv,
+      FORCE_CRAWL_TIME: job.data.crawlTime,
     };
-    const env = [
-      {
-        name: 'FORCE_CRAWL_TIME',
-        value: crawlTime,
-      },
-    ].concat(
-      Object.entries(this.podEnv).map(([name, value]) => ({
-        name,
-        value,
-      })),
-    );
     if (job.data.crawlerTest && job.data.crawlerTest !== 'no') {
-      env.push({ name: 'CRAWLER_TEST', value: job.data.crawlerTest });
+      env.CRAWLER_TEST = job.data.crawlerTest;
     }
-    k8sJob.spec = {
-      containers: [
-        {
-          name: containerName,
-          image: this.crawlerImage,
-          imagePullPolicy: 'IfNotPresent',
-          env,
-        },
-      ],
-      restartPolicy: 'Never',
-    };
-    this.log.log(`Creating k8s pod : ${this.namespace}/${name}`);
-    let podRes = await this.coreApi.createNamespacedPod(this.namespace, k8sJob);
+    return env;
+  }
 
-    while (!POD_FINISHED_PHASES[podRes.body.status.phase]) {
-      await new Promise((ok) => setTimeout(ok, 5000));
-      podRes = await this.coreApi.readNamespacedPodStatus(
-        podRes.body.metadata.name,
-        podRes.body.metadata.namespace,
-      );
-    }
-    this.log.log(`K8s pod status ${JSON.stringify(podRes.body.status.phase)}`);
+  buildPodName(job: Job<any>): string {
+    return `crawl-job-${job.id}`;
+  }
 
-    const logStream = new stream.PassThrough();
+  buildContainerImage(job: Job<any>): string {
+    return this.crawlerImage;
+  }
 
-    const logReq = await this.k8sLog.log(
-      this.namespace,
-      name,
-      containerName,
-      logStream,
-      {},
-    );
+  buildContainerName(job: Job<any>): string {
+    return 'crawler';
+  }
 
-    const logBuffers = [];
-    for await (const chunk of logStream) {
-      logBuffers.push(chunk);
-    }
+  async handlePodLogs(
+    job: Job<CrawlJobParams>,
+    logContent: string,
+  ): Promise<any> {
+    const podLogKey =
+      this.logsPrefix + job.data.crawlTime + '/crawler-pod.log.txt';
 
-    const logContent = Buffer.concat(logBuffers).toString();
-    const podLogKey = this.logsPrefix + crawlTime + '/crawler-pod.log.txt';
     await this.s3Service.uploadFile({
       content: logContent,
       key: podLogKey,
       mimeType: 'text/plain',
     });
 
-    // Delete pod if run was successful
-    if (podRes.body.status.phase === 'Succeeded') {
-      await this.coreApi.deleteNamespacedPod(
-        podRes.body.metadata.name,
-        podRes.body.metadata.namespace,
-      );
-    }
-
     return {
-      namespace: this.namespace,
-      name,
-      crawlerImage: this.crawlerImage,
-      k8sPodData: podRes.body,
       podLogKey,
     };
+  }
+
+  @Process()
+  async startCrawlJob(job: Job<CrawlJobParams>) {
+    return this.startJobAsPod(job);
   }
 
   @OnQueueFailed()

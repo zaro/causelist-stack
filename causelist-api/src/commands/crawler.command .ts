@@ -38,6 +38,7 @@ export class CrawlerCommand {
   ) {
     const job = await this.crawlerQueue.add({
       crawlerTest: crawlerTest as CrawlJobParams['crawlerTest'],
+      crawlTime: new Date().toISOString(),
     });
     const r = await job.finished();
     this.log.log(

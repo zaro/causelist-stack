@@ -7,7 +7,6 @@ import * as child_process from 'node:child_process';
 import { createHash } from 'node:crypto';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { Model } from 'mongoose';
 import { KenyaLawImporterService } from '../data-importer/kenya-law-importer.service.js';
@@ -21,19 +20,18 @@ export class ImportCommand {
   constructor(protected importerService: KenyaLawImporterService) {}
 
   @Command({
-    command: 'import:menu [index_key]',
+    command: 'import:menu crawlTime',
     describe: 'Import menu from crawl data',
   })
   async importMenu(
     @Positional({
-      name: 'index_key',
-      describe: 'key of index.json with crawled menu entries',
+      name: 'crawlTime',
+      describe: 'crawlTime key from crawler',
       type: 'string',
-      default: 'index.json',
     })
-    indexKey: string,
+    crawlTime: string,
   ) {
-    return this.importerService.importMenu(indexKey);
+    return this.importerService.processMenu(crawlTime);
   }
 
   @Command({

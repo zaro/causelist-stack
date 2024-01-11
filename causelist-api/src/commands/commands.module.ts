@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MenuEntry, MenuEntrySchema } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileSchema } from '../schemas/info-file.schema.js';
 import { CommandModule } from 'nestjs-command/dist/index.js';
 import { ImportCommand } from './import.command.js';
@@ -55,7 +54,6 @@ import {
     }),
 
     MongooseModule.forFeature([
-      { name: MenuEntry.name, schema: MenuEntrySchema },
       { name: InfoFile.name, schema: InfoFileSchema },
       { name: CauseList.name, schema: CauseListSchema },
       { name: User.name, schema: UserSchema },

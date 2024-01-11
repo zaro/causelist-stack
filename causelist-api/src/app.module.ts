@@ -10,7 +10,6 @@ import { AppService } from './app.service.js';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import { AdminModule } from '@adminjs/nestjs';
 import { KenyaLawMenuModuleModule } from './kenya-law-menu-module/kenya-law-menu-module.module.js';
-import { MenuEntry, MenuEntrySchema } from './schemas/menu-entry.schema.js';
 import * as AdminJSMongoose from '@adminjs/mongoose';
 import AdminJS from 'adminjs';
 import { Model } from 'mongoose';
@@ -22,6 +21,7 @@ import { HealthModule } from './health/health.module.js';
 import { SmsApiModule } from './sms-api/sms-api.module.js';
 import { DataImporterModule } from './data-importer/data-importer.module.js';
 import { K8sJobsModule } from './k8s-jobs/k8s-jobs.module.js';
+import { Court, CourtSchema } from './schemas/court.schema.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -67,13 +67,11 @@ AdminJS.registerAdapter({
       inject: [ConfigService],
     }),
     AdminModule.createAdminAsync({
-      inject: [getModelToken(MenuEntry.name)],
+      inject: [getModelToken(Court.name)],
       imports: [
-        MongooseModule.forFeature([
-          { name: MenuEntry.name, schema: MenuEntrySchema },
-        ]),
+        MongooseModule.forFeature([{ name: Court.name, schema: CourtSchema }]),
       ],
-      useFactory: async (klModel: Model<MenuEntry>) => {
+      useFactory: async (klModel: Model<Court>) => {
         return {
           adminJsOptions: {
             rootPath: '/admin',

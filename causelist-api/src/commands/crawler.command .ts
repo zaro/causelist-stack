@@ -60,10 +60,10 @@ export class CrawlerCommand {
   }
 
   @Command({
-    command: 'parse:crawled crawlTime',
+    command: 'crawler:process crawlTime',
     describe: 'Parse latest crawled data',
   })
-  async parseCrawledStart(
+  async crawlerProcess(
     @Positional({
       name: 'crawlTime',
       describe: 'crawlTime key from crawler',

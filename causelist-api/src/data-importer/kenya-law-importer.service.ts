@@ -1,12 +1,21 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 
 import { Injectable, Logger } from '@nestjs/common';
 import { S3Service } from '../s3/s3.service.js';
-import { fileKey, menuEntryKey } from './const.js';
+import { fileKey, getTimedKey, menuEntryKey } from './const.js';
+
+export interface MenuEntry {
+  name: string;
+
+  url: string;
+
+  path: string;
+
+  children: MenuEntry[];
+}
 
 @Injectable()
 export class KenyaLawImporterService {
@@ -14,8 +23,6 @@ export class KenyaLawImporterService {
 
   constructor(
     protected s3Service: S3Service,
-    @InjectModel(MenuEntry.name)
-    protected menuEntryModel: Model<MenuEntry>,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
   ) {}
@@ -70,24 +77,22 @@ export class KenyaLawImporterService {
     }
   }
 
-  async saveMenuEntry(root: MenuEntry): Promise<MenuEntryDocument> {
-    const r = await Promise.all(
-      root.children.map((child) =>
-        this.saveMenuEntry(child as MenuEntryDocument),
-      ),
-    );
-    root.children = r;
-    return new this.menuEntryModel(root).save();
+  async saveMenuEntry(root: MenuEntry, crawlTime: string): Promise<void> {
+    await this.s3Service.uploadFile({
+      key: getTimedKey(crawlTime, 'menu'),
+      content: JSON.stringify(root, null, 2),
+      mimeType: 'application/json',
+    });
   }
 
-  async importMenu(indexKey: string) {
+  async processMenu(crawlTime: string) {
     this.log.log('Loading dataset...');
     const { dataAsObject } = await this.s3Service.downloadFile({
-      key: menuEntryKey(indexKey),
+      key: getTimedKey(crawlTime, 'index'),
       parseJson: true,
     });
     if (!dataAsObject?.length) {
-      this.log.error(`Index ${indexKey} is empty`);
+      this.log.error(`Index ${crawlTime} is empty`);
       return;
     }
     const keys: string[] = dataAsObject;
@@ -125,7 +130,7 @@ export class KenyaLawImporterService {
     }
     this.log.log(`Saving menu...`);
     // console.log('rootMenu', JSON.stringify(root));
-    await this.saveMenuEntry(root);
+    await this.saveMenuEntry(root, crawlTime);
     this.log.log(`Done`);
   }
 

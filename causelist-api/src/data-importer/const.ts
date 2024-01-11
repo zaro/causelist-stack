@@ -8,3 +8,11 @@ export function menuEntryKey(key: string) {
 export function fileKey(key: string) {
   return CRAWLER_BUCKET_FILES_PREFIX + key;
 }
+
+export function getTimedKey(
+  crawlTime: string,
+  prefix: string,
+  extension: string = 'json',
+) {
+  return menuEntryKey(`${prefix}.${crawlTime}.${extension}`);
+}

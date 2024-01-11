@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { S3Module } from '../s3/s3.module.js';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { MenuEntry, MenuEntrySchema } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileSchema } from '../schemas/info-file.schema.js';
 import { CauseList, CauseListSchema } from '../schemas/causelist.schema.js';
 import { User, UserSchema } from '../schemas/user.schema.js';
@@ -15,7 +14,6 @@ import { KenyaLawParserService } from './kenya-law-parser.service.js';
   imports: [
     S3Module,
     MongooseModule.forFeature([
-      { name: MenuEntry.name, schema: MenuEntrySchema },
       { name: InfoFile.name, schema: InfoFileSchema },
       { name: CauseList.name, schema: CauseListSchema },
       { name: User.name, schema: UserSchema },

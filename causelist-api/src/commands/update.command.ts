@@ -8,7 +8,6 @@ import { createHash } from 'node:crypto';
 import * as nunjucks from 'nunjucks';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { FilterQuery, Model } from 'mongoose';
 import { FileLines } from '../data-importer/parser/file-lines.js';

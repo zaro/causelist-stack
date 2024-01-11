@@ -1,18 +1,18 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { ConsoleLogger, Injectable, Logger } from '@nestjs/common';
-import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 
 import { S3Service } from '../s3/s3.service.js';
 import { FilterQuery, Model } from 'mongoose';
 import { Court } from '../schemas/court.schema.js';
-import { fileKey, menuEntryKey } from './const.js';
+import { fileKey, getTimedKey, menuEntryKey } from './const.js';
 
 import { FileLines } from './parser/file-lines.js';
 import { CauselistHeaderParser } from './parser/causelist-header-parser.js';
 import { NoticeParser } from './parser/notice-parser.js';
 import { peekForRe, peekForWord } from './parser/util.js';
 import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
+import { MenuEntry } from './kenya-law-importer.service.js';
 
 export interface DocumentParseRequest {
   path?: string;
@@ -39,25 +39,49 @@ export interface DocumentParseResult {
   isNotice: boolean;
 }
 
+function isCourtTypeContainedInName(type: string, name: string) {
+  if (name.includes(type)) {
+    return true;
+  }
+  // handle typos
+  const typos = [
+    [/\bClaims\b/, 'Claim'],
+    [/Kadhis'/, "Kadhi's"],
+    [/Kadhis'/, 'Kadhis'],
+  ];
+  for (const typo of typos) {
+    const ttype = type.replace(typo[0], typo[1].toString());
+    if (name.includes(ttype)) {
+      return true;
+    }
+  }
+  // Handle missing Court at the end
+  const tnc = type.replace(/\s+Court$/, '');
+  if (name.includes(tnc)) {
+    return true;
+  }
+
+  return false;
+}
+
 @Injectable()
 export class KenyaLawParserService {
   private readonly log = new Logger(KenyaLawParserService.name);
 
   constructor(
     protected s3Service: S3Service,
-    @InjectModel(MenuEntry.name)
-    protected menuEntryModel: Model<MenuEntry>,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
     @InjectModel(Court.name)
     protected courtModel: Model<Court>,
   ) {}
 
-  async parseCourts() {
-    const root = await this.menuEntryModel
-      .findOne({ name: '_root' })
-      .sort({ updatedAt: 'desc' })
-      .exec();
+  async parseCourts(crawlTime: string) {
+    const menuResult = await this.s3Service.downloadFile({
+      key: getTimedKey(crawlTime, 'menu'),
+      parseJson: true,
+    });
+    const root = menuResult.dataAsObject as MenuEntry;
     const ignoreSections = [
       'Vacation Notices',
       'Notices',
@@ -67,18 +91,23 @@ export class KenyaLawParserService {
       (e) => !ignoreSections.includes(e.name),
     );
     this.log.log(`Processing courts: ${courtsDocumentsAll.map((e) => e.name)}`);
+    let courtsDocuments = courtsDocumentsAll;
     const toSave: Court[] = [];
     // Supreme Court
     const noBranches = ['Supreme Court'];
-    toSave.push({
-      name: 'Supreme Court',
-      type: 'Supreme Court',
-      path: 'Supreme Court',
-      documentsCount: 0,
-    });
-    let courtsDocuments = courtsDocumentsAll.filter(
-      (e) => !noBranches.includes(e.name),
-    );
+    for (const noBranchCourt of noBranches) {
+      const current = courtsDocumentsAll.find((e) => noBranchCourt === e.name);
+      toSave.push({
+        name: 'Supreme Court',
+        type: 'Supreme Court',
+        path: 'Supreme Court',
+        url: current.url,
+        documentsCount: 0,
+      });
+      courtsDocuments = courtsDocumentsAll.filter(
+        (e) => noBranchCourt !== e.name,
+      );
+    }
 
     // High Court of Kenya
     const hkName = 'High Court of Kenya';
@@ -92,6 +121,7 @@ export class KenyaLawParserService {
         name: milimaniLawCourts.name + ' / ' + d.name,
         type: hkName,
         path: d.path,
+        url: d.url,
         documentsCount: 0,
       });
     }
@@ -103,6 +133,7 @@ export class KenyaLawParserService {
         name: hightCourt.name + ' / ' + d.name,
         type: hkName,
         path: d.path,
+        url: d.url,
         documentsCount: 0,
       });
     }
@@ -111,45 +142,85 @@ export class KenyaLawParserService {
     // TODO: Court of Appeal Causelist
     const coaName = 'Court of Appeal';
     const courtOfAppealTop = courtsDocuments.find((e) => coaName === e.name);
-    console.log(courtsDocuments);
+    // console.log(courtsDocuments);
     const courtOfAppeal = courtOfAppealTop.children.find(
       (e) => 'Court of Appeal Causelist' === e.name,
     );
-    console.log(courtOfAppeal.children);
+    // console.log(courtOfAppeal.children);
     for (const d of courtOfAppeal.children) {
+      const name = isCourtTypeContainedInName(coaName, d.name)
+        ? d.name
+        : coaName + ' / ' + d.name;
       toSave.push({
-        name: d.name,
+        name,
         type: coaName,
         path: d.path,
+        url: d.url,
         documentsCount: 0,
       });
     }
     courtsDocuments = courtsDocuments.filter((e) => e.name != coaName);
 
+    const ealName = 'Environment and Land Court';
+    const envAndLandCourt = courtsDocuments.find((e) => ealName === e.name);
+
+    for (const d of envAndLandCourt.children) {
+      const r = new RegExp(`^${ealName}\\s+\\(?(\\w+)\\)?\\s*$`);
+      const m = d.name.match(r);
+      if (m) {
+        toSave.push({
+          name: `${ealName} / ${m[1]} `,
+          type: ealName,
+          path: d.path,
+          url: d.url,
+          documentsCount: 0,
+        });
+      } else {
+        this.log.error('Failed to match ');
+        throw new Error('Failed to match', { cause: { d, r } });
+      }
+    }
+    courtsDocuments = courtsDocuments.filter((e) => e.name != ealName);
+
     for (const t of courtsDocuments) {
       for (const d of t.children) {
+        const name = isCourtTypeContainedInName(t.name, d.name)
+          ? d.name
+          : t.name + ' / ' + d.name;
         toSave.push({
-          name: d.name,
+          name,
           type: t.name,
           path: d.path,
+          url: d.url,
           documentsCount: 0,
         });
       }
     }
     this.log.log('Saving...');
+    const uniqueURLs = new Set(toSave.map((c) => c.url));
+
+    if (uniqueURLs.size !== toSave.length) {
+      this.log.error('Not all URLS for courts are unique');
+      throw new Error('Not all courts have unique URLS!');
+    }
+
     const r = await Promise.all(
       toSave.map((e) => {
-        const { name, type, documentsCount, ...rest } = e;
+        const { url, documentsCount, ...rest } = e;
         return this.courtModel
-          .findOneAndUpdate({ name, type }, rest, {
+          .findOneAndUpdate({ url }, rest, {
             upsert: true,
             new: true,
+            includeResultMetadata: true,
           })
           .exec();
       }),
     );
-    this.log.log(`Saved ${r.length} courts`);
-    // console.log(courtsDocuments);
+    this.log.log(`Saved total ${r.length} courts`);
+    const updateExisting = r.filter((r) => r.lastErrorObject.updatedExisting);
+    const upserted = r.filter((r) => r.lastErrorObject.upserted);
+    this.log.log(`Updated ${updateExisting.length} courts`);
+    this.log.log(`Upserted ${upserted.length} courts`);
   }
 
   async loadDocumentsWithData(

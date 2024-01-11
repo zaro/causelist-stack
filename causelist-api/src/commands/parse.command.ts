@@ -8,7 +8,6 @@ import { createHash } from 'node:crypto';
 import * as nunjucks from 'nunjucks';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { FilterQuery, Model } from 'mongoose';
 import { FileLines } from '../data-importer/parser/file-lines.js';
@@ -51,8 +50,6 @@ export class ParseCommand {
 
   constructor(
     protected parserService: KenyaLawParserService,
-    @InjectModel(MenuEntry.name)
-    protected menuEntryModel: Model<MenuEntry>,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
     @InjectModel(CauseList.name)
@@ -62,20 +59,34 @@ export class ParseCommand {
   ) {}
 
   @Command({
-    command: 'parse:crawled',
+    command: 'parse:crawled crawlTime',
     describe: 'Parse last crawled data',
   })
-  async parseCrawled() {
-    await this.parserService.parseCourts();
+  async parseCrawled(
+    @Positional({
+      name: 'crawlTime',
+      describe: 'crawlTime key from crawler',
+      type: 'string',
+    })
+    crawlTime: string,
+  ) {
+    await this.parserService.parseCourts(crawlTime);
     await this.parseFiles('.', null, null, true, false);
   }
 
   @Command({
-    command: 'parse:courts',
+    command: 'parse:courts crawlTime',
     describe: 'Parse Courts from Menu',
   })
-  async parseCourts() {
-    return this.parserService.parseCourts();
+  async parseCourts(
+    @Positional({
+      name: 'crawlTime',
+      describe: 'crawlTime key from crawler',
+      type: 'string',
+    })
+    crawlTime: string,
+  ) {
+    return this.parserService.parseCourts(crawlTime);
   }
 
   @Command({

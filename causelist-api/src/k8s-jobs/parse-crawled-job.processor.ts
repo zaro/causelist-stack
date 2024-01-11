@@ -67,11 +67,12 @@ export class ParseCrawledJobProcessor extends K8sJobProcessorBase {
     return 'parser';
   }
 
-  buildContainerCommand(job: Job<any>): string[] | undefined {
+  buildContainerCommand(job: Job<ParseJobParams>): string[] | undefined {
     return [
       'yarn',
       `cli${this.nodeEnvProduction ? '' : ':dev'}`,
       'parse:crawled',
+      job.data.crawlTime,
     ];
   }
   async beforePodCreate(k8sPod: k8s.V1Pod, job: Job<any>): Promise<void> {

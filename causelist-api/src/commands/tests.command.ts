@@ -8,7 +8,6 @@ import { createHash } from 'node:crypto';
 import { parse } from 'csv-parse/sync';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { MenuEntry, MenuEntryDocument } from '../schemas/menu-entry.schema.js';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { FilterQuery, Model } from 'mongoose';
 import { FileLines } from '../data-importer/parser/file-lines.js';
@@ -35,8 +34,6 @@ export class TestsCommand {
 
   constructor(
     protected parserService: KenyaLawParserService,
-    @InjectModel(MenuEntry.name)
-    protected menuEntryModel: Model<MenuEntry>,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
   ) {}

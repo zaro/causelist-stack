@@ -21,18 +21,19 @@
       "outFiles": [
         "${workspaceFolder}/causelist-api/dist/**/*.js"
       ]
-    }
+    },
     {
       "type": "node",
       "request": "launch",
-      "name": "import:menu",
+      "name": "parse:courts",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "program": "${workspaceFolder}/causelist-api/src/commands/cli.ts",
+      "preLaunchTask": "npm: build - causelist-api",
       "args": [
-        "import:menu",
-        "kenyalaw-crawler/storage/"
+        "parse:courts",
+        "2024-01-11T04:08:28.571Z"
       ],
       "outFiles": [
         "${workspaceFolder}/causelist-api/dist/**/*.js"

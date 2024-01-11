@@ -15,6 +15,9 @@ export class Court {
   path: string;
 
   @Prop()
+  url: string;
+
+  @Prop()
   documentsCount: number;
 
   @Prop()

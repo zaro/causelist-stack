@@ -1,6 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, Logger } from '@nestjs/common';
-import { MenuEntry } from '../schemas/menu-entry.schema.js';
 import { InfoFile } from '../schemas/info-file.schema.js';
 
 import { S3Service } from '../s3/s3.service.js';

@@ -86,9 +86,13 @@ export default function AppPreview() {
     <>
       <Box className={classes.heroBox}>
         <Paper elevation={3}>
-          <Grid container spacing={6} className={classes.heroContainer}>
+          <Grid container spacing={6}>
             <Grid item xs={12} md={5}>
-              <Box display="flex" justifyContent="center">
+              <Box
+                display="flex"
+                justifyContent="center"
+                sx={{ paddingX: "0.2em" }}
+              >
                 <Button variant="outlined" onClick={handleOpen}>
                   {data?.court.name}
                 </Button>

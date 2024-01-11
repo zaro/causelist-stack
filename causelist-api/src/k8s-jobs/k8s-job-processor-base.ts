@@ -1,10 +1,8 @@
-import { Processor, Process, OnQueueFailed } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { Job, JobOptions } from 'bull';
+import { Job } from 'bull';
 import k8s from '@kubernetes/client-node';
 import { readFileSync } from 'fs';
 import stream from 'stream';
-import { ConfigService } from '@nestjs/config';
 
 const POD_FINISHED_PHASES = {
   Succeeded: true,
@@ -17,10 +15,16 @@ export interface StartJobAsPodParams {
   containerImage: string;
 }
 
+export interface EnvForPod {
+  env?: k8s.V1EnvVar[];
+  envFrom?: k8s.V1EnvFromSource[];
+}
+
 export abstract class K8sJobProcessorBase {
   protected coreApi: k8s.CoreV1Api;
   protected k8sLog: k8s.Log;
   protected readonly namespace: string;
+  protected _currentPodCached: k8s.V1Pod;
 
   constructor(protected log: Logger) {
     const kc = new k8s.KubeConfig();
@@ -33,15 +37,35 @@ export abstract class K8sJobProcessorBase {
     ).toString();
   }
 
-  abstract buildPodEnv(job: Job<any>): Promise<Record<string, string>>;
+  async getCurrentPod() {
+    if (!this._currentPodCached) {
+      this._currentPodCached = (
+        await this.coreApi.readNamespacedPod(
+          this.getCurrentPodName(),
+          this.namespace,
+        )
+      ).body;
+    }
+    return this._currentPodCached;
+  }
+
+  abstract getCurrentPodName(): string;
+
+  abstract buildPodEnv(
+    job: Job<any>,
+    currentPodEnv: k8s.V1EnvVar[],
+    currentPodEnvFrom: k8s.V1EnvFromSource[],
+  ): Promise<EnvForPod>;
+
   abstract buildPodName(job: Job<any>): string;
-  abstract buildContainerImage(job: Job<any>): string;
+  abstract buildContainerImage(
+    job: Job<any>,
+    currentPodContainers: k8s.V1Container[],
+  ): string;
   abstract buildContainerName(job: Job<any>): string;
   abstract buildContainerCommand(job: Job<any>): string[] | undefined;
 
   abstract handlePodLogs(job: Job<any>, logContent: string): Promise<any>;
-
-  async beforePodCreate(k8sPod: k8s.V1Pod, job: Job<any>): Promise<void> {}
 
   async startJobAsPod(job: Job<any>) {
     this.log.log('Starting job as pod with data: ', job.data);
@@ -52,14 +76,20 @@ export abstract class K8sJobProcessorBase {
     k8sPod.metadata = {
       name,
     };
-    const podEnv = await this.buildPodEnv(job);
-    const env = Object.entries(podEnv).map(([name, value]) => ({
-      name,
-      value,
-    }));
-    const containerImage = this.buildContainerImage(job);
+    const currentPod = await this.getCurrentPod();
+
+    const podEnv = await this.buildPodEnv(
+      job,
+      currentPod.spec.containers[0].env,
+      currentPod.spec.containers[0].envFrom,
+    );
+    const containerImage = this.buildContainerImage(
+      job,
+      currentPod.spec.containers,
+    );
     const containerName = this.buildContainerName(job);
     const command = this.buildContainerCommand(job);
+
     k8sPod.spec = {
       containers: [
         {
@@ -67,12 +97,12 @@ export abstract class K8sJobProcessorBase {
           image: containerImage,
           command,
           imagePullPolicy: 'IfNotPresent',
-          env,
+          ...podEnv,
         },
       ],
       restartPolicy: 'Never',
+      imagePullSecrets: currentPod.spec.imagePullSecrets,
     };
-    this.beforePodCreate(k8sPod, job);
     this.log.log(`Creating k8s pod : ${this.namespace}/${name}`);
     let podRes = await this.coreApi.createNamespacedPod(this.namespace, k8sPod);
 

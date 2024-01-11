@@ -2,11 +2,9 @@ import { Processor, Process, OnQueueFailed } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, JobOptions } from 'bull';
 import k8s from '@kubernetes/client-node';
-import { readFileSync } from 'fs';
-import stream from 'stream';
 import { ConfigService } from '@nestjs/config';
 import { S3Service } from '../s3/s3.service.js';
-import { K8sJobProcessorBase } from './k8s-job-processor-base.js';
+import { EnvForPod, K8sJobProcessorBase } from './k8s-job-processor-base.js';
 
 export const CRAWLER_JOB_QUEUE_NAME = 'crawler-job';
 export const CRAWLER_JOB_DEFAULT_OPTIONS: JobOptions = {
@@ -25,12 +23,15 @@ export class CrawlerJobProcessor extends K8sJobProcessorBase {
   protected crawlerImage: string;
   protected readonly logsPrefix = 'logs/';
   protected podEnv: Record<string, string>;
+  protected readonly currentPodName: string;
 
   constructor(
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
     super(new Logger(CrawlerJobProcessor.name));
+    this.currentPodName = configService.getOrThrow('CURRENT_POD_NAME');
+
     this.crawlerImage = configService.getOrThrow('CRAWLER_IMAGE');
     this.podEnv = {
       S3_ACCESS_KEY: configService.getOrThrow('S3_ACCESS_KEY'),
@@ -41,22 +42,38 @@ export class CrawlerJobProcessor extends K8sJobProcessorBase {
     };
   }
 
-  async buildPodEnv(job: Job<CrawlJobParams>): Promise<Record<string, string>> {
-    const env: Record<string, string> = {
+  getCurrentPodName() {
+    return this.currentPodName;
+  }
+
+  async buildPodEnv(
+    job: Job<any>,
+    currentPodEnv: k8s.V1EnvVar[],
+    currentPodEnvFrom: k8s.V1EnvFromSource[],
+  ): Promise<EnvForPod> {
+    const envRecord: Record<string, string> = {
       ...this.podEnv,
       FORCE_CRAWL_TIME: job.data.crawlTime,
     };
     if (job.data.crawlerTest && job.data.crawlerTest !== 'no') {
-      env.CRAWLER_TEST = job.data.crawlerTest;
+      envRecord.CRAWLER_TEST = job.data.crawlerTest;
     }
-    return env;
+    const env = Object.entries(envRecord).map(([name, value]) => ({
+      name,
+      value,
+    }));
+
+    return { env };
   }
 
   buildPodName(job: Job<any>): string {
     return `crawl-job-${job.id}`;
   }
 
-  buildContainerImage(job: Job<any>): string {
+  buildContainerImage(
+    job: Job<any>,
+    currentPodContainers: k8s.V1Container[],
+  ): string {
     return this.crawlerImage;
   }
 

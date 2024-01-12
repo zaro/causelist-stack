@@ -186,7 +186,7 @@ export class CourtsService {
 
     const days = daysWithCauselist.slice(0, 3).map((e) => e._id);
 
-    if (!days) {
+    if (!days?.length) {
       return {
         court,
         daysWithData: [],

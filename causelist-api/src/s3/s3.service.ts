@@ -10,6 +10,7 @@ import {
   PutObjectCommand,
   ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
+import { ConfiguredRetryStrategy } from '@aws-sdk/util-retry';
 
 import { lastValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
@@ -101,6 +102,10 @@ export class S3Service {
         accessKeyId: this.accessKey,
         secretAccessKey: this.secretKey,
       },
+      retryStrategy: new ConfiguredRetryStrategy(
+        3, // max attempts.
+        (attempt: number) => 1000 + attempt * 2000, // backoff function.
+      ),
     });
   }
 

@@ -25,6 +25,7 @@ import {
   KenyaLawParserService,
   DocumentParseResult,
 } from '../data-importer/kenya-law-parser.service.js';
+import { KenyaLawImporterService } from '../data-importer/kenya-law-importer.service.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -50,6 +51,7 @@ export class ParseCommand {
 
   constructor(
     protected parserService: KenyaLawParserService,
+    protected importerService: KenyaLawImporterService,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
     @InjectModel(CauseList.name)
@@ -70,6 +72,8 @@ export class ParseCommand {
     })
     crawlTime: string,
   ) {
+    await this.importerService.processMenu(crawlTime);
+    await this.importerService.importFiles();
     await this.parserService.parseCourts(crawlTime);
     await this.parseFiles('.', null, null, true, false);
   }

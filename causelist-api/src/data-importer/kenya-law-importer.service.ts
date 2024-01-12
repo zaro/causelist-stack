@@ -96,14 +96,22 @@ export class KenyaLawImporterService {
       return;
     }
     const keys: string[] = dataAsObject;
-    const dataset = await this.s3Service
-      .downloadMultipleFiles(
-        keys.map((key) => ({
-          key: menuEntryKey(key),
-          parseJson: true,
-        })),
-      )
-      .then((results) => results.map((r) => r.dataAsObject));
+    const dataset: any[] = [];
+    // const dataset = await this.s3Service
+    //   .downloadMultipleFiles(
+    //     keys.map((key) => ({
+    //       key: menuEntryKey(key),
+    //       parseJson: true,
+    //     })),
+    //   )
+    //   .then((results) => results.map((r) => r.dataAsObject));
+    for (const key of keys) {
+      const { dataAsObject } = await this.s3Service.downloadFile({
+        key: menuEntryKey(key),
+        parseJson: true,
+      });
+      dataset.push(dataAsObject);
+    }
     this.log.log(`Loaded ${dataset.length} records`);
     const root: MenuEntry = {
       name: '_root',

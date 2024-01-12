@@ -166,7 +166,7 @@ export class CourtsService {
         },
         { $group: { _id: '$header.date', count: { $sum: 1 } } },
         //{ $sort: { _id: -1 } },
-        { $sort: { count: -1, 'header.date': -1 } },
+        { $sort: { count: -1, _id: -1 } },
       ])
       .exec();
 

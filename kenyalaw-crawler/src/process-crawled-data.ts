@@ -11,6 +11,7 @@ import {
   GetObjectCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
+import { ConfiguredRetryStrategy } from "@aws-sdk/util-retry";
 
 const exec = util.promisify(child_process.exec);
 
@@ -126,6 +127,10 @@ class SimpleS3 {
         accessKeyId: process.env.S3_ACCESS_KEY ?? "invalid",
         secretAccessKey: process.env.S3_SECRET ?? "invalid",
       },
+      retryStrategy: new ConfiguredRetryStrategy(
+        3, // max attempts.
+        (attempt: number) => 1000 + attempt * 2000 // backoff function.
+      ),
     });
     this.bucket = process.env.S3_CRAWLER_BUCKET ?? "invalid";
     if (!this.filesPrefix.endsWith("/")) {
@@ -384,9 +389,11 @@ async function processMenuEntries(
           .toString()
       )
     );
-  const keys: (string | null)[] = await Promise.all(
-    dataset.map((e) => s3.putMenuEntry(e))
-  );
+  const keys: (string | null)[] = [];
+  for (const e of dataset) {
+    const key = await s3.putMenuEntry(e);
+    keys.push(key);
+  }
   if (keys.some((v) => v === null)) {
     throw new Error("Some menuEntries failed to save");
   }

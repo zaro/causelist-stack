@@ -236,6 +236,7 @@ export class KenyaLawParserService {
             parentPath: { $regex: `^${req.path}` },
           };
     const infoFiles = await this.infoFileModel.find(filter).exec();
+    this.log.log(`Loading data for ${infoFiles.length} InfoFiles`);
     const resultList: DocumentWithData[] = [];
     for (const file of infoFiles) {
       const downloaded = await this.s3Service.downloadMultipleFiles([
@@ -258,6 +259,7 @@ export class KenyaLawParserService {
         textContentSha1,
       });
     }
+    this.log.log(`Loaded ${resultList.length} InfoFiles`);
     return resultList;
   }
 

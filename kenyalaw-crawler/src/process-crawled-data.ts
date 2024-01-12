@@ -139,6 +139,13 @@ class SimpleS3 {
     }
   }
 
+  logError(msg: string, e: any) {
+    if (e.constructor?.name) {
+      msg += "[" + e.constructor.name + "]";
+    }
+    log.error(msg, e);
+  }
+
   async putMenuEntryIndex(
     keyList: string[],
     crawlTime: Date
@@ -165,9 +172,9 @@ class SimpleS3 {
       await Promise.all(commands.map((command) => this.s3.send(command)));
       return Key;
     } catch (e: any) {
-      log.error(`putFileRecord(index.json):`, e);
-      return null;
+      this.logError(`putFileRecord(index.json):`, e);
     }
+    return null;
   }
 
   async putMenuEntry(menuEntryRecord: any): Promise<string | null> {
@@ -184,7 +191,7 @@ class SimpleS3 {
       await this.s3.send(command);
       return key;
     } catch (e: any) {
-      log.error(`putFileRecord(${key}):`, e);
+      this.logError(`putFileRecord(${key}):`, e);
     }
     return null;
   }
@@ -205,7 +212,7 @@ class SimpleS3 {
       return JSON.parse(str);
     } catch (e: any) {
       if (e.Code != "NoSuchKey") {
-        log.error(`getFileRecord(${fileSha1}):`, e);
+        this.logError(`getFileRecord(${fileSha1}):`, e);
       }
       return null;
     }
@@ -223,7 +230,7 @@ class SimpleS3 {
       await this.s3.send(command);
       return true;
     } catch (e: any) {
-      log.error(`putFileRecord(${fileSha1}):`, e);
+      this.logError(`putFileRecord(${fileSha1}):`, e);
       return false;
     }
   }
@@ -247,7 +254,7 @@ class SimpleS3 {
       await this.s3.send(command);
       return true;
     } catch (e: any) {
-      log.error(`putFileRecord(${fileSha1}):`, e);
+      this.logError(`putFileRecord(${fileSha1}):`, e);
       return false;
     }
   }
@@ -279,8 +286,7 @@ class SimpleS3 {
       await this.s3.send(command);
       return true;
     } catch (e: any) {
-      log.error(`uploadLogFile(${fileName}):`);
-      log.error(e);
+      this.logError(`uploadLogFile(${fileName}):`, e);
       return false;
     }
   }

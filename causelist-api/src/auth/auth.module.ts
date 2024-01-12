@@ -9,15 +9,19 @@ import { JwtStrategy } from './jwt.strategy.js';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { SmsApiModule } from '../sms-api/sms-api.module.js';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     SmsApiModule,
-    JwtModule.register({
-      secret: 'secret',
-      signOptions: { expiresIn: '30d' },
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow('JWT_SECRET'),
+        signOptions: { expiresIn: '90d' },
+      }),
     }),
   ],
   providers: [

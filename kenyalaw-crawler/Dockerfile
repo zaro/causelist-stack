@@ -1,11 +1,13 @@
 # Specify the base Docker image. You can read more about
 # the available images at https://crawlee.dev/docs/guides/docker-images
 # You can also use any other image from Docker Hub.
-FROM apify/actor-node:20 AS builder
-
-WORKDIR /crawler-dev
+FROM apify/actor-node:20 as runner-base
 
 RUN apk add curl file openjdk21-jre-headless libreoffice  poppler-utils tesseract-ocr tesseract-ocr-data-eng --no-cache
+
+FROM runner-base AS builder
+
+WORKDIR /crawler-dev
 
 # Copy just package.json and package-lock.json
 # to speed up the build using Docker layer cache.
@@ -21,11 +23,6 @@ COPY . ./
 # Install all dependencies and build the project.
 # Don't audit to speed up the installation.
 RUN yarn build
-
-FROM apify/actor-node:20 as runner-base
-
-# RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
-# RUN chmod +x /usr/local/bin/mc
 
 FROM builder as development
 

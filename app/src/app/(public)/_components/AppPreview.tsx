@@ -84,10 +84,19 @@ export default function AppPreview() {
   const handleClose = () => setOpen(false);
   return (
     <>
-      <Box className={classes.heroBox}>
-        <Paper elevation={3}>
-          <Grid container spacing={6}>
-            <Grid item xs={12} md={5}>
+      <Box
+        sx={{
+          minHeight: "600px",
+          width: {
+            xs: "100%",
+            md: "80%",
+          },
+          margin: "0 auto",
+        }}
+      >
+        <Paper elevation={3} sx={{ padding: "0.3em" }}>
+          <Grid container>
+            <Grid item xs={12} md={5} padding="0.5em">
               <Box
                 display="flex"
                 justifyContent="center"
@@ -104,7 +113,7 @@ export default function AppPreview() {
                 onDaySelected={onDaySelected}
               />
             </Grid>
-            <Grid item xs={12} md={7} className={classes.sampleCauselist}>
+            <Grid item xs={12} md={7} paddingY="0.5em">
               <SampleCauseLists data={data.causelist[day]} />
             </Grid>
           </Grid>

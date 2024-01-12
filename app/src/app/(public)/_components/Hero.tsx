@@ -8,7 +8,7 @@ import classes from "./common.module.css";
 
 export default function Hero({ fallback }: { fallback: any }) {
   return (
-    <Stack>
+    <div>
       <Typography variant="h3" fontWeight={700} className={classes.title}>
         Causelists made easy
       </Typography>
@@ -18,6 +18,6 @@ export default function Hero({ fallback }: { fallback: any }) {
           <AppPreview />
         </SWRConfig>
       </Suspense>
-    </Stack>
+    </div>
   );
 }

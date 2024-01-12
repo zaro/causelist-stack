@@ -29,13 +29,8 @@
 .formHeading {
   text-align: center;
 }
-.heroBox {
-  width: 100%;
-  display: flex;
-  min-height: 600px;
-  align-items: center;
-  justify-content: center;
-}
+
+
 .heroContainer {
   display: flex;
   align-items: center;

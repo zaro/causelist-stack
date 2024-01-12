@@ -8,6 +8,7 @@ import {
 } from './extracted-field.js';
 import { MultiParser, ParserBase } from './parser-base.js';
 import { CauselistHeaderParsed } from '../../interfaces/index.js';
+import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 
 const URL_RE =
   /(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -41,7 +42,7 @@ export abstract class CauselistHeaderParserBase extends ParserBase {
     const d = this.date.get();
     return {
       court: this.court.get(),
-      date: `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`,
+      date: getDateOnlyISOFromDate(d),
       judge: this.judge.get()?.judge,
       courtRoom: this.judge.get()?.courtRoom,
       url: this.url.get(),

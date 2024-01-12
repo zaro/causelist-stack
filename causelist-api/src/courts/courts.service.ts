@@ -6,6 +6,11 @@ import { Court } from '../schemas/court.schema.js';
 import { ICourt, ISearchResult } from '../interfaces/courts.js';
 import { RandomCourtData } from '../interfaces/ssr.js';
 import { CauseListDocumentParsed } from '../interfaces/index.js';
+import {
+  getDateOnlyISOFromDate,
+  getDateOnlyISOFromParts,
+  getMonthOnlyISOFromParts,
+} from '../interfaces/util.js';
 
 const RANDOM_COURTS = [
   'Chief Magistrates Court:Milimani Chief Magistrate Criminal Court',
@@ -70,7 +75,7 @@ export class CourtsService {
   ): Promise<CauseList[]> {
     return this.causeListModel
       .find({
-        'header.date': `${year}-${month}-${day}`,
+        'header.date': getDateOnlyISOFromParts(year, month, day),
         parentPath: new RegExp(`^${courtPath}`),
       })
       .exec();
@@ -83,7 +88,7 @@ export class CourtsService {
   ): Promise<string[]> {
     return this.causeListModel
       .distinct('header.date', {
-        'header.date': new RegExp(`^${year}-${month}`),
+        'header.date': new RegExp(`^${getMonthOnlyISOFromParts(year, month)}`),
         parentPath: new RegExp(`^${courtPath}`),
       })
       .exec();
@@ -142,10 +147,14 @@ export class CourtsService {
     const month = now.getMonth() + 1;
     const reV =
       month === 1
-        ? `${year}-${month.toString().padStart(2, '0')}|${year - 1}-12`
-        : `${year}-(?:${month.toString().padStart(2, '0')}|${(month - 1)
-            .toString()
-            .padStart(2, '0')})`;
+        ? `${getMonthOnlyISOFromParts(year, month)}|${getMonthOnlyISOFromParts(
+            year - 1,
+            12,
+          )}`
+        : `${getMonthOnlyISOFromParts(year, month)}|${getMonthOnlyISOFromParts(
+            year,
+            month - 1,
+          )}`;
 
     const daysWithCauselist = await this.causeListModel
       .aggregate([
@@ -161,7 +170,29 @@ export class CourtsService {
       ])
       .exec();
 
+    const court = await this.courtModel
+      .findOne<ICourt>(
+        {
+          path: courtPath,
+        },
+        {
+          name: 1,
+          type: 1,
+          path: 1,
+          hasData: { $gt: ['$documentsCount', 0] },
+        },
+      )
+      .exec();
+
     const days = daysWithCauselist.slice(0, 3).map((e) => e._id);
+
+    if (!days) {
+      return {
+        court,
+        daysWithData: [],
+        causelist: {},
+      };
+    }
 
     const causelist = await Promise.all(
       days.map((day) =>
@@ -181,20 +212,6 @@ export class CourtsService {
         'header.date': new RegExp(`^${days[0].replace(/-\d+$/, '')}`),
         parentPath: new RegExp(`^${courtPath}`),
       })
-      .exec();
-
-    const court = await this.courtModel
-      .findOne<ICourt>(
-        {
-          path: courtPath,
-        },
-        {
-          name: 1,
-          type: 1,
-          path: 1,
-          hasData: { $gt: ['$documentsCount', 0] },
-        },
-      )
       .exec();
 
     return {

@@ -25,10 +25,9 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import useSWR from "swr";
 import { causeListStore } from "../_store/index.ts";
 import { fetcher } from "./fetcher.ts";
-import Fuse, { IFuseOptions } from "fuse.js";
 import { styled, useTheme } from "@mui/material/styles";
 
-import type { SxProps, Theme } from "@mui/material";
+import { debounce, type SxProps, type Theme } from "@mui/material";
 
 export interface CourtTreeProps {
   filter: string;
@@ -36,19 +35,55 @@ export interface CourtTreeProps {
   onChange?: (court: ICourt) => void;
 }
 
-const searchOptions: IFuseOptions<ICourt> = {
-  includeScore: false,
-  ignoreLocation: false,
-  threshold: 0.2,
-  // Search in `author` and in `tags` array
-  keys: ["name", "type"],
-};
+interface FilteredCourts {
+  flat: ICourt[];
+  tree: {
+    [key: string]: ICourt[];
+  };
+}
+
+function filterCourts(
+  filter: string,
+  data: ICourt[] | undefined
+): FilteredCourts {
+  let flat: ICourt[];
+  if (!filter || !data) {
+    flat = data ?? [];
+  } else {
+    const filterLower = filter.toLowerCase();
+    flat = data.filter(
+      (v) =>
+        v.name.toLowerCase().includes(filterLower) ||
+        v.type.toLowerCase().includes(filterLower)
+    );
+  }
+  const tree: FilteredCourts["tree"] = flat.reduce(
+    (r, c) => ({
+      ...r,
+      [c.type]: r[c.type] ? [...r[c.type], c] : [c],
+    }),
+    {} as FilteredCourts["tree"]
+  );
+  return { flat, tree };
+}
 
 export default function CourtTree({ filter, sx, onChange }: CourtTreeProps) {
   const theme = useTheme();
 
   const [openCourt, setOpenCourt] = React.useState<{ [k: string]: boolean }>(
     {}
+  );
+  const [filteredData, setFilteredData] = React.useState<FilteredCourts>({
+    flat: [],
+    tree: {},
+  });
+  const filterCourtsThrottled = React.useCallback(
+    debounce(
+      (filter: string, data: ICourt[] | undefined) =>
+        setFilteredData(filterCourts(filter, data)),
+      200
+    ),
+    []
   );
 
   const toggleCourt = (court: string) => {
@@ -69,26 +104,10 @@ export default function CourtTree({ filter, sx, onChange }: CourtTreeProps) {
     }
   );
 
-  const filteredData = React.useMemo(() => {
-    let l: ICourt[];
-    if (!filter || !data) {
-      l = data ?? [];
-    } else {
-      const fuse = new Fuse<ICourt>(data ?? [], searchOptions);
-      l = fuse.search(filter).map((e) => e.item);
-    }
-    const structured = l.reduce(
-      (r, c) => ({
-        ...r,
-        [c.type]: r[c.type] ? [...r[c.type], c] : [c],
-      }),
-      {} as { [k: string]: ICourt[] }
-    );
-    return {
-      flat: l,
-      tree: structured,
-    };
-  }, [data, filter]);
+  React.useEffect(() => {
+    filterCourtsThrottled(filter, data);
+  }, [data, filter, filterCourtsThrottled]);
+
   const allOpen = filteredData.flat.length < 50;
 
   if (error) {

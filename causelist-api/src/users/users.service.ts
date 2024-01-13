@@ -1,11 +1,11 @@
 import crypto from 'crypto';
 import parsePhoneNumber from 'libphonenumber-js';
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
-import { User, UserRole } from '../schemas/user.schema.js';
+import { User } from '../schemas/user.schema.js';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Otp } from '../schemas/otp.schema.js';
-import { ICreateUserDataParams } from '../interfaces/users.js';
+import { ICreateUserDataParams, UserRole } from '../interfaces/users.js';
 import {
   IsEmail,
   IsNotEmpty,

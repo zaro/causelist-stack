@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CauseList } from '../schemas/causelist.schema.js';
 import { Model } from 'mongoose';
@@ -11,6 +11,8 @@ import {
   getDateOnlyISOFromParts,
   getMonthOnlyISOFromParts,
 } from '../interfaces/util.js';
+import { InfoFile } from '../schemas/info-file.schema.js';
+import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
 
 const RANDOM_COURTS = [
   'Chief Magistrates Court:Milimani Chief Magistrate Criminal Court',
@@ -29,6 +31,8 @@ export class CourtsService {
   constructor(
     @InjectModel(Court.name) private courtModel: Model<Court>,
     @InjectModel(CauseList.name) private causeListModel: Model<CauseList>,
+    @InjectModel(InfoFile.name) private infoFileModel: Model<InfoFile>,
+    protected parsingDebugService: ParsingDebugService,
   ) {}
   header;
 
@@ -57,6 +61,24 @@ export class CourtsService {
 
   async getCauseList(id: string): Promise<CauseList> {
     return this.causeListModel.findOne({ _id: id }).exec();
+  }
+
+  async getCauseListDebug(
+    id: string,
+  ): Promise<{ causelist: CauseList; infoFile: InfoFile; debugHTML: string }> {
+    const causelist = await this.causeListModel.findOne({ _id: id }).exec();
+    if (!causelist) {
+      throw new NotFoundException();
+    }
+    const infoFile = await this.infoFileModel.findOne({
+      _id: causelist.parsedFrom,
+    });
+    const debugHTML = await this.parsingDebugService.debugHTML(infoFile.sha1);
+    return {
+      causelist,
+      infoFile,
+      debugHTML,
+    };
   }
 
   async findAllJudgesForCourt(courtPath: string): Promise<string[]> {

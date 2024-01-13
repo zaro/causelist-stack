@@ -2,6 +2,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { fetcher } from "../_components/fetcher.ts";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { IUser } from "../../../api/users.ts";
 
 export const USER_ENDPOINT = "/api/auth/me";
 
@@ -11,7 +12,7 @@ export interface UseUserProps {
 
 export default function useUser({ noAutoLogOut }: UseUserProps = {}) {
   const router = useRouter();
-  const { data, mutate, error, isLoading, isValidating } = useSWR(
+  const { data, mutate, error, isLoading, isValidating } = useSWR<IUser>(
     USER_ENDPOINT,
     fetcher,
     {

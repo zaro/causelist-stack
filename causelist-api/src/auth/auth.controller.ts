@@ -14,7 +14,7 @@ import { Public } from './public.decorator.js';
 import { UsersService } from '../users/users.service.js';
 import { IsPhoneNumber } from 'class-validator';
 import { SmsApiService } from '../sms-api/sms-api.service.js';
-import { UserRole } from '../schemas/user.schema.js';
+import { UserRole } from '../interfaces/users.js';
 
 export class SendOtpParams {
   @IsPhoneNumber('KE', {
@@ -35,7 +35,7 @@ export class AuthController {
 
   @Get('me')
   async me(@Request() req) {
-    return this.userService.findById(req.user.userId);
+    return this.userService.findById(req.user.id);
   }
 
   @Public()

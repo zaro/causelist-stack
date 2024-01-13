@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { InfoFile } from './info-file.schema.js';
 import { CauselistHeaderParsed } from '../interfaces/index.js';
 
@@ -72,7 +72,7 @@ export class CauseList {
   @Prop({ type: [CauseListSection] })
   causeLists: CauseListSection[];
 
-  @Prop({ type: 'ObjectId', ref: () => InfoFile })
+  @Prop({ required: true, type: 'ObjectId', ref: 'InfoFile' })
   parsedFrom: InfoFile;
 
   @Prop()

@@ -3,6 +3,7 @@ import { CourtsService } from './courts.service.js';
 import { InternalRoute, Public } from '../auth/public.decorator.js';
 
 import {
+  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsNumberString,
@@ -13,6 +14,9 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { Roles } from '../auth/roles.decorator.js';
+import { User } from '../schemas/user.schema.js';
+import { UserRole } from '../interfaces/users.js';
 
 export class SearchParams {
   @IsString()
@@ -28,8 +32,8 @@ export class GetJudgesParams {
 }
 
 export class GetCauseListParams {
-  @IsString()
   @IsNotEmpty()
+  @IsMongoId()
   id: string;
 }
 
@@ -106,5 +110,11 @@ export class CourtsController {
       params.month,
       params.courtPath,
     );
+  }
+
+  @Roles([UserRole.Admin])
+  @Get('causelist/debug/:id')
+  async getCauselistDebug(@Param() params: GetCauseListParams) {
+    return this.service.getCauseListDebug(params.id);
   }
 }

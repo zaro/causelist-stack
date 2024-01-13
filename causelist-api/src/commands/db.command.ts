@@ -5,7 +5,8 @@ import * as child_process from 'node:child_process';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument, UserRole } from '../schemas/user.schema.js';
+import { User, UserDocument } from '../schemas/user.schema.js';
+import { UserRole } from '../interfaces/users.js';
 
 @Injectable()
 export class DbCommand {

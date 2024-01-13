@@ -1,20 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { IUser, UserRole } from '../interfaces/users.js';
 
 export type UserDocument = HydratedDocument<User>;
 
-export enum UserRole {
-  Admin = 'admin',
-  Lawyer = 'lawyer',
-}
-
-@Schema({ timestamps: true })
-export class User {
-  @Prop({
-    get: function () {
-      return (this as any)._id.toString();
-    },
-  })
+@Schema({
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+})
+export class User implements IUser {
   id: string;
 
   @Prop()
@@ -30,6 +25,7 @@ export class User {
   email: string;
 
   @Prop({
+    type: String,
     enum: UserRole,
   })
   role: UserRole;
@@ -42,3 +38,11 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.virtual('id')
+  .get(function (this: UserDocument) {
+    return this._id;
+  })
+  .set(function (this: UserDocument, id: string) {
+    this.set({ _id: id });
+  });

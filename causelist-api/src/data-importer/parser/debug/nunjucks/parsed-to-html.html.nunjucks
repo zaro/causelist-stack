@@ -47,12 +47,12 @@
       </tr>
     </table>
     <ul>
-      {% for section in doc.sections %}
+      {% for section in doc.causeLists %}
       <li>
         {% if section.dateTime %}<b>{{ section.dateTime | date('hh:mm aa') }}</b><br>{% endif %}
-        <b>{{ section.section }}</b>
+        <b>{{ section.typeOfCause }}</b>
         <ul>
-          {% for l in section.causelist %}
+          {% for l in section.cases %}
             <li>{% if l.num %}{{ l.num }}.{% endif %} <i>{{ l.additionalNumber | default('')}}</i> <b>{{ l.caseNumber | default('???')}}</b> {% if l.description %}{{ l.description }}{% else %}{{ l.partyA}} <b>VS</b> {{ l.partyB }}{% endif %}</li>
           {% endfor %}
         </ul>

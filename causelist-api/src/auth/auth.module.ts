@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { SmsApiModule } from '../sms-api/sms-api.module.js';
 import { ConfigService } from '@nestjs/config';
+import { RolesGuard } from './roles.guard.js';
 
 @Module({
   imports: [
@@ -32,6 +33,11 @@ import { ConfigService } from '@nestjs/config';
       // Make jwt Auth guard global
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      // Make Roles guard global
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
   controllers: [AuthController],

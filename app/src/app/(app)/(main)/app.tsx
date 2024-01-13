@@ -161,6 +161,8 @@ export default function App({ children }: { children: React.ReactNode }) {
     pageTitle = currentMenuItem.name;
   } else if (pathname.startsWith("/search/result/")) {
     pageTitle = "Search Result Details";
+  } else if (pathname.startsWith("/admin")) {
+    pageTitle = "Admin";
   }
 
   const drawer = (
@@ -198,7 +200,7 @@ export default function App({ children }: { children: React.ReactNode }) {
               <AccountCircleIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+          <ListItemText primary={`${user?.firstName} ${user?.lastName}`} />
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton component={Link} href="/sign-out">

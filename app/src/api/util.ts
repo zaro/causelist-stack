@@ -1,5 +1,9 @@
 export function getDateOnlyISOFromDate(d: Date) {
-  return d.toISOString().split('T')[0];
+  return getDateOnlyISOFromParts(
+    d.getFullYear(),
+    d.getMonth() + 1,
+    d.getDate(),
+  );
 }
 
 export function getDateOnlyISOFromParts(

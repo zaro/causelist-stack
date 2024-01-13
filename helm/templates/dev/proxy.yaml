@@ -73,6 +73,7 @@ spec:
     name: http
   selector:
     {{- include "causelist-stack.selectorLabels" (list . "proxy" ) | nindent 4 }}
+{{ if .Values.useDevMode }}
 ---
 apiVersion: v1
 kind: Service
@@ -89,3 +90,4 @@ spec:
     name: proxy-nodeport
   selector:
     {{- include "causelist-stack.selectorLabels" (list . "proxy" ) | nindent 4 }}
+{{ end }}

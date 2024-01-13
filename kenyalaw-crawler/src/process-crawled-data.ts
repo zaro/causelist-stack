@@ -12,6 +12,7 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { ConfiguredRetryStrategy } from "@aws-sdk/util-retry";
+import { ProcessedFile } from "./interfaces/crawler.js";
 
 const exec = util.promisify(child_process.exec);
 
@@ -93,22 +94,6 @@ function getCrawlTime(storageDir: string) {
     .readdirSync(reqDir)
     .map((e) => fs.statSync(path.join(reqDir, e)).mtime);
   return fileTimes.toSorted().at(-1);
-}
-
-interface ProcessedFile {
-  url: string;
-  statusCode: number;
-  fileName: string;
-  sha1: string;
-  mimeType: string | undefined;
-  textContentType: string;
-  textContentSha1: string;
-  textContentMd5: string;
-  error: any;
-  parentUrl: string;
-  parentPath: string;
-  parentName: string;
-  parent: any;
 }
 
 class SimpleS3 {
@@ -342,7 +327,7 @@ async function processFiles(
       log.warning(`Failed to parse ${filePath} : ${error}`);
     }
 
-    if (!textContent) {
+    if (!textContent || !textContent.trim().length) {
       log.warning(`Empty content for ${filePath} skipping`);
       continue;
     }
@@ -360,8 +345,9 @@ async function processFiles(
       parentUrl: parent.url,
       parentPath,
       parentName: parent.text,
-      parent,
+      datasetFile,
     };
+
     await Promise.all([
       s3.putFileAsFileContent(
         file,

@@ -17,6 +17,19 @@ fi
 
 STORAGE_DIR=storage
 
+## TODO
+# EXIT_STATUS=
+# # from https://veithen.io/2014/11/16/sigterm-propagation.html
+# child_with_sigterm_and_log() {
+#   trap 'kill -TERM $PID' TERM INT
+#   $JAVA_EXECUTABLE $JAVA_ARGS &
+#   PID=$!
+#   wait $PID
+#   trap - TERM INT
+#   wait $PID
+#   EXIT_STATUS=$?
+# }
+
 mkdir -p ${STORAGE_DIR}
 if [ "$CRAWLER_TEST" = "job" ]; then
   mkdir -p ${STORAGE_DIR}/request_queues/default/

@@ -1,10 +1,15 @@
-import { Processor, Process, OnQueueFailed } from '@nestjs/bull';
+import { Processor, Process, OnQueueFailed, InjectQueue } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, JobOptions } from 'bull';
+import type { Queue } from 'bull';
 import k8s from '@kubernetes/client-node';
 import { ConfigService } from '@nestjs/config';
 import { S3Service } from '../s3/s3.service.js';
 import { EnvForPod, K8sJobProcessorBase } from './k8s-job-processor-base.js';
+import {
+  PARSE_CRAWLED_JOB_QUEUE_NAME,
+  ParseJobParams,
+} from './parse-crawled-job.processor.js';
 
 export const CRAWLER_JOB_QUEUE_NAME = 'crawler-job';
 export const CRAWLER_JOB_DEFAULT_OPTIONS: JobOptions = {
@@ -15,6 +20,7 @@ export const CRAWLER_JOB_DEFAULT_OPTIONS: JobOptions = {
 export interface CrawlJobParams {
   crawlerTest?: 'job' | 'dev' | 'no';
   crawlTime: string;
+  startProcessorOnSuccess: boolean;
 }
 
 @Processor(CRAWLER_JOB_QUEUE_NAME)
@@ -26,6 +32,8 @@ export class CrawlerJobProcessor extends K8sJobProcessorBase {
   protected readonly currentPodName: string;
 
   constructor(
+    @InjectQueue(PARSE_CRAWLED_JOB_QUEUE_NAME)
+    private parserQueue: Queue<ParseJobParams>,
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
@@ -105,7 +113,18 @@ export class CrawlerJobProcessor extends K8sJobProcessorBase {
 
   @Process()
   async startCrawlJob(job: Job<CrawlJobParams>) {
-    return this.startJobAsPod(job);
+    const result = await this.startJobAsPod(job);
+    let parserJobId = null;
+    if (job.data.startProcessorOnSuccess && !result.failed) {
+      const parserJob = await this.parserQueue.add({
+        crawlTime: job.data.crawlTime,
+      });
+      parserJobId = parserJob.id;
+    }
+    return {
+      ...result,
+      parserJobId,
+    };
   }
 
   @OnQueueFailed()

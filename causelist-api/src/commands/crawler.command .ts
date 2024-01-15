@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../schemas/user.schema.js';
 import { InjectQueue } from '@nestjs/bull';
-import type { Queue } from 'bull';
+import type { Queue, Job } from 'bull';
 import {
   CRAWLER_JOB_QUEUE_NAME,
   CrawlJobParams,
@@ -16,6 +16,10 @@ import {
   PARSE_CRAWLED_JOB_QUEUE_NAME,
   ParseJobParams,
 } from '../k8s-jobs/parse-crawled-job.processor.js';
+import {
+  CRAWLER_CRON_QUEUE_NAME,
+  CrawlerCronParams,
+} from '../k8s-jobs/crawler-cron.processor.js';
 
 @Injectable()
 export class CrawlerCommand {
@@ -24,6 +28,8 @@ export class CrawlerCommand {
   constructor(
     @InjectQueue(CRAWLER_JOB_QUEUE_NAME)
     private crawlerQueue: Queue<CrawlJobParams>,
+    @InjectQueue(CRAWLER_CRON_QUEUE_NAME)
+    private crawlerCronQueue: Queue<CrawlerCronParams>,
     @InjectQueue(PARSE_CRAWLED_JOB_QUEUE_NAME)
     private parserQueue: Queue<ParseJobParams>,
   ) {}
@@ -50,10 +56,17 @@ export class CrawlerCommand {
       requiresArg: true,
     })
     crawlerTest: string,
+    @Option({
+      name: 'processOnSuccess',
+      describe: 'Start a process job on crawler success',
+      type: 'boolean',
+    })
+    processOnSuccess: boolean,
   ) {
     const job = await this.crawlerQueue.add({
       crawlerTest: crawlerTest as CrawlJobParams['crawlerTest'],
       crawlTime: new Date().toISOString(),
+      startProcessorOnSuccess: processOnSuccess,
     });
     const r = await job.finished();
     this.logK8sResult(r);
@@ -76,5 +89,49 @@ export class CrawlerCommand {
     });
     const r = await job.finished();
     this.logK8sResult(r);
+  }
+
+  async logJobsInQueue(queue: Queue<any>) {
+    const jobs = await queue.getJobs([
+      'completed',
+      'waiting',
+      'active',
+      'delayed',
+      'failed',
+      'paused',
+    ]);
+    const withStatus = await Promise.all(
+      jobs.map(async (j) => ({ s: await j.getState(), j })),
+    );
+    const byStatus: Record<string, Job[]> = withStatus.reduce(
+      (acc, c) => ({
+        [c.s]: [...(acc[c.s] ?? []), c.j],
+      }),
+      {},
+    );
+    for (const [status, jobs] of Object.entries(byStatus)) {
+      this.log.log(`Status: ${status}`);
+      for (const j of jobs) {
+        const repeat = j.opts.repeat;
+        this.log.log(
+          `  ${j.id} ${
+            j.finishedOn ? new Date(j.finishedOn).toISOString() : '-'
+          } ${j.failedReason ? j.failedReason : '-'} ${JSON.stringify(
+            repeat,
+          )} `,
+        );
+      }
+    }
+  }
+
+  @Command({
+    command: 'crawler:jobs',
+    describe: 'list crawler jobs',
+  })
+  async crawlerJobs() {
+    this.log.log('CRAWLER CRON QUEUE');
+    await this.logJobsInQueue(this.crawlerCronQueue);
+    this.log.log('CRAWLER JOB QUEUE');
+    await this.logJobsInQueue(this.crawlerQueue);
   }
 }

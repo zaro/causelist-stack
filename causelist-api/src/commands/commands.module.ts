@@ -22,6 +22,10 @@ import {
   PARSE_CRAWLED_JOB_DEFAULT_OPTIONS,
   PARSE_CRAWLED_JOB_QUEUE_NAME,
 } from '../k8s-jobs/parse-crawled-job.processor.js';
+import {
+  CRAWLER_CRON_DEFAULT_OPTIONS,
+  CRAWLER_CRON_QUEUE_NAME,
+} from '../k8s-jobs/crawler-cron.processor.js';
 
 @Module({
   imports: [
@@ -65,10 +69,15 @@ import {
         configService: ConfigService,
       ): Promise<BullRootModuleOptions> => ({
         url: configService.getOrThrow('REDIS_URL'),
+        prefix: 'bullJob:',
       }),
       inject: [ConfigService],
     }),
     BullModule.registerQueue(
+      {
+        name: CRAWLER_CRON_QUEUE_NAME,
+        defaultJobOptions: CRAWLER_CRON_DEFAULT_OPTIONS,
+      },
       {
         name: CRAWLER_JOB_QUEUE_NAME,
         defaultJobOptions: CRAWLER_JOB_DEFAULT_OPTIONS,

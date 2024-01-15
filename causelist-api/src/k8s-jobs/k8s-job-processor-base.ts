@@ -15,6 +15,16 @@ export interface StartJobAsPodParams {
   containerImage: string;
 }
 
+export interface JobAsPodCompletedResult {
+  failed: boolean;
+  namespace: string;
+  name: string;
+  containerImage: string;
+  containerName: string;
+  k8sPodData: any;
+  logs: any;
+}
+
 export interface EnvForPod {
   env?: k8s.V1EnvVar[];
   envFrom?: k8s.V1EnvFromSource[];
@@ -67,7 +77,7 @@ export abstract class K8sJobProcessorBase {
 
   abstract handlePodLogs(job: Job<any>, logContent: string): Promise<any>;
 
-  async startJobAsPod(job: Job<any>) {
+  async startJobAsPod(job: Job<any>): Promise<JobAsPodCompletedResult> {
     this.log.log('Starting job as pod with data: ', job.data);
     const k8sPod = new k8s.V1Pod();
     const name = this.buildPodName(job);

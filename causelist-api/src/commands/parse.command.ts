@@ -140,10 +140,13 @@ export class ParseCommand {
     const good = parsedList.filter((e) => e.score >= e.parser.minValidScore());
 
     if (write) {
+      const now = new Date();
       const goodAtEnd = good.filter((e) => e.parser.file.end());
-      const savePromises = [];
-      let deletedOld = 0;
+      let deletedOld = 0,
+        savedNew = 0,
+        updatedInfoFiles = 0;
       for (const parsed of goodAtEnd) {
+        const savePromises = [];
         const infoFile = parsed.doc;
         const data = parsed.parser.getParsed();
         const deleted = await this.causeListModel
@@ -162,10 +165,15 @@ export class ParseCommand {
           });
           savePromises.push(causeList.save());
         }
+        await Promise.all(savePromises);
+        savedNew += savePromises.length;
+        infoFile.parsedAt = now;
+        await infoFile.save();
+        updatedInfoFiles++;
       }
-      console.log(`Deleted ${deletedOld} existing CauseLists!`);
-      console.log(`Writing ${savePromises.length} CauseList to db!`);
-      await Promise.all(savePromises);
+      this.log.log(`Deleted ${deletedOld} existing !`);
+      this.log.log(`Writing ${savedNew} CauseList to db!`);
+      this.log.log(`Updated ${updatedInfoFiles} InfoFile as parsed...`);
       return;
     }
     // console.dir(

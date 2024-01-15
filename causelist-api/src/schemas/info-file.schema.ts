@@ -33,6 +33,9 @@ export class InfoFile {
   parentName: string;
 
   @Prop()
+  parsedAt?: Date;
+
+  @Prop()
   createdAt?: Date;
 
   @Prop()

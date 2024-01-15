@@ -38,7 +38,7 @@ export default function SignIn() {
     working ||
     isLoading ||
     isValidating ||
-    (!isLoading && !isValidating && user);
+    (!isLoading && !isValidating && !!user);
 
   return (
     <Container maxWidth="xs">

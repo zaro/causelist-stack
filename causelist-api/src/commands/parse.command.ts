@@ -5,7 +5,6 @@ import * as path from 'node:path';
 import * as util from 'node:util';
 import * as child_process from 'node:child_process';
 import { createHash } from 'node:crypto';
-import * as nunjucks from 'nunjucks';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
@@ -18,7 +17,6 @@ import {
   CauselistMultiDocumentParser,
   CauselistParser,
 } from '../data-importer/parser/causelist-parser.js';
-import { format } from 'date-fns';
 import { CauseList } from '../schemas/causelist.schema.js';
 import { Court } from '../schemas/court.schema.js';
 import {
@@ -210,19 +208,6 @@ export class ParseCommand {
         }
       }
     }
-  }
-
-  makeNunjucksEnv() {
-    const env = new nunjucks.Environment(
-      new nunjucks.FileSystemLoader('src/commands/parser/debug/nunjucks/'),
-    );
-    env.addFilter('date', function (date, formatSpecifier) {
-      return format(date, formatSpecifier ?? 'yyyy-MM-dd');
-    });
-    env.addFilter('dateTime', function (date, formatSpecifier) {
-      return format(date, formatSpecifier ?? 'yyyy-MM-dd HH:mm');
-    });
-    return env;
   }
 
   @Command({

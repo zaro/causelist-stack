@@ -54,7 +54,7 @@ export default function Page() {
                 fullWidth
                 id="firstName"
                 label="First Name"
-                defaultValue={user.firstName}
+                defaultValue={user?.firstName}
                 autoFocus
               />
             </Grid>
@@ -65,7 +65,7 @@ export default function Page() {
                 id="lastName"
                 label="Last Name"
                 name="lastName"
-                defaultValue={user.lastName}
+                defaultValue={user?.lastName}
                 autoComplete="family-name"
               />
             </Grid>
@@ -75,7 +75,7 @@ export default function Page() {
                 id="phone"
                 label="Phone"
                 name="phone"
-                value={user.phone}
+                value={user?.phone}
                 disabled
                 autoComplete="phone"
               />

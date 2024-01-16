@@ -15,6 +15,7 @@ import { UsersService } from '../users/users.service.js';
 import { IsPhoneNumber } from 'class-validator';
 import { SmsApiService } from '../sms-api/sms-api.service.js';
 import { UserRole } from '../interfaces/users.js';
+import { EmailService } from '../email/email.service.js';
 
 export class SendOtpParams {
   @IsPhoneNumber('KE', {
@@ -28,9 +29,10 @@ export class AuthController {
   private readonly log = new Logger(AuthController.name);
 
   constructor(
-    private authService: AuthService,
-    private userService: UsersService,
-    private smsService: SmsApiService,
+    protected authService: AuthService,
+    protected userService: UsersService,
+    protected smsService: SmsApiService,
+    protected emailService: EmailService,
   ) {}
 
   @Get('me')
@@ -58,11 +60,14 @@ export class AuthController {
       };
     }
     this.log.log(`Sending OTP for ${params.phone} => ${otp.code}`);
+    const user = await this.userService.findOneByPhone(params.phone);
+    // console.log('>>>>>>', user);
+    // const emailResult = await this.emailService.sendLoginCode(user.email, otp);
+    // console.log('>>>>>>', emailResult);
     if (
       process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging' ||
       process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
     ) {
-      const user = await this.userService.findOneByPhone(params.phone);
       if (user.role === UserRole.Admin) {
         this.log.log(
           `Skip Sending OTP for ${params.phone}, env is ${process.env.NEXT_PUBLIC_ENVIRONMENT} and user is admin`,

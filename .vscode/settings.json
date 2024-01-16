@@ -8,6 +8,9 @@
   "[helm]": {
     "editor.formatOnSave": false
   },
+  "[nunjucks]": {
+    "editor.formatOnSave": false
+  },
   "javascript.preferences.importModuleSpecifier": "relative",
   "javascript.preferences.importModuleSpecifierEnding": "js",
   "typescript.preferences.importModuleSpecifierEnding": "js",

@@ -34,6 +34,9 @@ api:
     S3_CRAWLER_BUCKET: kenylaw-crawler
     S3_ENDPOINT: http://minio.tilt:30900
     S3_REGION: minio
+    SMTP_HOST: mailhog
+    SMTP_PORT: 1025
+    SMTP_SSL: false
 
     # ZETTATEL_API_KEY: c2395debd6724a0bf871de8d904861e10bf304f4
     # ZETTATEL_USER: zaro

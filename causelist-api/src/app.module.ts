@@ -22,6 +22,7 @@ import { SmsApiModule } from './sms-api/sms-api.module.js';
 import { DataImporterModule } from './data-importer/data-importer.module.js';
 import { K8sJobsModule } from './k8s-jobs/k8s-jobs.module.js';
 import { Court, CourtSchema } from './schemas/court.schema.js';
+import { EmailModule } from './email/email.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -113,6 +114,7 @@ AdminJS.registerAdapter({
     SmsApiModule,
     DataImporterModule,
     K8sJobsModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

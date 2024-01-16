@@ -11,12 +11,14 @@ import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { SmsApiModule } from '../sms-api/sms-api.module.js';
 import { ConfigService } from '@nestjs/config';
 import { RolesGuard } from './roles.guard.js';
+import { EmailModule } from '../email/email.module.js';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     SmsApiModule,
+    EmailModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

@@ -30,6 +30,7 @@ export class DbCommand {
         firstName: 'Svetlozar',
         lastName: 'Argirov',
         role: UserRole.Admin,
+        email: 'zaro@causelist.co.ke',
       },
       { upsert: true, new: true },
     );
@@ -42,6 +43,7 @@ export class DbCommand {
         firstName: 'Robinson',
         lastName: 'Kemwamu',
         role: UserRole.Admin,
+        email: 'robin@causelist.co.ke',
       },
       { upsert: true, new: true },
     );

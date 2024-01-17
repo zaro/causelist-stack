@@ -1,0 +1,19 @@
+{% import "_blocks.html.nunjucks" as blocks %}
+{% extends "email-base.html.nunjucks" %}
+
+{% block main_content %}
+<p>Hello {{ user.firstName }} {{ user.lastName }},<p>
+
+<p>
+  Thank you for signing up for <a href="https://causelist.co.ke" target="_blank">causelist.co.ke</a> .
+  If you have any problems, suggestions or you need support you can write us at <a href="mailto:info@causelist.co.ke" target="_blank">info@causelist.co.ke</a>
+</p>
+
+
+<h2 class="align-center" >Here is your login code<h2>
+
+{{ blocks.loginCode(code) }}
+
+<p class="align-center">valid until: <b>{{ expiresAt | dateTime }}</b><p>
+
+{% endblock %}

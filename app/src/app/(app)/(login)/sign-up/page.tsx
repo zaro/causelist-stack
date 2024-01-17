@@ -50,11 +50,12 @@ export default function SignUp() {
     })
       .then(async (r) => {
         if (r.status == 201) {
-          return sendOtp(body.phone);
+          return sendOtp(body.phone, true, false, true);
         }
         if (r.status == 409) {
           setValidationErrors({
             phone: "User already exists",
+            email: "User already exists",
           });
           return;
         }
@@ -170,7 +171,7 @@ export default function SignUp() {
           >
             Sign Up
           </LoadingButton>
-          {error?.length && (
+          {error?.length ? (
             <Alert severity="error" sx={{ mt: 1, mb: 2 }}>
               <AlertTitle>Error</AlertTitle>
               <ul>
@@ -179,7 +180,7 @@ export default function SignUp() {
                 ))}
               </ul>
             </Alert>
-          )}
+          ) : null}
           <Grid container justifyContent="flex-end">
             <Grid item>
               <AppLink href="/sign-in" variant="body2">

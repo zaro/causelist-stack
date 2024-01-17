@@ -1,0 +1,13 @@
+{% import "_blocks.html.nunjucks" as blocks %}
+{% extends "email-base.html.nunjucks" %}
+
+{% block main_content %}
+<p>Hello {{ user.firstName }} {{ user.lastName }},<p>
+
+<h2 class="align-center" >Here is your login code<h2>
+
+{{ blocks.loginCode(code) }}
+
+<p class="align-center">valid until: <b>{{ expiresAt | dateTime }}</b><p>
+
+{% endblock %}

@@ -76,15 +76,28 @@ export class UsersService {
       phone: this.normalizePhone(userPhone),
     });
   }
-
+  async isExistingUser(
+    userPhone: string,
+    userEmail: string,
+  ): Promise<User | undefined> {
+    return this.userModel.findOne({
+      $or: [{ phone: this.normalizePhone(userPhone) }, { email: userEmail }],
+    });
+  }
   async createUser(userData: CreateUserDataParams): Promise<User> {
-    const existing = await this.findOneByPhone(userData.phone);
+    let { email, phone, ...createData } = userData;
+    email = email.toLowerCase();
+    phone = this.normalizePhone(phone);
+    const existing = await this.isExistingUser(phone, email);
     if (existing) {
-      throw new ConflictException('Phone is already used by another user');
+      throw new ConflictException(
+        'Phone or Email is already used by another user',
+      );
     }
     const newUser = new this.userModel({
-      ...userData,
-      phone: this.normalizePhone(userData.phone),
+      ...createData,
+      email,
+      phone,
       role: UserRole.Lawyer,
     });
     await newUser.save();
@@ -93,7 +106,7 @@ export class UsersService {
 
   async makeOtp(
     userPhone: string,
-    expiresInSeconds = 180,
+    expiresInSeconds = 600,
   ): Promise<Otp | null> {
     const phone = this.normalizePhone(userPhone);
     const user = await this.findOneByPhone(userPhone);

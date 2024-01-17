@@ -56,7 +56,11 @@ export default function CheckOtp() {
   const [error, setError] = React.useState<string[] | null>(null);
   const [signedIn, setSignedIn] = React.useState(false);
   const router = useRouter();
-  const phoneForOtp = loginStore.get.phoneForOtp();
+  const phoneForOtp = loginStore.use.phoneForOtp();
+  const optExpiresAt = loginStore.use.otpExpiresAt();
+  const useEmail = loginStore.use.useEmail();
+  const skipSms = loginStore.use.skipSms();
+
   // TODO: maybe make this work
   // if (!phoneForOtp) {
   //   router.push("/sign-in");
@@ -83,8 +87,7 @@ export default function CheckOtp() {
 
         if (r.accessToken && r.user) {
           userStore.set.accessToken(r.accessToken);
-          loginStore.set.phoneForOtp(null);
-          loginStore.set.otpExpiresAt(null);
+          loginStore.set.reset();
           return revalidateUser().then(() => {
             setSignedIn(true);
           });
@@ -121,12 +124,26 @@ export default function CheckOtp() {
         <Typography component="h1" variant="h5">
           Enter Code
         </Typography>
-        <Typography sx={{ mt: 2, mb: 2 }}>
-          We&apos;ve sent a login code to <strong>{phoneForOtp}</strong>, enter
-          it below to continue
-        </Typography>
+        {skipSms ? (
+          <Typography sx={{ mt: 2, mb: 2 }}>
+            We&apos;ve sent a login code to the <strong>email address</strong>{" "}
+            registered for
+            {phoneForOtp}, enter it below to continue
+          </Typography>
+        ) : (
+          <Typography sx={{ mt: 2, mb: 2 }}>
+            We&apos;ve sent a login code to <strong>{phoneForOtp}</strong>
+            {useEmail ? (
+              <>
+                {" "}
+                and the <strong>email address</strong> registered for
+              </>
+            ) : null}
+            , enter it below to continue
+          </Typography>
+        )}
         <Typography variant="body2">
-          <ExpiresIn expiresIn={loginStore.get.otpExpiresAt()} />
+          <ExpiresIn expiresIn={optExpiresAt} />
         </Typography>
         <Box component="form" noValidate onSubmit={checkOtp} sx={{ mt: 3 }}>
           <Grid container spacing={2}>

@@ -15,6 +15,9 @@ import AlertTitle from "@mui/material/AlertTitle";
 import useSendOtp from "../send-otp.hook.tsx";
 import useUser from "../../(main)/use-user.hook.ts";
 import PhoneTextField from "../../_components/phone-text-field.tsx";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import ErrorBox from "../../_components/error-box.tsx";
 
 export default function SignIn() {
   const { working, error, userMissing, sendOtp } = useSendOtp();
@@ -32,7 +35,8 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const phone = data.get("phone") as string;
-    return sendOtp(phone);
+    const useEmail = !!data.get("useEmail")?.toString();
+    return sendOtp(phone, useEmail, useEmail);
   };
   const disableButton =
     working ||
@@ -77,6 +81,12 @@ export default function SignIn() {
                 helperText={userMissing}
               />
             </Grid>
+            <Grid item xs={12} marginLeft="1em">
+              <FormControlLabel
+                control={<Checkbox id="useEmail" name="useEmail" />}
+                label="Send to my email instead of SMS"
+              />
+            </Grid>
           </Grid>
           <LoadingButton
             loading={disableButton}
@@ -87,16 +97,7 @@ export default function SignIn() {
           >
             Sign In
           </LoadingButton>
-          {error?.length && (
-            <Alert severity="error" sx={{ mt: 1, mb: 2 }}>
-              <AlertTitle>Error</AlertTitle>
-              <ul>
-                {error.map((e, idx) => (
-                  <li key={idx}>{e}</li>
-                ))}
-              </ul>
-            </Alert>
-          )}
+          <ErrorBox error={error} />
           <Grid container justifyContent="flex-end">
             <Grid item>
               <AppLink href="/sign-up">

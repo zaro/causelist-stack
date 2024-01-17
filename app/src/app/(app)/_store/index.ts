@@ -25,12 +25,24 @@ export const causeListStore = createStore("causeList")({
 interface LoginState {
   phoneForOtp: string | null;
   otpExpiresAt: Date | null;
+  useEmail: boolean | null;
+  skipSms: boolean | null;
 }
 
-export const loginStore = createStore("login")({
+const initialLoginStoreState: LoginState = {
   phoneForOtp: null,
   otpExpiresAt: null,
-} as LoginState);
+  useEmail: null,
+  skipSms: null,
+};
+
+export const loginStore = createStore("login")(
+  initialLoginStoreState
+).extendActions((set) => ({
+  reset: () => {
+    set.mergeState(initialLoginStoreState);
+  },
+}));
 
 interface UserState {
   accessToken: string | null;

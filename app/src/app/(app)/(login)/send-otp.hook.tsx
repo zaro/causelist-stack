@@ -7,16 +7,24 @@ export default function useSendOtp() {
   const [userMissing, setUserMissing] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string[] | null>(null);
   const router = useRouter();
-  const sendOtp = (phone: string) => {
+  const sendOtp = (
+    phone: string,
+    useEmail?: boolean,
+    skipSms?: boolean,
+    welcomeMessage?: boolean
+  ) => {
     setUserMissing(null);
     setError(null);
     setWorking(true);
+
+    loginStore.set.reset();
+
     return fetch("/api/auth/send-otp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ phone }),
+      body: JSON.stringify({ phone, useEmail, skipSms, welcomeMessage }),
     })
       .then(async (response) => {
         const r = await response.json();
@@ -29,6 +37,8 @@ export default function useSendOtp() {
         } else if (r?.expiresAt) {
           loginStore.set.otpExpiresAt(new Date(r.expiresAt));
           loginStore.set.phoneForOtp(r.phone);
+          loginStore.set.useEmail(useEmail ?? false);
+          loginStore.set.skipSms(skipSms ?? false);
           router.push("/check-otp");
           return;
         } else if (r?.statusCode === 400) {

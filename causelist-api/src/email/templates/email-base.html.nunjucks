@@ -104,7 +104,7 @@
       }
 
       a {
-        color: #0867ec;
+        color: #932c2b;
         text-decoration: underline;
       }
       /* -------------------------------------
@@ -133,10 +133,10 @@
 
       .btn a {
         background-color: #ffffff;
-        border: solid 2px #0867ec;
+        border: solid 2px #932c2b;
         border-radius: 4px;
         box-sizing: border-box;
-        color: #0867ec;
+        color: #932c2b;
         cursor: pointer;
         display: inline-block;
         font-size: 16px;
@@ -147,13 +147,31 @@
         text-transform: capitalize;
       }
 
+      .btn .login-code {
+        letter-spacing: .2rem;
+        background-color: #ffffff;
+        border: solid 2px #932c2b;
+        border-radius: 4px;
+        box-sizing: border-box;
+        color: #932c2b;
+        display: inline-block;
+        font-size: 32px;
+        font-weight: bold;
+        margin: 0;
+        padding: 12px 24px;
+        text-decoration: none;
+        text-transform: capitalize;
+      }
+
+
+
       .btn-primary table td {
-        background-color: #0867ec;
+        background-color: #932c2b;
       }
 
       .btn-primary a {
-        background-color: #0867ec;
-        border-color: #0867ec;
+        background-color: #932c2b;
+        border-color: #932c2b;
         color: #ffffff;
       }
 
@@ -192,7 +210,7 @@
       }
 
       .text-link {
-        color: #0867ec !important;
+        color: #932c2b !important;
         text-decoration: underline !important;
       }
 
@@ -327,7 +345,11 @@
                   {% endblock %}
                 </td>
               </tr>
-
+              <tr>
+                <td class="wrapper">
+                  The Causelist Team
+                </td>
+              </tr>
               <!-- END MAIN CONTENT AREA -->
             </table>
 
@@ -341,7 +363,7 @@
               >
                 <tr>
                   <td class="content-block">
-                    <span class="apple-link">Causelist Kenya</span>
+                    <span class="apple-link">© Causelist {{ currentYear }} </span>
                     <!-- <br />
                     Don't like these emails?
                     <a href="http://htmlemail.io/blog">Unsubscribe</a>. -->

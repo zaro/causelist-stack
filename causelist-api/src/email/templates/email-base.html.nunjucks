@@ -328,7 +328,7 @@
           <div class="content">
             <!-- START CENTERED WHITE CONTAINER -->
             <span class="preheader">
-              {% block header %} This is the default content {% endblock %}
+              {% block header %}{% endblock %}
             </span>
             <table
               role="presentation"

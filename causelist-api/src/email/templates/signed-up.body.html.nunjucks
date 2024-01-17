@@ -10,7 +10,7 @@
 </p>
 
 
-<h2 class="align-center" >Here is your login code<h2>
+<h2 class="align-center" >Here is your login code</h2>
 
 {{ blocks.loginCode(code) }}
 

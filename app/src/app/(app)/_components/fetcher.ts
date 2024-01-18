@@ -10,10 +10,7 @@ export class FetcherError extends Error {
   }
 }
 
-export const fetcher = async (
-  input: Parameters<typeof fetch>[0],
-  init?: Parameters<typeof fetch>[1]
-) => {
+export const addAuthHeader = (init: RequestInit | undefined) => {
   const accessToken = userStore.get.accessToken();
   if (accessToken) {
     if (!init) {
@@ -24,6 +21,14 @@ export const fetcher = async (
       "Auth-Token": accessToken,
     };
   }
+  return init;
+};
+
+export const fetcher = async (
+  input: Parameters<typeof fetch>[0],
+  init?: Parameters<typeof fetch>[1]
+) => {
+  init = addAuthHeader(init);
   // console.log("Fetching ", input, "with headers: ", init?.headers);
   const res = await fetch(input, init);
   if (!res.ok) {

@@ -24,6 +24,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import WebIcon from "@mui/icons-material/Web";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
@@ -148,7 +149,7 @@ export default function App({ children }: { children: React.ReactNode }) {
   // Needed
   const accessToken = userStore.use.accessToken();
 
-  const { user, isLoading, isValidating, loggedOut } = useUser();
+  const { user, isLoading, isValidating, loggedOut, isAdminUser } = useUser();
   if (isValidating || isLoading) return <FullScreenSpinner />;
   if (loggedOut) return <div>redirecting...</div>;
 
@@ -194,6 +195,16 @@ export default function App({ children }: { children: React.ReactNode }) {
         ))}
       </List>
       <List>
+        {isAdminUser && (
+          <ListItem disablePadding>
+            <ListItemButton component={Link} href="/admin">
+              <ListItemIcon>
+                <AdminPanelSettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Admin" />
+            </ListItemButton>
+          </ListItem>
+        )}
         <ListItem>
           <ListItemAvatar>
             <Avatar>

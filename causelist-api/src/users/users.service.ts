@@ -1,11 +1,21 @@
 import crypto from 'crypto';
 import parsePhoneNumber from 'libphonenumber-js';
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '../schemas/user.schema.js';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Otp } from '../schemas/otp.schema.js';
-import { ICreateUserDataParams, UserRole } from '../interfaces/users.js';
+import {
+  ICreateUserDataParams,
+  IUpdateUserDataParams,
+  IUserStats,
+  UserRole,
+} from '../interfaces/users.js';
 import {
   IsEmail,
   IsNotEmpty,
@@ -19,12 +29,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 
-export class CreateUserDataParams implements ICreateUserDataParams {
-  @IsPhoneNumber('KE', {
-    message: 'Must be valid Kenya phone number',
-  })
-  phone: string;
-
+export class UpdateUserDataParams implements IUpdateUserDataParams {
   @IsNotEmpty({
     message: 'First Name is required',
   })
@@ -42,6 +47,16 @@ export class CreateUserDataParams implements ICreateUserDataParams {
     },
   )
   email: string;
+}
+
+export class CreateUserDataParams
+  extends UpdateUserDataParams
+  implements ICreateUserDataParams
+{
+  @IsPhoneNumber('KE', {
+    message: 'Must be valid Kenya phone number',
+  })
+  phone: string;
 }
 
 @Injectable()
@@ -67,8 +82,24 @@ export class UsersService {
     return result;
   }
 
+  listAll() {
+    return this.userModel.find().cursor();
+  }
+
   async findById(id: string): Promise<User | undefined> {
     return this.userModel.findById(id);
+  }
+
+  async updateById(
+    id: string,
+    userData: UpdateUserDataParams,
+  ): Promise<User | undefined> {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new NotFoundException();
+    }
+    await user.updateOne(userData).exec();
+    return user;
   }
 
   async findOneByPhone(userPhone: string): Promise<User | undefined> {
@@ -157,5 +188,54 @@ export class UsersService {
     }
     this.log.debug(`checkOtp(${user.phone}, ${code}) => ${!!result}`);
     return result;
+  }
+
+  async userStats(): Promise<IUserStats> {
+    const totalCount = await this.userModel.countDocuments().exec();
+    const countByDay = await this.userModel.aggregate([
+      {
+        $lookup: {
+          from: 'otps',
+          localField: 'phone',
+          foreignField: 'phone',
+          as: 'otp',
+        },
+      },
+      {
+        $project: {
+          date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          otp: 1,
+          otpUsed: {
+            $cond: [{ $eq: [{ $arrayElemAt: ['$otp.used', 0] }, true] }, 1, 0],
+          },
+          otpUnused: {
+            $cond: [{ $eq: [{ $arrayElemAt: ['$otp.used', 0] }, false] }, 1, 0],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$date',
+          otpUsedCount: { $sum: '$otpUsed' },
+          otpUnusedCount: { $sum: '$otpUnused' },
+          total: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    return {
+      totalCount,
+      countByDay: Object.fromEntries(
+        countByDay.map((r) => [
+          r._id,
+          {
+            otpUsedCount: r.otpUsedCount,
+            otpUnusedCount: r.otpUnusedCount,
+            totalCount: r.total,
+          },
+        ]),
+      ),
+    };
   }
 }

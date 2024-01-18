@@ -2,7 +2,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { fetcher } from "../_components/fetcher.ts";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { IUser } from "../../../api/users.ts";
+import { IUser, UserRole } from "../../../api/users.ts";
 
 export const USER_ENDPOINT = "/api/auth/me";
 
@@ -37,6 +37,7 @@ export default function useUser({ noAutoLogOut }: UseUserProps = {}) {
     user: data,
     isLoading,
     isValidating,
+    isAdminUser: UserRole.Admin === data?.role,
     mutateUser: mutate,
   };
 }

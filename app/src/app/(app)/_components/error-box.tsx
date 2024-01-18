@@ -6,7 +6,7 @@ export default function ErrorBox({
 }: {
   error?: string | string[] | null;
 }) {
-  if (!error) return null;
+  if (!error || !error.length) return null;
   if (!Array.isArray(error)) {
     error = [error];
   }
@@ -15,7 +15,7 @@ export default function ErrorBox({
       <AlertTitle>Error</AlertTitle>
       <ul>
         {error.map((e, idx) => (
-          <li key={idx}>{e}</li>
+          <li key={idx}>{e.toString()}</li>
         ))}
       </ul>
     </Alert>

@@ -7,11 +7,7 @@ export default function PageLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useUser();
+  const { isAdminUser } = useUser();
 
-  return (
-    <div id="admin">
-      {user?.role === UserRole.Admin ? children : <h1>Forbidden</h1>}
-    </div>
-  );
+  return <div id="admin">{isAdminUser ? children : <h1>Forbidden</h1>}</div>;
 }

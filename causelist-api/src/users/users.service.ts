@@ -86,6 +86,35 @@ export class UsersService {
     return this.userModel.find().cursor();
   }
 
+  listAllWithOtp() {
+    return this.userModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'otps',
+            localField: 'phone',
+            foreignField: 'phone',
+            as: 'otp',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            phone: 1,
+            email: 1,
+            firstName: 1,
+            lastName: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            otpUsed: { $arrayElemAt: ['$otp.used', 0] },
+            optCreatedAt: { $arrayElemAt: ['$otp.createdAt', 0] },
+            optUpdatedAt: { $arrayElemAt: ['$otp.updatedAt', 0] },
+          },
+        },
+      ])
+      .cursor();
+  }
+
   async findById(id: string): Promise<User | undefined> {
     return this.userModel.findById(id);
   }

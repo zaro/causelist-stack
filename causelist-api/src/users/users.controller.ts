@@ -64,8 +64,14 @@ export class UsersController {
         'role',
         'createdAt',
         'updatedAt',
+        'otpUsed',
+        'optCreatedAt',
+        'optUpdatedAt',
       ],
       cast: {
+        boolean: (value: boolean) => {
+          return value.toString();
+        },
         date: (value: Date) => {
           return value.toISOString();
         },
@@ -80,6 +86,6 @@ export class UsersController {
       'Content-Disposition',
       'attachment; filename="users.csv"',
     );
-    return this.usersService.listAll().pipe(csvStringify).pipe(response);
+    return this.usersService.listAllWithOtp().pipe(csvStringify).pipe(response);
   }
 }

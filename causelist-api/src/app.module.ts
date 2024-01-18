@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
 import {
   BullModule,
   BullRootModuleOptions,
@@ -33,6 +34,10 @@ AdminJS.registerAdapter({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 600000,
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],

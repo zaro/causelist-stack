@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import { CourtsService } from './courts.service.js';
 import { InternalRoute, Public } from '../auth/public.decorator.js';
 
@@ -17,6 +17,7 @@ import { Transform } from 'class-transformer';
 import { Roles } from '../auth/roles.decorator.js';
 import { User } from '../schemas/user.schema.js';
 import { UserRole } from '../interfaces/users.js';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 export class SearchParams {
   @IsString()
@@ -64,6 +65,7 @@ export class GetDayParams extends DaysInMonthParam {
 }
 
 @Controller('courts')
+@UseInterceptors(CacheInterceptor)
 export class CourtsController {
   constructor(protected service: CourtsService) {}
   @Get('all')
@@ -77,7 +79,7 @@ export class CourtsController {
   }
 
   @Public()
-  // @InternalRoute()
+  @CacheTTL(8 * 3600 * 1000)
   @Get('random')
   random() {
     return this.service.getRandomDay();

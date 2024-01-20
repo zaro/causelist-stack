@@ -69,7 +69,6 @@ AdminJS.registerAdapter({
         configService: ConfigService,
       ): Promise<BullRootModuleOptions> => ({
         url: configService.getOrThrow('REDIS_URL'),
-        prefix: 'bullJob:',
       }),
       inject: [ConfigService],
     }),

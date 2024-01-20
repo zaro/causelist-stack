@@ -59,8 +59,13 @@ export class K8sJobsModule {
   }
 
   async onApplicationBootstrap() {
-    if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
-      this.log.warn('Environment is development, skip adding cron job!');
+    if (
+      process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging' ||
+      process.env.NEXT_PUBLIC_ENVIRONMENT === 'development'
+    ) {
+      this.log.warn(
+        `Environment is ${process.env.NEXT_PUBLIC_ENVIRONMENT}, skip adding cron job!`,
+      );
       return;
     }
     const cron = '1 1 * * *'; // each work day at 01:01

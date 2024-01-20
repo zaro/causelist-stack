@@ -17,6 +17,7 @@ import {
   CRAWLER_CRON_DEFAULT_OPTIONS,
   CRAWLER_CRON_QUEUE_NAME,
   CrawlerCronParams,
+  CrawlerCronProcessor,
 } from './crawler-cron.processor.js';
 
 @Module({
@@ -37,7 +38,11 @@ import {
       },
     ),
   ],
-  providers: [CrawlerJobProcessor, ParseCrawledJobProcessor],
+  providers: [
+    CrawlerJobProcessor,
+    ParseCrawledJobProcessor,
+    CrawlerCronProcessor,
+  ],
   exports: [BullModule],
 })
 export class K8sJobsModule {
@@ -48,15 +53,43 @@ export class K8sJobsModule {
     private crawlerCronQueue: Queue<CrawlerCronParams>,
   ) {}
 
-  onApplicationBootstrap() {
+  async findRepeatableJob(jobId: string) {
+    const existingJobs = await this.crawlerCronQueue.getRepeatableJobs();
+    return existingJobs.find((job) => job.id === jobId);
+  }
+
+  async onApplicationBootstrap() {
+    if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
+      this.log.warn('Environment is development, skip adding cron job!');
+      return;
+    }
     const cron = '1 1 * * *'; // each work day at 01:01
-    this.log.log(`Adding crawler cron job with cron: ${cron}`);
-    this.crawlerCronQueue.add(
-      'crawler-cron',
+    const jobId = 'crawler-cron-job';
+
+    const existingJob = await this.findRepeatableJob(jobId);
+    if (existingJob && existingJob.cron === cron) {
+      this.log.log(`Job ${jobId} with cron '${cron}' already exists!`);
+      this.log.log(`Job ${jobId} next=${new Date(existingJob.next)}`);
+      return;
+    }
+    if (existingJob) {
+      this.log.log(
+        `Job ${jobId} with non matching cron, removing! current(${existingJob.cron}) !== desired(${cron}) `,
+      );
+      await this.crawlerCronQueue.removeRepeatable({
+        ...existingJob,
+        jobId,
+      });
+    }
+    this.log.log(`Adding crawler cron job ${jobId} with cron: ${cron}`);
+    const job = await this.crawlerCronQueue.add(
       {},
       {
+        jobId,
         repeat: { cron },
       },
     );
+    const newRepeatable = await this.findRepeatableJob(jobId);
+    this.log.log(`Job ${jobId} next=${new Date(newRepeatable.next)}`);
   }
 }

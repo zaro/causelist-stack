@@ -30,12 +30,13 @@ import {
   CauselistLineParsed,
   CauselistSectionParsed,
 } from '../../interfaces/index.js';
+import { MatchSequence } from './multi-line-matcher.js';
 
 // order matters
 const SECTION_NAMES = [
   'MENTION DATE FOR COMPLIANCE',
   /MENTIONS?/,
-  'JUDGMENT',
+  /JUDGMENTS?/,
   'WRITTEN SUBMISSIONS',
   /SUBMISSIONS?/,
   'COMMERCIAL SUIT DIVISION',
@@ -44,16 +45,16 @@ const SECTION_NAMES = [
   'PLEA',
   'SUMMONS FOR CONFIRMATION',
   'RECTIFICATION OF GRANT',
-  'RULING',
+  /RULINGS?/,
   'CHILDREN’S SERVICE MONTH',
   'ASSESSMENT OF COSTS',
   'FORMAL PROOF HEARING',
   'FRESH HEARING',
   'INTER PARTE HEARING',
-  'PART HEARD HEARING',
+  /PART HEARD HEARINGS?/,
   'DEFENSE HEARING',
   /HEARING(?:\s+OF\s+|\s*-\s*)(?:\w+\s*)+/i,
-  'HEARINGS?',
+  /HEARINGS?/,
   'MITIGATION',
   'CASE MANAGEMENT CONFERENCE',
   'CERTIFICATE OF URGENCY',
@@ -81,24 +82,50 @@ const SECTION_NAMES = [
   'SETTLEMENT OF TERMS',
   'ENTERING INTERLOCUTORY JUDGMENTS',
   'FILING DEFENCE',
-  'RULINGS',
   'PRELIMINARY OBJECTION',
   'TRIAL',
   'DIRECTIONS',
 ];
 
+const SECTION_NAMES_AS_GROUP = new RegExp(
+  '(?:' +
+    SECTION_NAMES.map((e) => (typeof e === 'string' ? e : e.source)).join('|') +
+    ')',
+);
+
 const JUDGE_HON_RE = /^\s*HON\.\s*.*/i;
 
+const CAUSE_LIST_NUM_RE = /(?<num>[1-9]\d*)\s*\.?\s*(?:\.\s*)?/;
+const CAUSE_LIST_ADDITIONAL_NUMBER_RE = /(?:(?<additionalNumber>\w+)\s+)/;
+const CAUSE_LIST_CASE_NUMBER_RE =
+  /(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])/;
+const CAUSE_LIST_PARTIES_RE =
+  /(?:(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?))/;
+const CAUSE_LIST_DESCRIPTION_RE = /(?<description>.*?)/;
+
 const CAUSE_LIST_RE = [
-  /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?:(?<additionalNumber>\w+)\s+)?(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])\s*(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)\s*$/i,
-  /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?:(?<additionalNumber>\w+)\s+)?(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])\s*(?<description>.*?)\s*$/,
-  /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)\s*$/i,
-  /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<description>In\s+The\s+Estate\s+Of.*?)\s*$/,
+  new RegExp(
+    `^\\s*${CAUSE_LIST_NUM_RE.source}${CAUSE_LIST_ADDITIONAL_NUMBER_RE.source}?${CAUSE_LIST_CASE_NUMBER_RE.source}\\s*${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
+    'i',
+  ),
+  new RegExp(
+    `^\\s*${CAUSE_LIST_NUM_RE.source}${CAUSE_LIST_ADDITIONAL_NUMBER_RE.source}?${CAUSE_LIST_CASE_NUMBER_RE.source}\\s*${CAUSE_LIST_DESCRIPTION_RE.source}\\s*$`,
+    'i',
+  ),
+  new RegExp(
+    `^\\s*${CAUSE_LIST_NUM_RE.source}${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
+    'i',
+  ),
+  new RegExp(
+    `^\\s*${CAUSE_LIST_NUM_RE.source}(?<description>In\\s+The\\s+Estate\\s+Of.*?)\\s*$`,
+    'i',
+  ),
 ];
 
 export class CauselistLineParser extends ParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
-  newSectionRegex = phrasesToRegex(SECTION_NAMES).concat([JUDGE_HON_RE]);
+  // newSectionRegex = phrasesToRegex(SECTION_NAMES).concat([JUDGE_HON_RE]);
+  newSectionRegex = [SECTION_NAMES_AS_GROUP, JUDGE_HON_RE];
   PEEK_FORWARD = 6;
 
   isSectionEnd(nextLine: string) {
@@ -205,7 +232,7 @@ export class CauselistLineParser extends ParserBase {
 
 export class CauseListSectionParser extends ParserBase {
   dateTime: ExtractTimeField;
-  section = new ExtractStringField(-10, phrasesToRegex(SECTION_NAMES));
+  section = new ExtractStringField(-10, [SECTION_NAMES_AS_GROUP]);
   // causelist = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
   cases: CauselistLineParser;
   constructor(
@@ -279,6 +306,17 @@ export class CauselistParser extends CauseListParseBase {
       header: this.header.getParsed(),
       type: 'CAUSE LIST',
     };
+  }
+}
+
+export class UNassignedMattersLineParser1 extends CauseListParseBase {
+  lines = new ExtractMultiStringListField(10, [
+    /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<typeOfCause>)(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)\s*$/i,
+    /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<typeOfCause>)(?<description>In\s+The\s+Estate\s+Of.*?)\s*$/,
+  ]);
+
+  tryParse(): void {
+    throw new Error('Method not implemented.');
   }
 }
 

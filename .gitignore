@@ -1,4 +1,5 @@
 node_modules/
 mongo/
 proxy/
+crawler-bucket/
 causelist_prototype.pdf

@@ -119,11 +119,15 @@ export class ExtractTimeField extends ExtractedField<Date> {
   }
 }
 
+export type MatcherConfig = Matcher | RegExp[];
 export abstract class ExtractWithRegexField<T> extends ExtractedField<T> {
   protected readonly matcher: Matcher;
-  constructor(score: number, regExes: RegExp[]) {
+  constructor(score: number, regExesOrMatcher: MatcherConfig) {
     super(score);
-    this.matcher = new MatchAny(regExes);
+    this.matcher =
+      regExesOrMatcher instanceof Matcher
+        ? regExesOrMatcher
+        : new MatchAny(regExesOrMatcher);
   }
   protected abstract _setFrom(_: MatchResult): void;
 
@@ -173,8 +177,8 @@ export abstract class ExtractListWithRegexField<
   protected abstract _addFrom(_: MatchResult): void;
   protected abstract _replaceFrom(_1: MatchResult, _2: number): void;
 
-  constructor(score: number, regExes: RegExp[]) {
-    super(score, regExes);
+  constructor(score: number, regExesOrMatcher: MatcherConfig) {
+    super(score, regExesOrMatcher);
     this.matcher.setMax(Number.MAX_SAFE_INTEGER);
   }
 
@@ -210,8 +214,8 @@ export abstract class ExtractListWithRegexField<
 }
 
 export class ExtractStringListField extends ExtractListWithRegexField<string> {
-  constructor(score: number, regExesOrStrings: (string | RegExp)[]) {
-    super(score, phrasesToRegex(regExesOrStrings));
+  constructor(score: number, regExesOrStrings: MatcherConfig) {
+    super(score, regExesOrStrings);
   }
   _setFrom(matched: MatchResult) {
     this.set(matched.getAsArray());

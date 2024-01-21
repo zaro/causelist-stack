@@ -15,6 +15,7 @@ import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
 import { MenuEntry } from './kenya-law-importer.service.js';
 
 export interface DocumentParseRequest {
+  onlyAlreadyParsed?: boolean;
   includeAlreadyParsed?: boolean;
   path?: string;
   docId?: string;
@@ -227,7 +228,7 @@ export class KenyaLawParserService {
   async loadDocumentsWithData(
     req: DocumentParseRequest,
   ): Promise<DocumentWithData[]> {
-    const filter: FilterQuery<InfoFile> = req.docId
+    let filter: FilterQuery<InfoFile> = req.docId
       ? { _id: req.docId }
       : req.sha1
         ? {
@@ -238,6 +239,10 @@ export class KenyaLawParserService {
           };
     if (!req.includeAlreadyParsed) {
       filter.parsedAt = { $exists: false };
+    }
+
+    if (req.onlyAlreadyParsed) {
+      filter = { parsedAt: { $exists: true } };
     }
     const infoFiles = await this.infoFileModel.find(filter).exec();
     this.log.log(`Loading data for ${infoFiles.length} InfoFiles`);

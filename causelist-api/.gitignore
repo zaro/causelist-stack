@@ -17,6 +17,8 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+src/data-importer/parser/__fixtures__/dev-data/
+src/data-importer/parser/__snapshots__/parsing-dev*
 
 # Data
 out/

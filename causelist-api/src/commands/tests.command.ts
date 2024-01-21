@@ -24,7 +24,8 @@ import {
   KenyaLawParserService,
 } from '../data-importer/kenya-law-parser.service.js';
 
-const fixturesDir = 'src/commands/parser/__fixtures__/data';
+const fixturesDir = 'src/data-importer/parser/__fixtures__/data';
+const devFixturesDir = 'src/data-importer/parser/__fixtures__/dev-data';
 
 const exec = util.promisify(child_process.exec);
 
@@ -38,7 +39,7 @@ export class TestsCommand {
     protected infoFileModel: Model<InfoFile>,
   ) {}
 
-  async makeFixtureFromDocument(document: DocumentWithData) {
+  async makeFixtureFromDocument(document: DocumentWithData, outputDir: string) {
     const data = {
       fileName: document.doc.fileName,
       fileSha1: document.doc.sha1,
@@ -47,15 +48,35 @@ export class TestsCommand {
       textContentType: document.textContentType,
       parentUrl: document.doc.parentUrl,
       parentPath: document.doc.parentPath,
-      textContentSha1: document.textContentSha1,
+      textContentHash: document.textContentSha1,
     };
     // Store under MD5(textContent) filename
-    const fileName = `${data.textContentSha1}.json`;
+    const fileName = `${data.textContentHash}.json`;
     fs.writeFileSync(
-      path.join(fixturesDir, fileName),
+      path.join(outputDir, fileName),
       JSON.stringify(data, undefined, 2),
     );
     this.log.log(`Wrote: ${fileName}!`);
+  }
+
+  @Command({
+    command: 'tests:make-dev-fixtures-from-db',
+    describe:
+      'save all successfully parsed InfoFile document as dev test fixture',
+  })
+  async makeDevFixtures() {
+    const documents = await this.parserService.loadDocumentsWithData({
+      path: '.',
+      onlyAlreadyParsed: true,
+    });
+    if (!documents.length) {
+      this.log.error(`Couldn't fine any successfully parsed documents!`);
+      return;
+    }
+    fs.mkdirSync(devFixturesDir, { recursive: true });
+    for (const document of documents) {
+      this.makeFixtureFromDocument(document, devFixturesDir);
+    }
   }
 
   @Command({
@@ -78,7 +99,7 @@ export class TestsCommand {
       return;
     }
     fs.mkdirSync(fixturesDir, { recursive: true });
-    this.makeFixtureFromDocument(documents[0]);
+    this.makeFixtureFromDocument(documents[0], fixturesDir);
   }
 
   @Command({

@@ -37,10 +37,7 @@
   max-width: 1300px;
   padding: 50px;
 }
-.sampleCauselist {
-  max-height: 40em;
-  overflow: scroll;
-}
+
 .gridContainer {
   display: flex;
   align-items: center;

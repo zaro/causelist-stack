@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { CauseListDocumentParsed } from "../../../../../../api/index.ts";
 import { fetcher } from "../../../../_components/fetcher.ts";
 import CauseList from "../../../../_components/causelist.tsx";
+import CauseListDocuments from "../../../../_components/causelist-documents.tsx";
 
 function SingleCauseList({
   documentId,
@@ -24,7 +25,7 @@ function SingleCauseList({
   }
   return (
     <Stack spacing={0} margin={"0 auto"}>
-      <CauseList data={data} highLight={hightLight} />
+      <CauseListDocuments data={[data]} highLight={hightLight} />
     </Stack>
   );
 }

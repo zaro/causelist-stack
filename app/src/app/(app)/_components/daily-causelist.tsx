@@ -7,6 +7,7 @@ import { CauseListDocumentParsed } from "@/api";
 import CauseList from "./causelist.tsx";
 import { causeListStore } from "../_store/index.ts";
 import { ICourt } from "@/api/courts";
+import CauseListDocuments from "./causelist-documents.tsx";
 
 export interface DailyCauseListProps {
   date: Date | null;
@@ -31,14 +32,10 @@ export default function DailyCauseLists({ date, court }: DailyCauseListProps) {
   const filteredData =
     selectedJudges.length === 0
       ? data
-      : data?.filter((c) => selectedJudges.indexOf(c.header.judge) > -1);
-  return (
-    <>
-      <Stack spacing={0} margin={"0 auto"}>
-        {filteredData?.map((c, idx) => (
-          <CauseList key={idx} data={c} />
-        ))}
-      </Stack>
-    </>
-  );
+      : data?.filter(
+          (c) =>
+            c.type === "CAUSE LIST" &&
+            selectedJudges.indexOf(c.header.judge) > -1
+        );
+  return <CauseListDocuments data={filteredData} />;
 }

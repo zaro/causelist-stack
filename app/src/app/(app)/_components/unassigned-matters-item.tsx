@@ -4,24 +4,20 @@ import ListItemButton, {
 } from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { styled, useTheme } from "@mui/material/styles";
-import { CauselistLineParsed } from "../../../api/index.ts";
+import {
+  CauselistLineParsed,
+  UnassignedMattersLineParsed,
+} from "../../../api/index.ts";
 import React, { ReactNode } from "react";
+import { CaseListItem } from "./causelist-item.tsx";
 
-export const CaseListItem = styled(ListItemButton)(({ theme }) => ({
-  borderWidth: "1px",
-  borderColor: theme.palette.grey.A400,
-  borderStyle: "solid",
-  borderRadius: "0.5em",
-  marginBottom: "1em",
-}));
-
-export interface CauseListProps {
-  data: CauselistLineParsed;
+export interface UnassignedMattersProps {
+  data: UnassignedMattersLineParsed;
   highLight?: boolean;
 }
 
-export default function CauseListItem(
-  props: CauseListProps & ListItemButtonProps
+export default function UnassignedMattersItem(
+  props: UnassignedMattersProps & ListItemButtonProps
 ) {
   const { data, highLight, ...rest } = props;
   const theme = useTheme();
@@ -33,10 +29,8 @@ export default function CauseListItem(
   return (
     <CaseListItem alignItems="flex-start" sx={sx} {...rest}>
       <ListItemText>
-        <Typography>
-          <i>{data.num ? data.num + "." : null}</i> {data.caseNumber}{" "}
-          {data.additionalNumber}
-        </Typography>
+        <i>{data.num ? data.num + "." : null}</i> {data.caseNumber}{" "}
+        <b>{data.typeOfCause}</b>
         {data.partyA ? (
           <Typography>
             {data.partyA} <i>VS</i> {data.partyB}

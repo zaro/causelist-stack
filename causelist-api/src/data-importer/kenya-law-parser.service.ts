@@ -353,5 +353,6 @@ export class KenyaLawParserService {
     ])) {
       this.log.log(`  ${bins[bin]} => ${count}`);
     }
+    return { bins, scoreBins, haveCourt };
   }
 }

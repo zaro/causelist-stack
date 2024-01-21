@@ -15,14 +15,13 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import IconButton from "@mui/material/IconButton";
 
-import classes from "./common.module.css";
 import SampleCalendar from "./SampleCalendar.tsx";
-import SampleCauseLists from "./SampleCauselist.tsx";
 import { Paper } from "@mui/material";
 import { RandomCourtData } from "@/api/ssr.ts";
 import useSWR from "swr";
 import { APP_PREVIEW_PATH, getAppPreviewData } from "./app-preview-data.ts";
 import { AppButtonLink } from "../../(app)/_components/app-link.tsx";
+import CauseListDocuments from "../../(app)/_components/causelist-documents.tsx";
 
 function getDefaultDay(data: undefined | RandomCourtData) {
   if (!data?.causelist) {
@@ -114,7 +113,7 @@ export default function AppPreview() {
               />
             </Grid>
             <Grid item xs={12} md={7} paddingY="0.5em">
-              <SampleCauseLists data={data.causelist[day]} />
+              <CauseListDocuments data={data.causelist[day]} />
             </Grid>
           </Grid>
         </Paper>

@@ -5,7 +5,7 @@ import MuiLink from "@mui/material/Link";
 import { format, utcToZonedTime } from "date-fns-tz";
 import { styled } from "@mui/material/styles";
 
-import { CauseListDocumentParsed } from "@/api";
+import { CauseListDocumentParsed, CauseListParsed } from "@/api";
 import { timeZone } from "./calendar.tsx";
 import CaseListItem from "./causelist-item.tsx";
 import CauseListItem from "./causelist-item.tsx";
@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
   width: "100%",
 }));
 
-const HeaderItem = styled(Item)(({ theme }) => ({
+export const HeaderItem = styled(Item)(({ theme }) => ({
   backgroundColor: theme.palette.grey.A200,
   fontSize: "1.3em",
 }));
@@ -38,7 +38,7 @@ const TypeOfCauseListItem = styled(ListItem)(() => ({
 }));
 
 export interface CauseListProps {
-  data: CauseListDocumentParsed;
+  data: CauseListParsed;
   highLight?: number[];
 }
 

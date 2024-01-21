@@ -23,9 +23,29 @@ export interface CauselistSectionParsed {
   cases: CauselistLineParsed[];
 }
 
-export interface CauseListDocumentParsed {
-  // type: 'CAUSE LIST' | 'UNASSIGNED MATTERS';
-  type: string;
+export interface CauseListParsed {
+  type: 'CAUSE LIST';
   header: CauselistHeaderParsed;
   causeLists: CauselistSectionParsed[];
 }
+
+export interface UnassignedMattersHeaderParsed {
+  date: string;
+}
+
+export type UnassignedMattersLineParsed = {
+  typeOfCause: string;
+  caseNumber: string;
+  num: string;
+  partyA: string;
+  partyB: string;
+  description: string;
+};
+
+export interface UnassignedMattersParsed {
+  type: 'UNASSIGNED MATTERS';
+  header: UnassignedMattersHeaderParsed;
+  cases: UnassignedMattersLineParsed[];
+}
+
+export type CauseListDocumentParsed = CauseListParsed | UnassignedMattersParsed;

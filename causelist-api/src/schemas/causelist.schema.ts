@@ -88,6 +88,11 @@ CauseListSchema.index(
     'causeLists.cases.partyA': 'text',
     'causeLists.cases.partyB': 'text',
     'causeLists.cases.description': 'text',
+    'cases.caseNumber': 'text',
+    'cases.additionalNumber': 'text',
+    'cases.partyA': 'text',
+    'cases.partyB': 'text',
+    'cases.description': 'text',
   },
   {
     name: 'search',

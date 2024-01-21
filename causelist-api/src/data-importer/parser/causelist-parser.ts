@@ -29,8 +29,11 @@ import {
   CauseListDocumentParsed,
   CauselistLineParsed,
   CauselistSectionParsed,
+  UnassignedMattersLineParsed,
+  UnassignedMattersParsed,
 } from '../../interfaces/index.js';
 import { MatchSequence } from './multi-line-matcher.js';
+import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 
 // order matters
 const SECTION_NAMES = [
@@ -85,6 +88,10 @@ const SECTION_NAMES = [
   'PRELIMINARY OBJECTION',
   'TRIAL',
   'DIRECTIONS',
+  'HIGHLIGHTING OF SUBMISSIONS',
+  /PART\s*-\s*HEARD/,
+  /\w+ OF APPEAL/,
+  /APPLICATIONS?/,
 ];
 
 const SECTION_NAMES_AS_GROUP = new RegExp(
@@ -309,22 +316,49 @@ export class CauselistParser extends CauseListParseBase {
   }
 }
 
-export class UNassignedMattersLineParser1 extends CauseListParseBase {
+export class UnassignedMattersLineParser1 extends ParserBase {
+  lines = new ExtractMultiStringListField(
+    10,
+    new MatchSequence([
+      CAUSE_LIST_NUM_RE,
+      SECTION_NAMES_AS_GROUP,
+      CAUSE_LIST_PARTIES_RE,
+    ]),
+  );
+
+  tryParse(): void {
+    this.lines.tryParse(this.file);
+  }
+  getParsed(): UnassignedMattersLineParsed[] {
+    return this.lines.get() as UnassignedMattersLineParsed[];
+  }
+}
+export class UnassignedMattersLineParser2 extends ParserBase {
   lines = new ExtractMultiStringListField(10, [
-    /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<typeOfCause>)(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)\s*$/i,
-    /^\s*(?<num>\d+)\s*\.?\s*(?:\.\s*)?(?<typeOfCause>)(?<description>In\s+The\s+Estate\s+Of.*?)\s*$/,
+    new RegExp(
+      `^\\s*${CAUSE_LIST_NUM_RE.source}(?<typeOfCause>${SECTION_NAMES_AS_GROUP.source})\\s+${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
+      'i',
+    ),
+    new RegExp(
+      `^\\s*${CAUSE_LIST_NUM_RE.source}(?<typeOfCause>${SECTION_NAMES_AS_GROUP.source})\\s+${CAUSE_LIST_DESCRIPTION_RE.source}\\s*$`,
+      'i',
+    ),
   ]);
 
   tryParse(): void {
-    throw new Error('Method not implemented.');
+    this.lines.tryParse(this.file);
+  }
+  getParsed(): UnassignedMattersLineParsed[] {
+    return this.lines.get() as UnassignedMattersLineParsed[];
   }
 }
 
-export class UnassignedMattersParser extends CauseListParseBase {
+export class UnassignedMattersParser extends ParserBase {
   date = new ExtractDateField(10);
-
+  cases: UnassignedMattersLineParser1;
   tryParse() {
     this.file.skipEmptyLines();
+    this.cases = new UnassignedMattersLineParser1(this.file);
     if (!peekForPhrase(this.file, 'UNASSIGNED MATTERS')) {
       return;
     }
@@ -332,12 +366,15 @@ export class UnassignedMattersParser extends CauseListParseBase {
     this.file.skipEmptyLines();
     this.date.tryParse(this.file);
     this.file.skipEmptyLines();
-    this._tryParse(this);
+    this.cases.tryParse();
   }
-  getParsed() {
+  getParsed(): UnassignedMattersParsed {
     return {
-      ...super.getParsed(),
       type: 'UNASSIGNED MATTERS',
+      header: {
+        date: getDateOnlyISOFromDate(this.date.get()),
+      },
+      cases: this.cases.getParsed(),
     };
   }
 }

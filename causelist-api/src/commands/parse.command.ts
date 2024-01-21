@@ -138,7 +138,9 @@ export class ParseCommand {
     });
     this.parserService.printParsedDataStats(parsedList);
     const good = parsedList.filter((e) => e.score >= e.parser.minValidScore());
-
+    const haveCourt = good.filter(
+      (e) => e.hasCourt && !e.isNotice && e.hasCauseList,
+    );
     if (write) {
       const now = new Date();
       const goodAtEnd = good.filter((e) => e.parser.file.end());
@@ -157,10 +159,8 @@ export class ParseCommand {
         deletedOld += deleted.deletedCount;
         for (const document of data.documents) {
           const causeList = new this.causeListModel({
+            ...document,
             parsedFrom: infoFile._id,
-            type: document.type,
-            header: document.header,
-            causeLists: document.causeLists,
             parentPath: infoFile.parentPath,
           });
           savePromises.push(causeList.save());
@@ -187,14 +187,14 @@ export class ParseCommand {
     // console.dir(
     //   new Set(good.map((e) => e.p.getParsed().header.court[1]?.trim())),
     // );
-    // console.dir(
-    //   Object.fromEntries(
-    //     Object.entries(nextLineStats(haveCourt)).map(([k, d]) => [
-    //       k,
-    //       d.map((e) => e.doc._id.toString()),
-    //     ]),
-    //   ),
-    // );
+    console.dir(
+      Object.fromEntries(
+        Object.entries(nextLineStats(haveCourt)).map(([k, d]) => [
+          k,
+          d.map((e) => e.doc.sha1),
+        ]),
+      ),
+    );
     // console.dir(Object.entries(nextLineStats(haveCourt)).map(([k, d]) => k));
     if (stats) {
       console.dir(

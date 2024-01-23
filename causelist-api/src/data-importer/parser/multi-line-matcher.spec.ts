@@ -5,6 +5,8 @@ import {
   MatchRegExAny,
   MatchRegExSequence,
   MatchStrings,
+  MatchStringsAny,
+  MatchersList,
 } from './multi-line-matcher.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
@@ -205,6 +207,95 @@ describe('multi-line-matcher', () => {
 
     it('should not match (any)', () => {
       const m = new MatchStrings(['SECTION1', 'FRESHER HEARING']);
+
+      const mr = m.match(file3);
+
+      expect(mr.ok()).toBe(false);
+      expect(mr.next()).toBeUndefined();
+    });
+  });
+
+  describe('MatcherList', () => {
+    it('should match 1 time (any)', () => {
+      const m = new MatchersList(
+        [
+          new MatchStringsAny(['SECTION']),
+          new MatchStringsAny(['FRESH HEARING']),
+        ],
+        false,
+      );
+
+      const mr = m.match(file3);
+
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should match 1 time (sequence)', () => {
+      const m = new MatchersList(
+        [
+          new MatchStringsAny(['SECTION']),
+          new MatchStringsAny(['FRESH HEARING']),
+        ],
+        true,
+      );
+
+      const mr = m.match(file3);
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION', 'FRESH HEARING']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should match multiple times (any)', () => {
+      const m = new MatchersList(
+        [
+          new MatchStringsAny(['SECTION']),
+          new MatchStringsAny(['FRESH HEARING']),
+        ],
+        false,
+        {
+          maxTimes: 10,
+        },
+      );
+
+      const mr = m.match(file3);
+
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION']);
+      expect(mr.nextAsArray()).toEqual(['FRESH HEARING']);
+      expect(mr.nextAsArray()).toEqual(['SECTION']);
+      expect(mr.nextAsArray()).toEqual(['FRESH HEARING']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should match multiple times (sequence)', () => {
+      const m = new MatchersList(
+        [
+          new MatchStringsAny(['SECTION']),
+          new MatchStringsAny(['FRESH HEARING']),
+        ],
+        true,
+        {
+          maxTimes: 10,
+        },
+      );
+
+      const mr = m.match(file3);
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION', 'FRESH HEARING']);
+      expect(mr.nextAsArray()).toEqual(['SECTION', 'FRESH HEARING']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should not match (any)', () => {
+      const m = new MatchersList(
+        [
+          new MatchStringsAny(['SECTION1']),
+          new MatchStringsAny(['FRESHER HEARING']),
+        ],
+        false,
+      );
 
       const mr = m.match(file3);
 

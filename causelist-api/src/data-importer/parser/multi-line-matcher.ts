@@ -9,11 +9,15 @@ export interface MatcherOptions {
 }
 
 export class MatchResult {
-  _result: RegExpMatchArray[][];
+  protected _result: RegExpMatchArray[][];
   protected current: number;
   constructor(match?: RegExpMatchArray[]) {
     this._result = match && match.length ? [match] : [];
     this.current = -1;
+  }
+
+  getRawResults() {
+    return this._result.flat();
   }
 
   push(result: RegExpMatchArray[]) {
@@ -234,5 +238,50 @@ export class MatchRegExSequence extends RegExMatcher {
       }
     }
     return matches;
+  }
+}
+
+export class MatchersList extends Matcher {
+  protected matchers: Matcher[];
+  protected matchSequence: boolean;
+  constructor(
+    matchers: Matcher[],
+    matchSequence?: boolean,
+    options?: MatcherOptions,
+  ) {
+    super(options);
+    this.matchers = matchers;
+    this.matchSequence = !!matchSequence;
+  }
+
+  doMatch(file: FileLines): RegExpMatchArray[] | undefined {
+    const matches: RegExpMatchArray[] = [];
+    for (const r of this.matchers) {
+      if (file.end()) break;
+      const m = r.match(file);
+      if (m.ok()) {
+        matches.push(...m.getRawResults());
+        if (!this.matchSequence) {
+          return matches;
+        }
+      } else {
+        if (this.matchSequence) {
+          return;
+        }
+      }
+    }
+    return matches;
+  }
+}
+
+export class MatchersListAny extends MatchStrings {
+  constructor(strings: string[], options?: MatcherOptions) {
+    super(strings, false, options);
+  }
+}
+
+export class MatchersListSequence extends MatchStrings {
+  constructor(strings: string[], options?: MatcherOptions) {
+    super(strings, true, options);
   }
 }

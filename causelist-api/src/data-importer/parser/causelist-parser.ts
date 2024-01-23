@@ -54,6 +54,10 @@ export class CauselistLineParser extends ParserBase {
       // console.log('>>>> new section court');
       return true;
     }
+    if (nextLine.match(/^FOR$/i)) {
+      // console.log('>>>> new section court');
+      return true;
+    }
     for (const re of this.newSectionRegex) {
       if (re.test(nextLine)) {
         // console.log('>>>> new section', nextLine);
@@ -243,15 +247,48 @@ export interface CauselistMultiDocumentParsed {
 const IGNORE_BETWEEN_DOCUMENTS = [
   ...COURT_ADMIN,
   'Prepared and Signed by',
-  'PRINCIPAL MAGISTRATE',
   'DATED AT',
   'PREPARED BY',
   'CHECKED BY',
   'N/B:',
   'CIVIL REGISTRY',
   'END',
-  'FOR',
-  /\d{1,2}\/\d{1,2}\/\d{4}/,
+  /^MALINDI$/,
+  /^NAROK$/,
+  /^GATHIRIMU$/,
+  /^KAPENGURIA$/,
+  /^MAGISTRATE$/,
+];
+
+const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
+  new MatchRegExSequence([/COURT\s+ADMINISTRATOR/, /LAW\s+COURTS?$/]),
+  new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
+  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /LAND\s+COURTS?$/]),
+  new MatchRegExSequence([
+    /FOR/,
+    /PRINCIPAL\s+MAGISTRATE/,
+    /\d{1,2}\/\d{1,2}\/\d{4}/,
+  ]),
+  new MatchRegExSequence([/FOR/, /S\s+COURT$/]),
+  new MatchRegExSequence([
+    /DUTY\s+COURT/,
+    /COURT\s+NO/,
+    /HON\./,
+    /FOR ENQUIRIES CONTACT US ON/,
+    /\d+\.\s+/,
+    /\d+\.\s+/,
+  ]),
+  new MatchRegExSequence([
+    /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
+    /COURT\s+(?:ADMINISTRATOR|ADMN|ADMIN)/,
+    /LAW\s+COURTS?$/,
+  ]),
+  new MatchRegExSequence([
+    /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
+    /PRINCIPAL\s+MAGISTRATE$/,
+  ]),
+
+  new MatchRegExSequence([/^CAUSELIST\s+FOR/, /^DATED?\s+AT/]),
 ];
 
 export class CauselistMultiDocumentParser extends ParserBase {
@@ -265,6 +302,9 @@ export class CauselistMultiDocumentParser extends ParserBase {
     while (!this.file.end()) {
       this.file.skipEmptyLines();
       const ignorePhrases = [...IGNORE_BETWEEN_DOCUMENTS, JUDGE_HON_RE];
+      this.skipLinesWithMatchers(MATCHERS_IGNORE_BETWEEN_DOCUMENTS);
+      this.skipLinesContainingPhrase(ignorePhrases);
+      this.skipLinesWithMatchers(MATCHERS_IGNORE_BETWEEN_DOCUMENTS);
       this.skipLinesContainingPhrase(ignorePhrases);
       document = this.documents.newParser();
       document.tryParse();

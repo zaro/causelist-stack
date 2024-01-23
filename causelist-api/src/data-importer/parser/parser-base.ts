@@ -1,7 +1,8 @@
-import assert from 'assert';
+import assert, { match } from 'assert';
 import { ExtractedField, ExtractedFieldsContainer } from './extracted-field.js';
 import { FileLines } from './file-lines.js';
 import { peekForPhrase } from './util.js';
+import { MatchResult, Matcher } from './multi-line-matcher.js';
 
 export abstract class ParserInterface extends ExtractedFieldsContainer {
   constructor(
@@ -59,6 +60,25 @@ export abstract class ParserBase extends ParserInterface {
       for (const p of phrases) {
         while (peekForPhrase(this.file, p, 1)) {
           this.file.move(1);
+          skipped++;
+        }
+      }
+    } while (skipped > 0);
+  }
+
+  skipLinesWithMatchers(matchers: Matcher[]) {
+    let skipped;
+    do {
+      skipped = 0;
+      for (const matcher of matchers) {
+        let mr: MatchResult;
+        while (true) {
+          mr = matcher.match(this.file);
+          if (!mr.ok()) {
+            break;
+          }
+          // console.log('>>>m', matcher);
+          // console.log('>>>mi', mr.allAsFlatArray());
           skipped++;
         }
       }

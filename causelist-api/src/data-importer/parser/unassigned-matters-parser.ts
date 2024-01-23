@@ -5,7 +5,7 @@ import {
   ExtractMultiStringListField,
   ExtractStringField,
 } from './extracted-field.js';
-import { ParserBase } from './parser-base.js';
+import { MultiParser, ParserBase } from './parser-base.js';
 import {
   UnassignedMattersLineParsed,
   UnassignedMattersParsed,
@@ -21,6 +21,7 @@ import {
   SECTION_NAMES_AS_GROUP,
   URL_RE,
 } from './regexes.js';
+import { FileLines } from './file-lines.js';
 
 export class UnassignedMattersLineParser1 extends ParserBase {
   lines = new ExtractMultiStringListField(
@@ -51,11 +52,11 @@ export class UnassignedMattersLineParser1 extends ParserBase {
 export class UnassignedMattersLineParser2 extends ParserBase {
   lines = new ExtractMultiStringListField(10, [
     new RegExp(
-      `^\\s*${CAUSE_LIST_NUM_RE.source}(?<typeOfCause>${SECTION_NAMES_AS_GROUP.source})\\s+${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
+      `^\\s*${CAUSE_LIST_NUM_RE.source}${SECTION_NAMES_AS_GROUP.source}\\s+${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
       'i',
     ),
     new RegExp(
-      `^\\s*${CAUSE_LIST_NUM_RE.source}(?<typeOfCause>${SECTION_NAMES_AS_GROUP.source})\\s+${CAUSE_LIST_DESCRIPTION_RE.source}\\s*$`,
+      `^\\s*${CAUSE_LIST_NUM_RE.source}${SECTION_NAMES_AS_GROUP.source}\\s+${CAUSE_LIST_DESCRIPTION_RE.source}\\s*$`,
       'i',
     ),
   ]);
@@ -68,11 +69,20 @@ export class UnassignedMattersLineParser2 extends ParserBase {
   }
 }
 
+export class UnassignedMattersLineParser extends MultiParser<
+  UnassignedMattersLineParsed[]
+> {
+  constructor(file: FileLines) {
+    super(file, [UnassignedMattersLineParser1, UnassignedMattersLineParser2]);
+  }
+}
+
 export class UnassignedMattersParser extends ParserBase {
   date = new ExtractDateField(10);
   judge = new ExtractMultiStringField(-10, JUDGE_RE);
   url = new ExtractStringField(-1, [URL_RE]);
 
+  // cases: UnassignedMattersLineParser;
   cases: UnassignedMattersLineParser1;
   tryParse() {
     this.file.skipEmptyLines();
@@ -80,6 +90,7 @@ export class UnassignedMattersParser extends ParserBase {
       return;
     }
     this.cases = new UnassignedMattersLineParser1(this.file);
+    // this.cases = new UnassignedMattersLineParser(this.file);
     this.file.move();
     this.file.skipEmptyLines();
     this.date.tryParse(this.file);

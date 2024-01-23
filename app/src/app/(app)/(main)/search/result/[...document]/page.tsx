@@ -8,6 +8,7 @@ import { CauseListDocumentParsed } from "../../../../../../api/index.ts";
 import { fetcher } from "../../../../_components/fetcher.ts";
 import CauseList from "../../../../_components/causelist.tsx";
 import CauseListDocuments from "../../../../_components/causelist-documents.tsx";
+import ErrorBoundary from "../../../../../_common/error-boundary.tsx";
 
 function SingleCauseList({
   documentId,
@@ -16,7 +17,7 @@ function SingleCauseList({
   documentId: string;
   hightLight: number[];
 }) {
-  const apiURL = documentId ? `/api/courts/causelist/${documentId}` : null;
+  const apiURL = documentId ? `/api/courts/document/${documentId}` : null;
   const { data, error } = useSWR<CauseListDocumentParsed>(apiURL, fetcher, {
     suspense: true,
   });
@@ -41,9 +42,11 @@ export default function Page({ params }: { params: { document: string[] } }) {
   console.log(">>>", params);
   return (
     <Stack height={"100%"}>
-      <Suspense fallback={<h3>Loading data</h3>}>
-        <SingleCauseList documentId={documentId} hightLight={hightLight} />
-      </Suspense>
+      <ErrorBoundary fallback={<h3>Invalid search</h3>}>
+        <Suspense fallback={<h3>Loading data</h3>}>
+          <SingleCauseList documentId={documentId} hightLight={hightLight} />
+        </Suspense>
+      </ErrorBoundary>
     </Stack>
   );
 }

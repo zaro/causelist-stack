@@ -1,7 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { InfoFile } from './info-file.schema.js';
-import { CauselistHeaderParsed } from '../interfaces/index.js';
+import {
+  CauseListParsed,
+  CauselistHeaderParsed,
+  CauselistSectionParsed,
+} from '../interfaces/index.js';
 
 @Schema({ _id: false })
 export class CauseListHeader implements CauselistHeaderParsed {
@@ -49,7 +53,7 @@ export class CauseListLine {
 }
 
 @Schema({ _id: false })
-export class CauseListSection {
+export class CauseListSection implements CauselistSectionParsed {
   @Prop()
   dateTime: Date;
 
@@ -60,11 +64,17 @@ export class CauseListSection {
   cases: CauseListLine[];
 }
 
+export interface ParsedDocument {
+  parsedFrom: InfoFile;
+
+  parentPath: string;
+}
+
 export type CauseListDocument = HydratedDocument<CauseList>;
 @Schema({ timestamps: true })
-export class CauseList {
-  @Prop()
-  type: string;
+export class CauseList implements ParsedDocument, CauseListParsed {
+  @Prop({ type: String })
+  type: CauseListParsed['type'];
 
   @Prop({ type: CauseListHeader })
   header: CauseListHeader;
@@ -88,11 +98,6 @@ CauseListSchema.index(
     'causeLists.cases.partyA': 'text',
     'causeLists.cases.partyB': 'text',
     'causeLists.cases.description': 'text',
-    'cases.caseNumber': 'text',
-    'cases.additionalNumber': 'text',
-    'cases.partyA': 'text',
-    'cases.partyB': 'text',
-    'cases.description': 'text',
   },
   {
     name: 'search',

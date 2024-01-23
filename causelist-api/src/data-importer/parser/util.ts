@@ -5,6 +5,17 @@ export function isWhiteSpaceEquivalent(s: string): boolean {
   return WS_RE.test(s);
 }
 
+export function asFullLineRe(re: RegExp) {
+  let src = re.source;
+  if (src[0] !== '^') {
+    src = '^' + src;
+  }
+  if (src[src.length - 1] !== '$') {
+    src += '$';
+  }
+  return new RegExp(src, re.flags);
+}
+
 export function peekForRe(file: FileLines, re: RegExp, lines: number = 10) {
   const f = file.clone();
   if (!f.skipEmptyLines()) {

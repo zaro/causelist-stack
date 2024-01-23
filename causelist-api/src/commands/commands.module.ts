@@ -26,6 +26,10 @@ import {
   CRAWLER_CRON_DEFAULT_OPTIONS,
   CRAWLER_CRON_QUEUE_NAME,
 } from '../k8s-jobs/crawler-cron.processor.js';
+import {
+  UnassignedMatters,
+  UnassignedMattersSchema,
+} from '../schemas/unassigned-matters.schema.js';
 
 @Module({
   imports: [
@@ -60,6 +64,7 @@ import {
     MongooseModule.forFeature([
       { name: InfoFile.name, schema: InfoFileSchema },
       { name: CauseList.name, schema: CauseListSchema },
+      { name: UnassignedMatters.name, schema: UnassignedMattersSchema },
       { name: User.name, schema: UserSchema },
       { name: Court.name, schema: CourtSchema },
     ]),

@@ -65,23 +65,31 @@ describe('multi-line-matcher', () => {
       );
 
       const mr = m.match(file1);
-
+      const expectedData = [
+        {
+          num: '1',
+          type: 'SECTION',
+          caseNumber: 'NUM/88/2023',
+          partyA: 'PartyA',
+          partyB: 'PartyB',
+        },
+        {
+          num: '2',
+          type: 'FRESH HEARING',
+          caseNumber: 'NUM/99/2023',
+          partyA: 'PartyC',
+          partyB: 'PartyD',
+        },
+      ];
       expect(mr.ok()).toBe(true);
-      expect(mr.nextAsObject()).toMatchObject({
-        num: '1',
-        type: 'SECTION',
-        caseNumber: 'NUM/88/2023',
-        partyA: 'PartyA',
-        partyB: 'PartyB',
-      });
+      expect(mr.allAsObjectArray()).toEqual(
+        expect.arrayContaining(
+          expectedData.map((e) => expect.objectContaining(e)),
+        ),
+      );
+      expect(mr.nextAsObject()).toMatchObject(expectedData[0]);
 
-      expect(mr.nextAsObject()).toMatchObject({
-        num: '2',
-        type: 'FRESH HEARING',
-        caseNumber: 'NUM/99/2023',
-        partyA: 'PartyC',
-        partyB: 'PartyD',
-      });
+      expect(mr.nextAsObject()).toMatchObject(expectedData[1]);
 
       expect(mr.next()).toBeUndefined();
     });

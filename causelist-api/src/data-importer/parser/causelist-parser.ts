@@ -34,100 +34,13 @@ import {
 } from '../../interfaces/index.js';
 import { MatchSequence } from './multi-line-matcher.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
-
-// order matters
-const SECTION_NAMES = [
-  'MENTION DATE FOR COMPLIANCE',
-  /MENTIONS?/,
-  /JUDGMENTS?/,
-  'WRITTEN SUBMISSIONS',
-  /SUBMISSIONS?/,
-  'COMMERCIAL SUIT DIVISION',
-  'DEFENSE HEARING',
-  'DIRECTIONS',
-  'PLEA',
-  'SUMMONS FOR CONFIRMATION',
-  'RECTIFICATION OF GRANT',
-  /RULINGS?/,
-  'CHILDREN’S SERVICE MONTH',
-  'ASSESSMENT OF COSTS',
-  'FORMAL PROOF HEARING',
-  'FRESH HEARING',
-  'INTER PARTE HEARING',
-  /PART HEARD HEARINGS?/,
-  'DEFENSE HEARING',
-  /HEARING(?:\s+OF\s+|\s*-\s*)(?:\w+\s*)+/i,
-  /HEARINGS?/,
-  'MITIGATION',
-  'CASE MANAGEMENT CONFERENCE',
-  'CERTIFICATE OF URGENCY',
-  'PLEA AND DUTY COURT',
-  'SENTENCING',
-  'DISMISSAL FOR WANT OF PROSECUTIONS',
-  'DISMISSAL',
-  'REGISTRATION/FILING',
-  'SUMMONS',
-  'TAXATION',
-  'MENTION DATE FOR COMPLIANCE',
-  'MEDIATION ADOPTION',
-  'GAZETTEMENT',
-  'CHILDREN CASES FOR DIRECTION',
-  'WITHDRAWAL',
-  'SCENE VISITS',
-  'ENTRY OF CONSENTS',
-  'PRE-TRIAL CONFERENCE',
-  'INTERLOCUTORY APPLICATION',
-  'NOTICE TO SHOW CAUSE',
-  'NOTICE OF MOTION',
-  'RULINGS AND JUDGEMENTS',
-  'ORDERS',
-  'SITE VISIT',
-  'SETTLEMENT OF TERMS',
-  'ENTERING INTERLOCUTORY JUDGMENTS',
-  'FILING DEFENCE',
-  'PRELIMINARY OBJECTION',
-  'TRIAL',
-  'DIRECTIONS',
-  'HIGHLIGHTING OF SUBMISSIONS',
-  /PART\s*-\s*HEARD/,
-  /\w+ OF APPEAL/,
-  /APPLICATIONS?/,
-];
-
-const SECTION_NAMES_AS_GROUP = new RegExp(
-  '(?:' +
-    SECTION_NAMES.map((e) => (typeof e === 'string' ? e : e.source)).join('|') +
-    ')',
-);
-
-const JUDGE_HON_RE = /^\s*HON\.\s*.*/i;
-
-const CAUSE_LIST_NUM_RE = /(?<num>[1-9]\d*)\s*\.?\s*(?:\.\s*)?/;
-const CAUSE_LIST_ADDITIONAL_NUMBER_RE = /(?:(?<additionalNumber>\w+)\s+)/;
-const CAUSE_LIST_CASE_NUMBER_RE =
-  /(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])/;
-const CAUSE_LIST_PARTIES_RE =
-  /(?:(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?))/;
-const CAUSE_LIST_DESCRIPTION_RE = /(?<description>.*?)/;
-
-const CAUSE_LIST_RE = [
-  new RegExp(
-    `^\\s*${CAUSE_LIST_NUM_RE.source}${CAUSE_LIST_ADDITIONAL_NUMBER_RE.source}?${CAUSE_LIST_CASE_NUMBER_RE.source}\\s*${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
-    'i',
-  ),
-  new RegExp(
-    `^\\s*${CAUSE_LIST_NUM_RE.source}${CAUSE_LIST_ADDITIONAL_NUMBER_RE.source}?${CAUSE_LIST_CASE_NUMBER_RE.source}\\s*${CAUSE_LIST_DESCRIPTION_RE.source}\\s*$`,
-    'i',
-  ),
-  new RegExp(
-    `^\\s*${CAUSE_LIST_NUM_RE.source}${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
-    'i',
-  ),
-  new RegExp(
-    `^\\s*${CAUSE_LIST_NUM_RE.source}(?<description>In\\s+The\\s+Estate\\s+Of.*?)\\s*$`,
-    'i',
-  ),
-];
+import {
+  CAUSE_LIST_NUM_RE,
+  CAUSE_LIST_RE,
+  JUDGE_HON_RE,
+  SECTION_NAMES_AS_GROUP,
+} from './regexes.js';
+import { UnassignedMattersParser } from './unassigned-matters-parser.js';
 
 export class CauselistLineParser extends ParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
@@ -312,69 +225,6 @@ export class CauselistParser extends CauseListParseBase {
       ...super.getParsed(),
       header: this.header.getParsed(),
       type: 'CAUSE LIST',
-    };
-  }
-}
-
-export class UnassignedMattersLineParser1 extends ParserBase {
-  lines = new ExtractMultiStringListField(
-    10,
-    new MatchSequence([
-      CAUSE_LIST_NUM_RE,
-      SECTION_NAMES_AS_GROUP,
-      CAUSE_LIST_PARTIES_RE,
-    ]),
-  );
-
-  tryParse(): void {
-    this.lines.tryParse(this.file);
-  }
-  getParsed(): UnassignedMattersLineParsed[] {
-    return this.lines.get() as UnassignedMattersLineParsed[];
-  }
-}
-export class UnassignedMattersLineParser2 extends ParserBase {
-  lines = new ExtractMultiStringListField(10, [
-    new RegExp(
-      `^\\s*${CAUSE_LIST_NUM_RE.source}(?<typeOfCause>${SECTION_NAMES_AS_GROUP.source})\\s+${CAUSE_LIST_PARTIES_RE.source}\\s*$`,
-      'i',
-    ),
-    new RegExp(
-      `^\\s*${CAUSE_LIST_NUM_RE.source}(?<typeOfCause>${SECTION_NAMES_AS_GROUP.source})\\s+${CAUSE_LIST_DESCRIPTION_RE.source}\\s*$`,
-      'i',
-    ),
-  ]);
-
-  tryParse(): void {
-    this.lines.tryParse(this.file);
-  }
-  getParsed(): UnassignedMattersLineParsed[] {
-    return this.lines.get() as UnassignedMattersLineParsed[];
-  }
-}
-
-export class UnassignedMattersParser extends ParserBase {
-  date = new ExtractDateField(10);
-  cases: UnassignedMattersLineParser1;
-  tryParse() {
-    this.file.skipEmptyLines();
-    this.cases = new UnassignedMattersLineParser1(this.file);
-    if (!peekForPhrase(this.file, 'UNASSIGNED MATTERS')) {
-      return;
-    }
-    this.file.move();
-    this.file.skipEmptyLines();
-    this.date.tryParse(this.file);
-    this.file.skipEmptyLines();
-    this.cases.tryParse();
-  }
-  getParsed(): UnassignedMattersParsed {
-    return {
-      type: 'UNASSIGNED MATTERS',
-      header: {
-        date: getDateOnlyISOFromDate(this.date.get()),
-      },
-      cases: this.cases.getParsed(),
     };
   }
 }

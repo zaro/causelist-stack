@@ -244,25 +244,24 @@ export class ExtractMultiStringListField extends ExtractListWithRegexField<{
   [key: string]: string;
 }> {
   _setFrom(matched: MatchResult) {
-    this.set([
-      {
-        ...trimObjectValues(matched.getAsObject()),
-      },
-    ]);
+    this.set(matched.allAsObjectArray(true));
   }
 
   _addFrom(matched: MatchResult) {
-    const o = {
-      ...trimObjectValues(matched.getAsObject()),
-    };
+    const a = matched.allAsObjectArray(true);
 
-    this.set(this.v ? [...this.v, o] : [o]);
+    this.set(this.v ? [...this.v, ...a] : a);
   }
 
   _replaceFrom(matched: MatchResult, index: number) {
     if (!this.v || index >= this.v.length) {
       this._addFrom(matched);
     } else {
+      if (matched.count() !== 1) {
+        throw Error(
+          'Trying to replace result but the new match has result count != 1',
+        );
+      }
       if (index < 0) {
         index = this.v.length + index;
       }

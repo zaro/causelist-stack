@@ -41,8 +41,8 @@ export default function UnassignedMatters({
           <UnassignedMattersItem
             key={`c-${idx}`}
             data={cls}
-            highLight={idx === highLight?.[0] && idx === highLight?.[1]}
-            autoFocus={idx === highLight?.[0] && idx === highLight?.[1]}
+            highLight={idx === highLight?.[0]}
+            autoFocus={idx === highLight?.[0]}
           />
         ))}
       </Item>

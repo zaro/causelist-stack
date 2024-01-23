@@ -1,4 +1,10 @@
-import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CourtsService } from './courts.service.js';
 import { InternalRoute, Public } from '../auth/public.decorator.js';
 
@@ -85,9 +91,34 @@ export class CourtsController {
     return this.service.getRandomDay();
   }
 
+  @Get('document/:id')
+  async getDocument(@Param() params: GetCauseListParams) {
+    const [cl, ua] = await Promise.all([
+      this.service.getCauseList(params.id),
+      this.service.getUnassignedMatters(params.id),
+    ]);
+    if (!cl && !ua) {
+      throw new NotFoundException();
+    }
+    return cl || ua;
+  }
+
   @Get('causelist/:id')
-  getCauselist(@Param() params: GetCauseListParams) {
-    return this.service.getCauseList(params.id);
+  async getCauselist(@Param() params: GetCauseListParams) {
+    const doc = await this.service.getCauseList(params.id);
+    if (!doc) {
+      throw new NotFoundException();
+    }
+    return doc;
+  }
+
+  @Get('unassigned-matters/:id')
+  async getUnassignedMatters(@Param() params: GetCauseListParams) {
+    const doc = await this.service.getUnassignedMatters(params.id);
+    if (!doc) {
+      throw new NotFoundException();
+    }
+    return doc;
   }
 
   @Get(':courtPath/judges')

@@ -37,7 +37,7 @@ AdminJS.registerAdapter({
     }),
     CacheModule.register({
       isGlobal: true,
-      ttl: 600000,
+      ttl: process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? 1 : 600000,
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],

@@ -13,6 +13,7 @@ import {
 } from '../interfaces/util.js';
 import { InfoFile } from '../schemas/info-file.schema.js';
 import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
+import { UnassignedMatters } from '../schemas/unassigned-matters.schema.js';
 
 const RANDOM_COURTS = [
   'Chief Magistrates Court:Milimani Chief Magistrate Criminal Court',
@@ -31,6 +32,8 @@ export class CourtsService {
   constructor(
     @InjectModel(Court.name) private courtModel: Model<Court>,
     @InjectModel(CauseList.name) private causeListModel: Model<CauseList>,
+    @InjectModel(UnassignedMatters.name)
+    private unassignedMattersModel: Model<UnassignedMatters>,
     @InjectModel(InfoFile.name) private infoFileModel: Model<InfoFile>,
     protected parsingDebugService: ParsingDebugService,
   ) {}
@@ -63,6 +66,10 @@ export class CourtsService {
     return this.causeListModel.findOne({ _id: id }).exec();
   }
 
+  async getUnassignedMatters(id: string): Promise<UnassignedMatters> {
+    return this.unassignedMattersModel.findOne({ _id: id }).exec();
+  }
+
   async getCauseListDebug(
     id: string,
   ): Promise<{ causelist: CauseList; infoFile: InfoFile; debugHTML: string }> {
@@ -73,11 +80,11 @@ export class CourtsService {
     const infoFile = await this.infoFileModel.findOne({
       _id: causelist.parsedFrom,
     });
-    const debugHTML = await this.parsingDebugService.debugHTML(infoFile.sha1);
+    const { html } = await this.parsingDebugService.debugHTML(infoFile.sha1);
     return {
       causelist,
       infoFile,
-      debugHTML,
+      debugHTML: html,
     };
   }
 
@@ -117,7 +124,14 @@ export class CourtsService {
   }
 
   async search(text: string) {
-    const list = await this.causeListModel
+    const causeList = await this.causeListModel
+      .find(
+        { $text: { $search: `"${text}"` } },
+        { score: { $meta: 'textScore' } },
+      )
+      .sort({ score: { $meta: 'textScore' } })
+      .exec();
+    const unassignedMattersList = await this.unassignedMattersModel
       .find(
         { $text: { $search: `"${text}"` } },
         { score: { $meta: 'textScore' } },
@@ -126,9 +140,10 @@ export class CourtsService {
       .exec();
     const partialList: ISearchResult[] = [];
     const textLower = text.toLowerCase();
-    for (const doc of list) {
+    for (const doc of causeList) {
       const pre = {
         _id: doc._id.toString(),
+        type: doc.type,
         date: doc.header.date,
         judge: doc.header.judge,
       };
@@ -158,6 +173,29 @@ export class CourtsService {
         }
       }
     }
+    for (const doc of unassignedMattersList) {
+      const pre = {
+        _id: doc._id.toString(),
+        type: doc.type,
+        date: doc.header.date,
+      };
+      for (let lineIdx = 0; lineIdx < doc.cases.length; lineIdx++) {
+        const line = doc.cases[lineIdx];
+        for (const k of CASE_FIELDS) {
+          const v = line[k];
+          if (typeof v === 'string' && v.toLowerCase().includes(textLower)) {
+            partialList.push({
+              ...pre,
+              case: line,
+              typeOfCause: line.typeOfCause,
+              casePosition: [lineIdx, -1],
+            });
+            break;
+          }
+        }
+      }
+    }
+
     return partialList;
   }
 

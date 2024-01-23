@@ -4,7 +4,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as util from 'node:util';
 import * as child_process from 'node:child_process';
-import { createHash } from 'node:crypto';
+import * as os from 'node:os';
+import open from 'open';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
@@ -24,6 +25,8 @@ import {
   DocumentParseResult,
 } from '../data-importer/kenya-law-parser.service.js';
 import { KenyaLawImporterService } from '../data-importer/kenya-law-importer.service.js';
+import { UnassignedMatters } from '../schemas/unassigned-matters.schema.js';
+import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -50,10 +53,13 @@ export class ParseCommand {
   constructor(
     protected parserService: KenyaLawParserService,
     protected importerService: KenyaLawImporterService,
+    protected parsingDebugService: ParsingDebugService,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
     @InjectModel(CauseList.name)
     protected causeListModel: Model<CauseList>,
+    @InjectModel(UnassignedMatters.name)
+    protected unassignedMattersModel: Model<UnassignedMatters>,
     @InjectModel(Court.name)
     protected courtModel: Model<Court>,
   ) {}
@@ -158,12 +164,21 @@ export class ParseCommand {
           .exec();
         deletedOld += deleted.deletedCount;
         for (const document of data.documents) {
-          const causeList = new this.causeListModel({
-            ...document,
-            parsedFrom: infoFile._id,
-            parentPath: infoFile.parentPath,
-          });
-          savePromises.push(causeList.save());
+          if (document.type === 'CAUSE LIST') {
+            const causeList = new this.causeListModel({
+              ...document,
+              parsedFrom: infoFile._id,
+              parentPath: infoFile.parentPath,
+            });
+            savePromises.push(causeList.save());
+          } else if (document.type === 'UNASSIGNED MATTERS') {
+            const unassignedMatters = new this.unassignedMattersModel({
+              ...document,
+              parsedFrom: infoFile._id,
+              parentPath: infoFile.parentPath,
+            });
+            savePromises.push(unassignedMatters.save());
+          }
         }
         await Promise.all(savePromises);
         savedNew += savePromises.length;
@@ -172,7 +187,7 @@ export class ParseCommand {
         updatedInfoFiles++;
       }
       this.log.log(`Deleted ${deletedOld} existing !`);
-      this.log.log(`Writing ${savedNew} CauseList to db!`);
+      this.log.log(`Writing ${savedNew} CauseList|UnassignedMatters to db!`);
       this.log.log(`Updated ${updatedInfoFiles} InfoFile as parsed...`);
       return;
     }
@@ -295,16 +310,16 @@ export class ParseCommand {
   }
 
   @Command({
-    command: 'parse:debug-html <docMd5> <outputDir>',
+    command: 'parse:debug-html <docSha1> [outputDir]',
     describe: 'Parse Cuaselists and output html with debug info',
   })
   async debugHTML(
     @Positional({
-      name: 'docMd5',
-      describe: 'menu path to parse',
+      name: 'docSha1',
+      describe: 'document Sha1',
       type: 'string',
     })
-    docMd5: string,
+    docSha1: string,
     @Positional({
       name: 'outputDir',
       describe: 'output directory',
@@ -312,32 +327,14 @@ export class ParseCommand {
     })
     outputDir: string,
   ) {
-    // const filter: FilterQuery<InfoFile> = {
-    //   md5: docMd5,
-    // };
-    // const document = await this.infoFileModel.findOne(filter).exec();
-    // const fl = new FileLines(document.textContent);
-    // const p = new CauselistMultiDocumentParser(fl);
-    // p.tryParse();
-    // const parsedDocument = {
-    //   doc: document,
-    //   fl,
-    //   p,
-    //   s: p?.matchScore() ?? 0,
-    // };
-    // fs.mkdirSync(outputDir, { recursive: true });
-    // const env = this.makeNunjucksEnv();
-    // const currentLine = fl.getCurrentLine();
-    // const rendered = env.render('parsed-to-debug-html.html.nunjucks', {
-    //   documents: p.documents.getParsed(),
-    //   fileName: document.fileName,
-    //   textContent: document.textContent,
-    //   currentLine,
-    //   numberedLines: document.textContent
-    //     .split('\n')
-    //     .map((l, i) => ({ n: i + 1, l, current: currentLine == i })),
-    // });
-    // const fileName = `${document.fileName}.html`;
-    // fs.writeFileSync(path.join(outputDir, fileName), rendered);
+    const { html, fileName } =
+      await this.parsingDebugService.debugHTML(docSha1);
+    if (!outputDir) {
+      outputDir = os.tmpdir();
+    }
+    fs.mkdirSync(outputDir, { recursive: true });
+    const fullFileName = path.join(outputDir, fileName) + '.html';
+    fs.writeFileSync(fullFileName, html);
+    await open(fullFileName);
   }
 }

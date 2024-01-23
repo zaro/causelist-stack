@@ -21,7 +21,7 @@ src/data-importer/parser/__fixtures__/dev-data/
 src/data-importer/parser/__snapshots__/parsing-dev*
 
 # Data
-out/
+out*
 
 # IDEs and editors
 /.idea

@@ -1,7 +1,11 @@
 import { FileLines } from './file-lines.js';
+import { asFullLineRe, trimObjectValues } from './util.js';
 
 export interface MatcherOptions {
+  minTimes?: number;
+  maxTimes?: number;
   skipEmptyLines?: boolean;
+  forceFullLineMatches?: boolean;
 }
 
 export class MatchResult {
@@ -20,7 +24,11 @@ export class MatchResult {
     return this._result.length >= 1;
   }
 
-  _toObject(ma: RegExpMatchArray[]) {
+  count() {
+    return this._result.length;
+  }
+
+  protected _toObject(ma: RegExpMatchArray[], trim = false) {
     let o = {};
     for (const m of ma) {
       o = {
@@ -28,10 +36,14 @@ export class MatchResult {
         ...m.groups,
       };
     }
-    return o;
+    return trim ? trimObjectValues(o) : o;
   }
-  _toArray(ma: RegExpMatchArray[]) {
+  protected _toArray(ma: RegExpMatchArray[]) {
     return ma.map((m) => m[0]);
+  }
+
+  protected _toObjectArray(ra: RegExpMatchArray[][], trim = false) {
+    return ra.map((ma) => this._toObject(ma, trim));
   }
 
   get() {
@@ -49,6 +61,12 @@ export class MatchResult {
     const ma = this.get();
     if (ma) {
       return this._toObject(ma);
+    }
+  }
+
+  allAsObjectArray(trim = false) {
+    if (this._result) {
+      return this._toObjectArray(this._result, trim);
     }
   }
 
@@ -73,15 +91,15 @@ export class MatchResult {
 
 export abstract class Matcher {
   public readonly options: MatcherOptions;
-  constructor(
-    protected minTimes: number = 1,
-    protected maxTimes: number = 1,
-    options: MatcherOptions = {},
-  ) {
+  public minTimes: number;
+  public maxTimes: number;
+  constructor(options: MatcherOptions = {}) {
     this.options = {
       skipEmptyLines: true,
       ...options,
     };
+    this.minTimes = this.options.minTimes ?? 1;
+    this.maxTimes = this.options.maxTimes ?? 1;
   }
 
   setMin(min: number) {
@@ -101,16 +119,17 @@ export abstract class Matcher {
   }
 }
 
-export class MatchAny extends Matcher {
-  constructor(
-    protected regExes: RegExp[],
-    minTimes: number = 1,
-    maxTimes: number = 1,
-    options?: MatcherOptions,
-  ) {
-    super(minTimes, maxTimes, options);
+export abstract class RegExMatcher extends Matcher {
+  protected regExes: RegExp[];
+  constructor(regExes: RegExp[], options?: MatcherOptions) {
+    super(options);
+    this.regExes = this.options.forceFullLineMatches
+      ? regExes.map((r) => asFullLineRe(r))
+      : regExes;
   }
+}
 
+export class MatchAny extends RegExMatcher {
   doMatch(file: FileLines): RegExpMatchArray {
     const matches = [];
     for (const r of this.regExes) {
@@ -139,17 +158,8 @@ export class MatchAny extends Matcher {
   }
 }
 
-export class MatchSequence extends Matcher {
-  constructor(
-    protected regExes: RegExp[],
-    minTimes: number = 1,
-    maxTimes: number = 1,
-    options?: MatcherOptions,
-  ) {
-    super(minTimes, maxTimes, options);
-  }
-
-  doMatch(file: FileLines): RegExpMatchArray[] {
+export class MatchSequence extends RegExMatcher {
+  doMatch(file: FileLines): RegExpMatchArray[] | undefined {
     const matches: RegExpMatchArray[] = [];
     for (const r of this.regExes) {
       this.skipEmptyLines(file);
@@ -159,7 +169,7 @@ export class MatchSequence extends Matcher {
         file.move();
         matches.push(m);
       } else {
-        break;
+        return;
       }
     }
     return matches;

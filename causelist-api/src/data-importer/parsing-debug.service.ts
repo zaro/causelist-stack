@@ -56,22 +56,31 @@ export class ParsingDebugService {
   async debugHTML(docSha1: string) {
     const [document] = await this.parserService.loadDocumentsWithData({
       sha1: docSha1,
+      includeAlreadyParsed: true,
     });
+    if (!document) {
+      throw new Error('No file found with sha1: ' + docSha1);
+    }
     const fl = new FileLines(document.textContent);
     const p = new CauselistMultiDocumentParser(fl);
     p.tryParse();
+    const matchScore = p.matchScore();
+    const minValidScore = p.minValidScore();
 
     const env = this.makeNunjucksEnv();
     const currentLine = fl.getCurrentLine();
-    const rendered = env.render('parsed-to-debug-html.html.nunjucks', {
+    const fileName = document.doc.fileName;
+    const html = env.render('parsed-to-debug-html.html.nunjucks', {
       documents: p.documents.getParsed(),
-      fileName: document.doc.fileName,
+      matchScore,
+      minValidScore,
+      fileName,
       textContent: document.textContent,
       currentLine,
       numberedLines: document.textContent
         .split('\n')
         .map((l, i) => ({ n: i + 1, l, current: currentLine == i })),
     });
-    return rendered;
+    return { html, fileName };
   }
 }

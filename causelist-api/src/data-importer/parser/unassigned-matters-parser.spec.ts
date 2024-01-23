@@ -26,6 +26,17 @@ MCSO/E094/2023
 THE REPUBLIC    VS  STEPHEN MULONGO KHAMALA
 `;
 
+const text2 = `
+UNASSIGNED MATTERS
+Thursday, 01 February 2024
+HON. WA KUGWA WAHINYA COURT ROOM 6
+https://bit.ly/35Ii39z
+1.
+MENTION
+MCCC/933/2004
+MICHAEL S . ODONGO   VS  SOUTH NYANZA SUGAR COMPANY LTD
+`;
+
 const expected1 = expect.arrayContaining(
   [
     {
@@ -68,16 +79,26 @@ const expected1 = expect.arrayContaining(
 
 describe('unassigned-matters-parser', () => {
   let file1: FileLines;
+  let file2: FileLines;
   beforeEach(() => {
     file1 = new FileLines(text1);
+    file2 = new FileLines(text2);
   });
   describe('UnassignedMattersParser', () => {
-    it('should parse', () => {
+    it('should parse 1', () => {
       const parser = new UnassignedMattersParser(file1);
       parser.tryParse();
       const parsed = parser.getParsed();
       expect(parsed.header.date).toEqual('2024-01-24');
       expect(parsed.cases).toEqual(expected1);
+    });
+
+    it('should parse 2', () => {
+      const parser = new UnassignedMattersParser(file2);
+      parser.tryParse();
+      const parsed = parser.getParsed();
+      expect(parsed.cases).toEqual(expected1);
+      expect(parsed.header.date).toEqual('2024-01-22');
     });
   });
 });

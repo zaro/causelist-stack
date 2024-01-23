@@ -10,22 +10,7 @@ import { MultiParser, ParserBase } from './parser-base.js';
 import { CauselistHeaderParsed } from '../../interfaces/index.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import { getCourtNameMatcher } from './court-name-matcher.js';
-
-const URL_RE =
-  /(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-
-const EMAIL_RE =
-  /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
-
-const PHONE_RE = /^(:?TEL:|TELEPHONE\s+NO\.)?\s*[\d\s-]+\s*$/;
-
-const JUDGE_RE = [
-  /(?<judge>(?:HON\.?\s+)?.*)\s+(:?\(?(?:SRM|CM|DR|SPM|PM)\)?\s+)?(?<courtRoom>COURT\s+(?:ROOM\s+)?(?:NO\.?\s+)?\d+)/i,
-  /(?<judge>(?:HON\.?\s+)?.*)\s+(?<courtRoom>\d+)/i,
-  /(?<judge>(?:(?:BEFORE )?HON\.?\s+)?.*)\s+(?<courtRoom>(?:MAGISTRATE\s+COURT)|(?:COURTROOM))/i,
-  /(?<judge>(?:HON\.?\s+)?.*)\s*[,-]?\s*\(?(?:SRM|CM|DR|SPM|PM)\)?/i,
-  /(?<judge>(?:HON\.\s+).*)/i,
-];
+import { EMAIL_RE, JUDGE_RE, PHONE_RE, URL_RE } from './regexes.js';
 
 export abstract class CauselistHeaderParserBase extends ParserBase {
   // court = new ExtractStringListField(10, [/^.*\bcourt\b.*$/i]);

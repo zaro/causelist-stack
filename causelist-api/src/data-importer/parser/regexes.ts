@@ -1,3 +1,13 @@
+import { escapeForRegex } from './util.js';
+
+export const URL_RE =
+  /(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+
+export const EMAIL_RE =
+  /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
+
+export const PHONE_RE = /^(:?TEL:|TELEPHONE\s+NO\.)?\s*[\d\s-]+\s*$/;
+
 // order matters
 export const SECTION_NAMES = [
   'MENTION DATE FOR COMPLIANCE',
@@ -55,6 +65,7 @@ export const SECTION_NAMES = [
   'TRIAL',
   'DIRECTIONS',
   'HIGHLIGHTING OF SUBMISSIONS',
+  'NOTICE TO SHOW CAUSE (NTSC)',
   /PART(?:\s*-\s*|\s+)HEARD(?:\s+HEARING)/,
   /\w+ OF APPEAL/,
   /APPLICATIONS?/,
@@ -62,11 +73,21 @@ export const SECTION_NAMES = [
 
 export const SECTION_NAMES_AS_GROUP = new RegExp(
   '(?<typeOfCause>' +
-    SECTION_NAMES.map((e) => (typeof e === 'string' ? e : e.source)).join('|') +
+    SECTION_NAMES.map((e) =>
+      typeof e === 'string' ? escapeForRegex(e) : e.source,
+    ).join('|') +
     ')',
 );
 
 export const JUDGE_HON_RE = /^\s*HON\.\s*.*/i;
+
+export const JUDGE_RE = [
+  /(?<judge>(?:HON\.?\s+)?.*)\s+(:?\(?(?:SRM|CM|DR|SPM|PM)\)?\s+)?(?<courtRoom>COURT\s+(?:ROOM\s+)?(?:NO\.?\s+)?\d+)/i,
+  /(?<judge>(?:HON\.?\s+)?.*)\s+(?<courtRoom>\d+)/i,
+  /(?<judge>(?:(?:BEFORE )?HON\.?\s+)?.*)\s+(?<courtRoom>(?:MAGISTRATE\s+COURT)|(?:COURTROOM))/i,
+  /(?<judge>(?:HON\.?\s+)?.*)\s*[,-]?\s*\(?(?:SRM|CM|DR|SPM|PM)\)?/i,
+  /(?<judge>(?:HON\.\s+).*)/i,
+];
 
 export const CAUSE_LIST_NUM_RE = /(?<num>[1-9]\d*)\s*\.?\s*(?:\.\s*)?/;
 export const CAUSE_LIST_ADDITIONAL_NUMBER_RE =

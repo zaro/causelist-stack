@@ -81,6 +81,28 @@
       .thick {
         font-weight: bold;
       }
+
+      pre {
+          padding: 10px 16px;
+      }
+
+      pre span {
+        display: block;
+        counter-increment: line;
+      }
+
+      pre span:before {
+          content: counter(line);
+          display: inline-block;
+          border-right: 1px solid #ddd;
+          color: #888;
+          margin-right: 1em;
+      }
+
+      pre span.thick:before {
+          color: #000;
+      }
+
     </style>
     <h2>{{ fileName }}</h2>
     <h3>Parsed content follows</h3>
@@ -100,16 +122,11 @@
         Document plain text
         <span class="icon">👇</span>
       </summary>
-      <pre>
         <b>Parsing stopped on line {{ currentLine }}</b>
-        <table>
-          {% for l in numberedLines %}
-          <tr {% if l.current %}class="thick"{% endif %}>
-            <td style="text-align: right; padding-right: 10px;">{{ l.n }}</td>
-            <td>{{ l.l }}</td>
-          </tr>
-          {% endfor %}
-        </table>
+      <pre>
+          {%- for l in numberedLines -%}
+          <span {% if l.current %}class="thick"{% endif %}>{{- l.l -}}{{- "\n" -}}</span>
+          {%- endfor -%}
         <pre>
     </details>
   </body>

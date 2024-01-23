@@ -1,7 +1,9 @@
 import { peekForPhrase } from './util.js';
 import {
   ExtractDateField,
+  ExtractMultiStringField,
   ExtractMultiStringListField,
+  ExtractStringField,
 } from './extracted-field.js';
 import { ParserBase } from './parser-base.js';
 import {
@@ -15,7 +17,9 @@ import {
   CAUSE_LIST_DESCRIPTION_RE,
   CAUSE_LIST_NUM_RE,
   CAUSE_LIST_PARTIES_RE,
+  JUDGE_RE,
   SECTION_NAMES_AS_GROUP,
+  URL_RE,
 } from './regexes.js';
 
 export class UnassignedMattersLineParser1 extends ParserBase {
@@ -26,7 +30,10 @@ export class UnassignedMattersLineParser1 extends ParserBase {
         CAUSE_LIST_NUM_RE,
         SECTION_NAMES_AS_GROUP,
         CAUSE_LIST_CASE_NUMBER_RE,
-        CAUSE_LIST_PARTIES_RE,
+        new RegExp(
+          `^(?:${CAUSE_LIST_PARTIES_RE.source}|${CAUSE_LIST_DESCRIPTION_RE.source})$`,
+          'i',
+        ),
       ],
       {
         forceFullLineMatches: true,
@@ -63,6 +70,9 @@ export class UnassignedMattersLineParser2 extends ParserBase {
 
 export class UnassignedMattersParser extends ParserBase {
   date = new ExtractDateField(10);
+  judge = new ExtractMultiStringField(-10, JUDGE_RE);
+  url = new ExtractStringField(-1, [URL_RE]);
+
   cases: UnassignedMattersLineParser1;
   tryParse() {
     this.file.skipEmptyLines();
@@ -73,6 +83,10 @@ export class UnassignedMattersParser extends ParserBase {
     this.file.move();
     this.file.skipEmptyLines();
     this.date.tryParse(this.file);
+    this.file.skipEmptyLines();
+    this.judge.tryParse(this.file);
+    this.file.skipEmptyLines();
+    this.url.tryParse(this.file);
     this.file.skipEmptyLines();
     this.cases.tryParse();
   }

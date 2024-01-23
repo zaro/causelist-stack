@@ -1,5 +1,5 @@
 import { FileLines } from './file-lines.js';
-import { asFullLineRe, trimObjectValues } from './util.js';
+import { asFullLineRe, normalizeWhitespace, trimObjectValues } from './util.js';
 
 export interface MatcherOptions {
   minTimes?: number;
@@ -38,8 +38,8 @@ export class MatchResult {
     }
     return trim ? trimObjectValues(o) : o;
   }
-  protected _toArray(ma: RegExpMatchArray[]) {
-    return ma.map((m) => m[0]);
+  protected _toArray(ma: RegExpMatchArray[], trim = false) {
+    return ma.map((m) => (trim ? m[0].trim() : m[0]));
   }
 
   protected _toObjectArray(ra: RegExpMatchArray[][], trim = false) {
@@ -67,6 +67,18 @@ export class MatchResult {
   allAsObjectArray(trim = false) {
     if (this._result) {
       return this._toObjectArray(this._result, trim);
+    }
+  }
+
+  allAsFlatArray(trim = false) {
+    if (this._result) {
+      return this._result.flatMap((r) => this._toArray(r, trim));
+    }
+  }
+
+  allAsArrays(trim = false) {
+    if (this._result) {
+      return this._result.map((r) => this._toArray(r, trim));
     }
   }
 
@@ -98,24 +110,87 @@ export abstract class Matcher {
       skipEmptyLines: true,
       ...options,
     };
-    this.minTimes = this.options.minTimes ?? 1;
-    this.maxTimes = this.options.maxTimes ?? 1;
+    this.setMin(this.options.minTimes ?? 1);
+    this.setMax(this.options.maxTimes ?? 1);
   }
 
   setMin(min: number) {
-    this.minTimes = min;
+    this.minTimes = min < 0 ? 0 : min;
   }
 
   setMax(max: number) {
-    this.maxTimes - max;
+    this.maxTimes = max < 0 ? Number.MAX_SAFE_INTEGER : max;
   }
 
-  abstract match(file: FileLines): MatchResult;
+  abstract doMatch(file: FileLines): RegExpMatchArray[] | undefined;
+
+  match(file: FileLines): MatchResult {
+    const mr = new MatchResult();
+    for (let i = this.minTimes; i <= this.maxTimes; ++i) {
+      const m = this.doMatch(file);
+      if (m?.length) {
+        mr.push(m);
+      } else {
+        break;
+      }
+    }
+    return mr;
+  }
 
   skipEmptyLines(file: FileLines) {
     if (this.options.skipEmptyLines) {
       file.skipEmptyLines();
     }
+  }
+}
+
+export class MatchStrings extends Matcher {
+  protected strings: string[];
+  protected matchSequence: boolean;
+  constructor(
+    strings: string[],
+    matchSequence?: boolean,
+    options?: MatcherOptions,
+  ) {
+    super(options);
+    this.strings = strings.map((s) => normalizeWhitespace(s));
+    this.matchSequence = !!matchSequence;
+  }
+
+  doMatch(file: FileLines): RegExpMatchArray[] | undefined {
+    const matches: RegExpMatchArray[] = [];
+    for (const r of this.strings) {
+      this.skipEmptyLines(file);
+      if (file.end()) break;
+      const line = normalizeWhitespace(file.peekNext());
+      const m = this.options.forceFullLineMatches
+        ? line === r
+        : line.includes(r);
+      if (m) {
+        file.move();
+        matches.push([line]);
+        if (!this.matchSequence) {
+          return matches;
+        }
+      } else {
+        if (this.matchSequence) {
+          return;
+        }
+      }
+    }
+    return matches;
+  }
+}
+
+export class MatchStringsAny extends MatchStrings {
+  constructor(strings: string[], options?: MatcherOptions) {
+    super(strings, false, options);
+  }
+}
+
+export class MatchStringsSequence extends MatchStrings {
+  constructor(strings: string[], options?: MatcherOptions) {
+    super(strings, true, options);
   }
 }
 
@@ -130,7 +205,7 @@ export abstract class RegExMatcher extends Matcher {
 }
 
 export class MatchAny extends RegExMatcher {
-  doMatch(file: FileLines): RegExpMatchArray {
+  doMatch(file: FileLines): RegExpMatchArray[] | undefined {
     const matches = [];
     for (const r of this.regExes) {
       this.skipEmptyLines(file);
@@ -138,23 +213,9 @@ export class MatchAny extends RegExMatcher {
       const m = file.peekNext().match(r);
       if (m) {
         file.move();
-        return m;
+        return [m];
       }
     }
-  }
-
-  match(file: FileLines): MatchResult {
-    const matches: RegExpMatchArray[] = [];
-
-    for (let i = this.minTimes; i <= this.maxTimes; ++i) {
-      const m = this.doMatch(file);
-      if (m) {
-        matches.push(m);
-      } else {
-        break;
-      }
-    }
-    return new MatchResult(matches);
   }
 }
 
@@ -173,18 +234,5 @@ export class MatchSequence extends RegExMatcher {
       }
     }
     return matches;
-  }
-
-  match(file: FileLines): MatchResult {
-    const mr = new MatchResult();
-    for (let i = this.minTimes; i <= this.maxTimes; ++i) {
-      const m = this.doMatch(file);
-      if (m?.length) {
-        mr.push(m);
-      } else {
-        break;
-      }
-    }
-    return mr;
   }
 }

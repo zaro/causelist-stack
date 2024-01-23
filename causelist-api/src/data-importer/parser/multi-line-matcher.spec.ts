@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { FileLines } from './file-lines.js';
-import { MatchAny, MatchSequence } from './multi-line-matcher.js';
+import { MatchAny, MatchSequence, MatchStrings } from './multi-line-matcher.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -18,28 +18,52 @@ PartyC VS PartyD
 
 `;
 
+const textNegative1 = `
+1.
+UNKNOWN
+NUM/88/2023
+PartyA VS PartyB
+
+2.
+FRESH HEARING
+NUM/99/2023
+PartyC VS PartyD
+
+`;
+
 const text2 = `
+SECTION
+FRESH HEARING
+`;
+
+const text3 = `
+SECTION
+FRESH HEARING
 SECTION
 FRESH HEARING
 `;
 
 describe('multi-line-matcher', () => {
   let file1: FileLines;
+  let fileNegative1: FileLines;
   let file2: FileLines;
+  let file3: FileLines;
+  let seqMatcher: MatchSequence;
   beforeEach(() => {
     file1 = new FileLines(text1);
+    fileNegative1 = new FileLines(textNegative1);
     file2 = new FileLines(text2);
+    file3 = new FileLines(text3);
+    seqMatcher = new MatchSequence([
+      /^(?<num>\d+)\.$/,
+      /^(?<type>SECTION|FRESH HEARING)$/,
+      /^(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])$/,
+      /^(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)$/i,
+    ]);
   });
   describe('MatchSequence', () => {
     it('should match 1 time', () => {
-      const m = new MatchSequence([
-        /^(?<num>\d+)\.$/,
-        /^(?<type>[\w\s]+)$/,
-        /^(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])$/,
-        /^(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)$/i,
-      ]);
-
-      const mr = m.match(file1);
+      const mr = seqMatcher.match(file1);
 
       expect(mr.ok()).toBe(true);
       expect(mr.nextAsObject()).toMatchObject({
@@ -53,18 +77,8 @@ describe('multi-line-matcher', () => {
     });
 
     it('should match multiple times', () => {
-      const m = new MatchSequence(
-        [
-          /^(?<num>\d+)\.$/,
-          /^(?<type>[\w\s]+)$/,
-          /^(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])$/,
-          /^(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?)$/i,
-        ],
-        1,
-        10,
-      );
-
-      const mr = m.match(file1);
+      seqMatcher.setMax(10);
+      const mr = seqMatcher.match(file1);
       const expectedData = [
         {
           num: '1',
@@ -93,6 +107,12 @@ describe('multi-line-matcher', () => {
 
       expect(mr.next()).toBeUndefined();
     });
+
+    it('should not match 1', () => {
+      const mr = seqMatcher.match(fileNegative1);
+      expect(mr.ok()).toBe(false);
+      expect(mr.next()).toBeUndefined();
+    });
   });
 
   describe('MatchAny', () => {
@@ -107,13 +127,84 @@ describe('multi-line-matcher', () => {
     });
 
     it('should match multiple times', () => {
-      const m = new MatchAny([/^SECTION$/, /^FRESH HEARING$/], 1, 10);
+      const m = new MatchAny([/^SECTION$/, /^FRESH HEARING$/], {
+        maxTimes: 10,
+      });
 
       const mr = m.match(file2);
 
       expect(mr.ok()).toBe(true);
-      expect(mr.nextAsArray()).toEqual(['SECTION', 'FRESH HEARING']);
+      const exp = ['SECTION', 'FRESH HEARING'];
+      expect(mr.allAsFlatArray()).toEqual(exp);
+      expect(mr.nextAsArray()).toEqual(exp.slice(0, 1));
+      expect(mr.nextAsArray()).toEqual(exp.slice(1, 2));
       // expect(mr.nextAsArray()).toEqual([]);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should not match ', () => {
+      const m = new MatchAny([/^SECTION1$/, /^FRESHER HEARING$/]);
+
+      const mr = m.match(file2);
+
+      expect(mr.ok()).toBe(false);
+      expect(mr.next()).toBeUndefined();
+    });
+  });
+
+  describe('MatchStrings', () => {
+    it('should match 1 time (any)', () => {
+      const m = new MatchStrings(['SECTION', 'FRESH HEARING'], false);
+
+      const mr = m.match(file3);
+
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should match 1 time (sequence)', () => {
+      const m = new MatchStrings(['SECTION', 'FRESH HEARING'], true);
+
+      const mr = m.match(file3);
+
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION', 'FRESH HEARING']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should match multiple times (any)', () => {
+      const m = new MatchStrings(['SECTION', 'FRESH HEARING'], false, {
+        maxTimes: 10,
+      });
+
+      const mr = m.match(file3);
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION']);
+      expect(mr.nextAsArray()).toEqual(['FRESH HEARING']);
+      expect(mr.nextAsArray()).toEqual(['SECTION']);
+      expect(mr.nextAsArray()).toEqual(['FRESH HEARING']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should match multiple times (sequence)', () => {
+      const m = new MatchStrings(['SECTION', 'FRESH HEARING'], true, {
+        maxTimes: 10,
+      });
+
+      const mr = m.match(file3);
+      expect(mr.ok()).toBe(true);
+      expect(mr.nextAsArray()).toEqual(['SECTION', 'FRESH HEARING']);
+      expect(mr.nextAsArray()).toEqual(['SECTION', 'FRESH HEARING']);
+      expect(mr.next()).toBeUndefined();
+    });
+
+    it('should not match (any)', () => {
+      const m = new MatchStrings(['SECTION1', 'FRESHER HEARING']);
+
+      const mr = m.match(file3);
+
+      expect(mr.ok()).toBe(false);
       expect(mr.next()).toBeUndefined();
     });
   });

@@ -218,23 +218,28 @@ export class ExtractStringListField extends ExtractListWithRegexField<string> {
     super(score, regExesOrStrings);
   }
   _setFrom(matched: MatchResult) {
-    this.set(matched.getAsArray());
+    this.set(matched.allAsFlatArray(true));
   }
 
   _addFrom(matched: MatchResult) {
-    const v = matched.getAsArray()[0].trim();
-    this.set(this.v ? [...this.v, v] : [v]);
+    const v = matched.allAsFlatArray(true);
+    this.set(this.v ? [...this.v, ...v] : v);
   }
 
   _replaceFrom(matched: MatchResult, index: number) {
     if (!this.v || index >= this.v.length) {
       this._addFrom(matched);
     } else {
+      if (matched.count() !== 1) {
+        throw Error(
+          'Trying to replace result but the new match has result count != 1',
+        );
+      }
       if (index < 0) {
         index = this.v.length + index;
       }
       const copy = [...this.v];
-      copy[index] = matched.getAsArray()[0].trim();
+      copy[index] = matched.allAsFlatArray(true)[0];
       this.set(copy);
     }
   }

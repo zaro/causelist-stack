@@ -32,7 +32,7 @@ import {
   UnassignedMattersLineParsed,
   UnassignedMattersParsed,
 } from '../../interfaces/index.js';
-import { MatchSequence } from './multi-line-matcher.js';
+import { MatchRegExSequence } from './multi-line-matcher.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import {
   CAUSE_LIST_NUM_RE,

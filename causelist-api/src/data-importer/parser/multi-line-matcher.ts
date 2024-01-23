@@ -204,7 +204,7 @@ export abstract class RegExMatcher extends Matcher {
   }
 }
 
-export class MatchAny extends RegExMatcher {
+export class MatchRegExAny extends RegExMatcher {
   doMatch(file: FileLines): RegExpMatchArray[] | undefined {
     const matches = [];
     for (const r of this.regExes) {
@@ -219,7 +219,7 @@ export class MatchAny extends RegExMatcher {
   }
 }
 
-export class MatchSequence extends RegExMatcher {
+export class MatchRegExSequence extends RegExMatcher {
   doMatch(file: FileLines): RegExpMatchArray[] | undefined {
     const matches: RegExpMatchArray[] = [];
     for (const r of this.regExes) {

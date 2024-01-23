@@ -5,7 +5,7 @@ import {
   phrasesToRegex,
   trimObjectValues,
 } from './util.js';
-import { MatchAny, MatchResult, Matcher } from './multi-line-matcher.js';
+import { MatchRegExAny, MatchResult, Matcher } from './multi-line-matcher.js';
 
 export abstract class ExtractedField<T> {
   protected v: T;
@@ -127,7 +127,7 @@ export abstract class ExtractWithRegexField<T> extends ExtractedField<T> {
     this.matcher =
       regExesOrMatcher instanceof Matcher
         ? regExesOrMatcher
-        : new MatchAny(regExesOrMatcher);
+        : new MatchRegExAny(regExesOrMatcher);
   }
   protected abstract _setFrom(_: MatchResult): void;
 

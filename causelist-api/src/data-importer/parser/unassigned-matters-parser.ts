@@ -8,7 +8,7 @@ import {
   UnassignedMattersLineParsed,
   UnassignedMattersParsed,
 } from '../../interfaces/index.js';
-import { MatchSequence } from './multi-line-matcher.js';
+import { MatchRegExSequence } from './multi-line-matcher.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import {
   CAUSE_LIST_CASE_NUMBER_RE,
@@ -21,7 +21,7 @@ import {
 export class UnassignedMattersLineParser1 extends ParserBase {
   lines = new ExtractMultiStringListField(
     10,
-    new MatchSequence(
+    new MatchRegExSequence(
       [
         CAUSE_LIST_NUM_RE,
         SECTION_NAMES_AS_GROUP,

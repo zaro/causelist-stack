@@ -1,7 +1,11 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { FileLines } from './file-lines.js';
-import { MatchAny, MatchSequence, MatchStrings } from './multi-line-matcher.js';
+import {
+  MatchRegExAny,
+  MatchRegExSequence,
+  MatchStrings,
+} from './multi-line-matcher.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -48,13 +52,13 @@ describe('multi-line-matcher', () => {
   let fileNegative1: FileLines;
   let file2: FileLines;
   let file3: FileLines;
-  let seqMatcher: MatchSequence;
+  let seqMatcher: MatchRegExSequence;
   beforeEach(() => {
     file1 = new FileLines(text1);
     fileNegative1 = new FileLines(textNegative1);
     file2 = new FileLines(text2);
     file3 = new FileLines(text3);
-    seqMatcher = new MatchSequence([
+    seqMatcher = new MatchRegExSequence([
       /^(?<num>\d+)\.$/,
       /^(?<type>SECTION|FRESH HEARING)$/,
       /^(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])$/,
@@ -117,7 +121,7 @@ describe('multi-line-matcher', () => {
 
   describe('MatchAny', () => {
     it('should match 1 time', () => {
-      const m = new MatchAny([/^SECTION$/, /^FRESH HEARING$/]);
+      const m = new MatchRegExAny([/^SECTION$/, /^FRESH HEARING$/]);
 
       const mr = m.match(file2);
 
@@ -127,7 +131,7 @@ describe('multi-line-matcher', () => {
     });
 
     it('should match multiple times', () => {
-      const m = new MatchAny([/^SECTION$/, /^FRESH HEARING$/], {
+      const m = new MatchRegExAny([/^SECTION$/, /^FRESH HEARING$/], {
         maxTimes: 10,
       });
 
@@ -143,7 +147,7 @@ describe('multi-line-matcher', () => {
     });
 
     it('should not match ', () => {
-      const m = new MatchAny([/^SECTION1$/, /^FRESHER HEARING$/]);
+      const m = new MatchRegExAny([/^SECTION1$/, /^FRESHER HEARING$/]);
 
       const mr = m.match(file2);
 

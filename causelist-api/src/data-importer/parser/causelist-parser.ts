@@ -22,6 +22,7 @@ import {
   ParserInterface,
 } from './parser-base.js';
 import {
+  COURT_ADMIN,
   CauselistHeaderParser,
   CauselistHeaderParserBase,
 } from './causelist-header-parser.js';
@@ -203,7 +204,7 @@ export abstract class CauseListParseBase extends ParserBase {
 
   getParsed() {
     return {
-      causeLists: this.sections.getParsed(),
+      causeLists: this.sections ? this.sections.getParsed() : [],
     };
   }
 }
@@ -240,6 +241,7 @@ export interface CauselistMultiDocumentParsed {
 }
 
 const IGNORE_BETWEEN_DOCUMENTS = [
+  ...COURT_ADMIN,
   'Prepared and Signed by',
   'PRINCIPAL MAGISTRATE',
   'DATED AT',

@@ -9,6 +9,7 @@ import {
 import { MultiParser, ParserBase } from './parser-base.js';
 import { CauselistHeaderParsed } from '../../interfaces/index.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
+import { getCourtNameMatcher } from './court-name-matcher.js';
 
 const URL_RE =
   /(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -27,7 +28,9 @@ const JUDGE_RE = [
 ];
 
 export abstract class CauselistHeaderParserBase extends ParserBase {
-  court = new ExtractStringListField(10, [/^.*\bcourt\b.*$/i]);
+  // court = new ExtractStringListField(10, [/^.*\bcourt\b.*$/i]);
+  court = new ExtractStringListField(10, getCourtNameMatcher());
+
   date = new ExtractDateField(10);
   judge = new ExtractMultiStringField(-10, JUDGE_RE);
   url = new ExtractStringField(-1, [URL_RE]);
@@ -52,7 +55,7 @@ export abstract class CauselistHeaderParserBase extends ParserBase {
   }
 }
 
-const COURT_ADMIN = ['COURT ADMIN:', 'C/A:'];
+export const COURT_ADMIN = ['COURT ADMIN', 'C/A:'];
 const IGNORE_PHRASES = [
   'cause list',
   'ADDENDUM CAUSELIST',

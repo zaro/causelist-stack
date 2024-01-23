@@ -30,6 +30,7 @@ import {
   UnassignedMatters,
   UnassignedMattersSchema,
 } from '../schemas/unassigned-matters.schema.js';
+import { FixCommand } from './fix.command.js';
 
 @Module({
   imports: [
@@ -102,6 +103,7 @@ import {
     DbCommand,
     UpdateCommand,
     CrawlerCommand,
+    FixCommand,
   ],
 })
 export class CommandsModule {}

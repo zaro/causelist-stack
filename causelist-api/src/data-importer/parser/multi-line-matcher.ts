@@ -163,17 +163,19 @@ export class MatchStrings extends Matcher {
 
   doMatch(file: FileLines): RegExpMatchArray[] | undefined {
     const matches: RegExpMatchArray[] = [];
+    let workingFile = file.clone();
     for (const r of this.strings) {
-      this.skipEmptyLines(file);
-      if (file.end()) break;
-      const line = normalizeWhitespace(file.peekNext());
+      this.skipEmptyLines(workingFile);
+      if (workingFile.end()) break;
+      const line = normalizeWhitespace(workingFile.peekNext());
       const m = this.options.forceFullLineMatches
         ? line === r
         : line.includes(r);
       if (m) {
-        file.move();
+        workingFile.move();
         matches.push([line]);
         if (!this.matchSequence) {
+          file.catchUpWithClone(workingFile);
           return matches;
         }
       } else {
@@ -182,6 +184,7 @@ export class MatchStrings extends Matcher {
         }
       }
     }
+    file.catchUpWithClone(workingFile);
     return matches;
   }
 }
@@ -226,17 +229,19 @@ export class MatchRegExAny extends RegExMatcher {
 export class MatchRegExSequence extends RegExMatcher {
   doMatch(file: FileLines): RegExpMatchArray[] | undefined {
     const matches: RegExpMatchArray[] = [];
+    let workingFile = file.clone();
     for (const r of this.regExes) {
-      this.skipEmptyLines(file);
-      if (file.end()) break;
-      const m = file.peekNext().match(r);
+      this.skipEmptyLines(workingFile);
+      if (workingFile.end()) break;
+      const m = workingFile.peekNext().match(r);
       if (m) {
-        file.move();
+        workingFile.move();
         matches.push(m);
       } else {
         return;
       }
     }
+    file.catchUpWithClone(workingFile);
     return matches;
   }
 }
@@ -256,12 +261,14 @@ export class MatchersList extends Matcher {
 
   doMatch(file: FileLines): RegExpMatchArray[] | undefined {
     const matches: RegExpMatchArray[] = [];
+    let workingFile = file.clone();
     for (const r of this.matchers) {
-      if (file.end()) break;
-      const m = r.match(file);
+      if (workingFile.end()) break;
+      const m = r.match(workingFile);
       if (m.ok()) {
         matches.push(...m.getRawResults());
         if (!this.matchSequence) {
+          file.catchUpWithClone(workingFile);
           return matches;
         }
       } else {
@@ -270,18 +277,19 @@ export class MatchersList extends Matcher {
         }
       }
     }
+    file.catchUpWithClone(workingFile);
     return matches;
   }
 }
 
-export class MatchersListAny extends MatchStrings {
-  constructor(strings: string[], options?: MatcherOptions) {
-    super(strings, false, options);
+export class MatchersListAny extends MatchersList {
+  constructor(matchers: Matcher[], options?: MatcherOptions) {
+    super(matchers, false, options);
   }
 }
 
-export class MatchersListSequence extends MatchStrings {
-  constructor(strings: string[], options?: MatcherOptions) {
-    super(strings, true, options);
+export class MatchersListSequence extends MatchersList {
+  constructor(matchers: Matcher[], options?: MatcherOptions) {
+    super(matchers, true, options);
   }
 }

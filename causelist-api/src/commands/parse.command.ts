@@ -27,6 +27,7 @@ import {
 import { KenyaLawImporterService } from '../data-importer/kenya-law-importer.service.js';
 import { UnassignedMatters } from '../schemas/unassigned-matters.schema.js';
 import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
+import { UpdateStatsService } from '../data-importer/update-stats.service.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -54,6 +55,7 @@ export class ParseCommand {
     protected parserService: KenyaLawParserService,
     protected importerService: KenyaLawImporterService,
     protected parsingDebugService: ParsingDebugService,
+    protected updateStatsService: UpdateStatsService,
     @InjectModel(InfoFile.name)
     protected infoFileModel: Model<InfoFile>,
     @InjectModel(CauseList.name)
@@ -157,6 +159,21 @@ export class ParseCommand {
     if (debugHtml) {
       const goodAtEnd = good.filter((e) => e.parser.file.end());
       if (goodAtEnd.length) {
+        // Document counts
+        const courts = await this.updateStatsService.getAllCourts();
+        const prevCourtDocCount: Record<string, number> = {};
+        for (const v of courts) {
+          prevCourtDocCount[v.path] =
+            (prevCourtDocCount[v.path] ?? 0) + (v.documentsCount ?? 0);
+        }
+        const nextCourtDocCount = {
+          ...prevCourtDocCount,
+        };
+        for (const parsedDoc of goodAtEnd) {
+          const path = parsedDoc.doc.parentPath;
+          nextCourtDocCount[path] = (nextCourtDocCount[path] ?? 0) + 1;
+        }
+        // Generate HTML
         const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'debug-html-'));
         const debugHtmls = await Promise.all(
           goodAtEnd.map((d) =>
@@ -166,7 +183,10 @@ export class ParseCommand {
         const filenames = this.parsingDebugService.writeDebugHtml(
           debugHtmls,
           outDir,
-          true,
+          {
+            prevCourtDocCount,
+            nextCourtDocCount,
+          },
         );
         this.log.log(`Wrote ${filenames.length} files to ${outDir}.`);
         await open(path.join(outDir, 'index.html'));
@@ -217,6 +237,9 @@ export class ParseCommand {
       this.log.log(`Deleted ${deletedOld} existing !`);
       this.log.log(`Writing ${savedNew} CauseList|UnassignedMatters to db!`);
       this.log.log(`Updated ${updatedInfoFiles} InfoFile as parsed...`);
+
+      this.log.log(`Updating court document count...`);
+      await this.updateStatsService.updateCourtsStats();
       return;
     }
     // console.dir(

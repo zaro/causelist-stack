@@ -11,6 +11,11 @@
         color: red;
       }
 
+      .grey {
+        background-color: lightgray;
+        color: darkgrey;
+      }
+
       h1 { text-align: center }
       h2 { text-align: center }
       h3 { text-align: center }
@@ -57,5 +62,15 @@
     <tr><td><a href="{{ file }}">{{ file }}</a></tr></td>
     {% endfor %}
     <table>
+    <hr>
+    <table>
+      {% for name, count in nextCourtDocCount %}
+      <tr class="{% if prevCourtDocCount[name] == count %}grey{% endif %}">
+        <td>{{ name }}</td>
+        <td>{{ prevCourtDocCount[name] }}</td>
+        <td>{{ count }}</td>
+      </tr>
+      {% endfor %}
+    </table>
   </body>
 </html>

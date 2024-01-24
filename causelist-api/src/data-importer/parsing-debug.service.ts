@@ -105,18 +105,18 @@ export class ParsingDebugService {
   async writeDebugHtmlForParseResults(
     parsedDocuments: DocumentParseResult[],
     outputDir?: string,
-    writeIndex?: boolean,
+    indexContext?: Record<string, any>,
   ) {
     const debugHtmls = await Promise.all(
       parsedDocuments.map((d) => this.debugHTMLForParsedDocument(d)),
     );
-    return this.writeDebugHtml(debugHtmls, outputDir, writeIndex);
+    return this.writeDebugHtml(debugHtmls, outputDir, indexContext);
   }
 
   writeDebugHtml(
     files: DebugHtml[],
     outputDir?: string,
-    writeIndex?: boolean,
+    indexContext?: Record<string, any>,
   ): string[] {
     if (!files.length) {
       return;
@@ -135,9 +135,10 @@ export class ParsingDebugService {
       generatedFiles.push(file);
     }
 
-    if (writeIndex) {
+    if (indexContext) {
       const env = this.makeNunjucksEnv();
       const html = env.render('debug-html-index.html.nunjucks', {
+        ...indexContext,
         generatedFiles,
       });
       fs.writeFileSync(path.join(outputDir, 'index.html'), html);

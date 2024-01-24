@@ -19,8 +19,12 @@ export class UpdateStatsService {
     protected causeListModel: Model<CauseList>,
   ) {}
 
-  async updateCourtsStats() {
+  async getAllCourts(): Promise<CourtDocument[]> {
     const courts = await this.courtModel.find().exec();
+    return courts;
+  }
+
+  async updateCourtDocumentCounts(courts: CourtDocument[]) {
     const toSave: CourtDocument[] = [];
     for (const court of courts) {
       const clCount = await this.causeListModel
@@ -40,6 +44,11 @@ export class UpdateStatsService {
     );
 
     this.log.log(`Updated ${r.length} courts`);
+  }
+
+  async updateCourtsStats() {
+    const courts = await this.getAllCourts();
+    return this.updateCourtDocumentCounts(courts);
   }
 
   async buildCourtNamesForMatching() {

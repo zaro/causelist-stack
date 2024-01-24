@@ -1,5 +1,8 @@
-import { UnassignedMatters } from '../schemas/unassigned-matters.schema.js';
-import { CauseListParsed, CauselistLineParsed } from './index.js';
+import {
+  CauseListParsed,
+  CauselistLineParsed,
+  UnassignedMattersParsed,
+} from './index.js';
 
 export interface ICourt {
   name: string;
@@ -10,7 +13,7 @@ export interface ICourt {
 
 export interface ISearchResult {
   _id: string;
-  type: CauseListParsed['type'] | UnassignedMatters['type'];
+  type: CauseListParsed['type'] | UnassignedMattersParsed['type'];
   date: string;
   judge?: string;
   typeOfCause: string;

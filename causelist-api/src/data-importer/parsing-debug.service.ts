@@ -1,3 +1,7 @@
+import * as os from 'node:os';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { InfoFile } from '../schemas/info-file.schema.js';
@@ -6,12 +10,22 @@ import { S3Service } from '../s3/s3.service.js';
 import { FilterQuery, Model } from 'mongoose';
 import { Court, CourtDocument } from '../schemas/court.schema.js';
 
-import { CauseList } from '../schemas/causelist.schema.js';
+import { CauseList, ParsedDocument } from '../schemas/causelist.schema.js';
 import * as nunjucks from 'nunjucks';
 import { format } from 'date-fns';
 import { FileLines } from './parser/file-lines.js';
 import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
-import { KenyaLawParserService } from './kenya-law-parser.service.js';
+import {
+  DocumentParseRequest,
+  DocumentParseResult,
+  DocumentWithData,
+  KenyaLawParserService,
+} from './kenya-law-parser.service.js';
+
+export interface DebugHtml {
+  html: string;
+  fileName: string;
+}
 
 @Injectable()
 export class ParsingDebugService {
@@ -53,7 +67,7 @@ export class ParsingDebugService {
     return env;
   }
 
-  async debugHTML(docSha1: string) {
+  async debugHTMLForHash(docSha1: string): Promise<DebugHtml> {
     const [document] = await this.parserService.loadDocumentsWithData({
       sha1: docSha1,
       includeAlreadyParsed: true,
@@ -61,26 +75,74 @@ export class ParsingDebugService {
     if (!document) {
       throw new Error('No file found with sha1: ' + docSha1);
     }
-    const fl = new FileLines(document.textContent);
-    const p = new CauselistMultiDocumentParser(fl);
-    p.tryParse();
-    const matchScore = p.matchScore();
-    const minValidScore = p.minValidScore();
+    return this.debugHTMLForDocument(document);
+  }
 
+  async debugHTMLForDocument(document: DocumentWithData): Promise<DebugHtml> {
+    const parsed = await this.parserService.parseDocumentsWithData([document]);
+    return this.debugHTMLForParsedDocument(parsed[0]);
+  }
+
+  async debugHTMLForParsedDocument(parsed: DocumentParseResult) {
     const env = this.makeNunjucksEnv();
-    const currentLine = fl.getCurrentLine();
-    const fileName = document.doc.fileName;
+    const currentLine = parsed.fileLines.getCurrentLine();
+    const fileName = parsed.doc.fileName;
     const html = env.render('parsed-to-debug-html.html.nunjucks', {
-      documents: p.documents.getParsed(),
-      matchScore,
-      minValidScore,
+      documents: parsed.parser.documents.getParsed(),
+      matchScore: parsed.score,
+      minValidScore: parsed.parser.minValidScore(),
       fileName,
-      textContent: document.textContent,
+      textContent: parsed.textContent,
       currentLine,
-      numberedLines: document.textContent
+      numberedLines: parsed.textContent
         .split('\n')
         .map((l, i) => ({ n: i + 1, l, current: currentLine == i })),
+      parserReachedEnd: parsed.parser.file.end(),
     });
     return { html, fileName };
+  }
+
+  async writeDebugHtmlForParseResults(
+    parsedDocuments: DocumentParseResult[],
+    outputDir?: string,
+    writeIndex?: boolean,
+  ) {
+    const debugHtmls = await Promise.all(
+      parsedDocuments.map((d) => this.debugHTMLForParsedDocument(d)),
+    );
+    return this.writeDebugHtml(debugHtmls, outputDir, writeIndex);
+  }
+
+  writeDebugHtml(
+    files: DebugHtml[],
+    outputDir?: string,
+    writeIndex?: boolean,
+  ): string[] {
+    if (!files.length) {
+      return;
+    }
+    if (!outputDir) {
+      outputDir = os.tmpdir();
+    }
+    fs.mkdirSync(outputDir, { recursive: true });
+    const absoluteFileNames: string[] = [];
+    const generatedFiles: string[] = [];
+    for (const { fileName, html } of files) {
+      const file = fileName + '.html';
+      const fullFileName = path.join(outputDir, file);
+      fs.writeFileSync(fullFileName, html);
+      absoluteFileNames.push(fullFileName);
+      generatedFiles.push(file);
+    }
+
+    if (writeIndex) {
+      const env = this.makeNunjucksEnv();
+      const html = env.render('debug-html-index.html.nunjucks', {
+        generatedFiles,
+      });
+      fs.writeFileSync(path.join(outputDir, 'index.html'), html);
+    }
+
+    return absoluteFileNames;
   }
 }

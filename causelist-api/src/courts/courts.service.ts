@@ -80,7 +80,9 @@ export class CourtsService {
     const infoFile = await this.infoFileModel.findOne({
       _id: causelist.parsedFrom,
     });
-    const { html } = await this.parsingDebugService.debugHTML(infoFile.sha1);
+    const { html } = await this.parsingDebugService.debugHTMLForHash(
+      infoFile.sha1,
+    );
     return {
       causelist,
       infoFile,

@@ -79,7 +79,7 @@ export class ParseCommand {
     await this.importerService.processMenu(crawlTime);
     await this.importerService.importFiles();
     await this.parserService.parseCourts(crawlTime);
-    await this.parseFiles('.', null, null, true, false);
+    await this.parseFiles('.', null, null, true, false, false);
   }
 
   @Command({
@@ -107,7 +107,7 @@ export class ParseCommand {
       describe: 'menu path to parse',
       type: 'string',
     })
-    path: string,
+    menuPath: string,
     @Option({
       name: 'id',
       describe: 'specific document id',
@@ -130,6 +130,13 @@ export class ParseCommand {
     })
     write: boolean,
     @Option({
+      name: 'debug-html',
+      describe: 'Write parsed data to db',
+      type: 'boolean',
+      required: false,
+    })
+    debugHtml: boolean,
+    @Option({
       name: 'stats',
       describe: 'Output more stats',
       type: 'boolean',
@@ -139,7 +146,7 @@ export class ParseCommand {
   ) {
     const parsedList = await this.parserService.parseFilesAsData({
       docId,
-      path,
+      path: menuPath,
       sha1,
     });
     this.parserService.printParsedDataStats(parsedList);
@@ -147,6 +154,27 @@ export class ParseCommand {
     const haveCourt = good.filter(
       (e) => e.hasCourt && !e.isNotice && e.hasCauseList,
     );
+    if (debugHtml) {
+      const goodAtEnd = good.filter((e) => e.parser.file.end());
+      if (goodAtEnd.length) {
+        const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'debug-html-'));
+        const debugHtmls = await Promise.all(
+          goodAtEnd.map((d) =>
+            this.parsingDebugService.debugHTMLForParsedDocument(d),
+          ),
+        );
+        const filenames = this.parsingDebugService.writeDebugHtml(
+          debugHtmls,
+          outDir,
+          true,
+        );
+        this.log.log(`Wrote ${filenames.length} files to ${outDir}.`);
+        await open(path.join(outDir, 'index.html'));
+      } else {
+        this.log.warn('No fully parsed files.');
+      }
+      return;
+    }
     if (write) {
       const now = new Date();
       const goodAtEnd = good.filter((e) => e.parser.file.end());
@@ -327,14 +355,11 @@ export class ParseCommand {
     })
     outputDir: string,
   ) {
-    const { html, fileName } =
-      await this.parsingDebugService.debugHTML(docSha1);
-    if (!outputDir) {
-      outputDir = os.tmpdir();
-    }
-    fs.mkdirSync(outputDir, { recursive: true });
-    const fullFileName = path.join(outputDir, fileName) + '.html';
-    fs.writeFileSync(fullFileName, html);
-    await open(fullFileName);
+    const debugHTML = await this.parsingDebugService.debugHTMLForHash(docSha1);
+    const fileNames = this.parsingDebugService.writeDebugHtml(
+      [debugHTML],
+      outputDir,
+    );
+    await open(fileNames[0]);
   }
 }

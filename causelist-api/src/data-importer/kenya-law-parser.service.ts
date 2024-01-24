@@ -274,6 +274,10 @@ export class KenyaLawParserService {
 
   async parseFilesAsData(req: DocumentParseRequest) {
     const documentsWithData = await this.loadDocumentsWithData(req);
+    return this.parseDocumentsWithData(documentsWithData);
+  }
+
+  async parseDocumentsWithData(documentsWithData: DocumentWithData[]) {
     const parsedList: DocumentParseResult[] = [];
     this.log.log(`Processing ${documentsWithData.length} documents`);
     for (const dd of documentsWithData) {

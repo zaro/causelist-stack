@@ -64,6 +64,13 @@
   </head>
   <body>
     <style>
+      .green {
+        color: green;
+      }
+      .red {
+        color: red;
+      }
+
       h1 { text-align: center }
       h2 { text-align: center }
       h3 { text-align: center }
@@ -104,7 +111,7 @@
       }
 
     </style>
-    <h2>{{ fileName }}</h2>
+    <h2 class="{% if parserReachedEnd %}green{% else %}red{% endif %}">{{ fileName }}</h2>
     <h3>Parsed content follows</h3>
     <h3>matchScore={{ matchScore }}, minValidScore={{minValidScore}}</h3>
     <hr>

@@ -10,7 +10,7 @@ import {
   MatchersList,
 } from './multi-line-matcher.js';
 import { getCourtNameMatcher } from './court-name-matcher.js';
-import { CAUSE_LIST_RE } from './regexes.js';
+import { CAUSE_LIST_RE, JUDGE_RE } from './regexes.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 
@@ -55,14 +55,19 @@ const expected = [
 
 const t = 1;
 
+const judge = 'HON. KOMBE LARRY MATAWI (RM)  COURT ROOM 2';
+const judgeExp = [
+  { courtRoom: 'COURT ROOM 2', judge: 'HON. KOMBE LARRY MATAWI (RM) ' },
+];
 describe('regexes', () => {
-  let file1: FileLines;
-  let caseMatcher: Matcher;
-  beforeEach(() => {
-    file1 = new FileLines(texts[t]);
-    caseMatcher = new MatchRegExAny(CAUSE_LIST_RE, { maxTimes: 10 });
-  });
   describe('case re', () => {
+    let file1: FileLines;
+    let caseMatcher: Matcher;
+    beforeEach(() => {
+      file1 = new FileLines(texts[t]);
+      caseMatcher = new MatchRegExAny(CAUSE_LIST_RE, { maxTimes: 10 });
+    });
+
     it('should match 1 time', () => {
       const mr = caseMatcher.match(file1);
 
@@ -75,6 +80,27 @@ describe('regexes', () => {
       );
 
       expect(a.length).toBe(expected[t].length);
+    });
+  });
+
+  describe('judge re', () => {
+    let file1: FileLines;
+    let judgeMatcher: Matcher;
+    beforeEach(() => {
+      file1 = new FileLines(judge);
+      judgeMatcher = new MatchRegExAny(JUDGE_RE, { maxTimes: 10 });
+    });
+
+    it('should match 1 time', () => {
+      const mr = judgeMatcher.match(file1);
+
+      expect(mr.ok()).toBe(true);
+      const a = mr.allAsObjectArray();
+      expect(a).toEqual(
+        expect.arrayContaining(judgeExp.map((e) => expect.objectContaining(e))),
+      );
+
+      expect(a.length).toBe(judgeExp.length);
     });
   });
 });

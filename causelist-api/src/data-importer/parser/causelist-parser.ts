@@ -39,6 +39,7 @@ import {
   CAUSE_LIST_NUM_RE,
   CAUSE_LIST_RE,
   JUDGE_HON_RE,
+  JUDGE_RE,
   SECTION_NAMES_AS_GROUP,
 } from './regexes.js';
 import { UnassignedMattersParser } from './unassigned-matters-parser.js';
@@ -48,6 +49,7 @@ export class CauselistLineParser extends ParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
   // newSectionRegex = phrasesToRegex(SECTION_NAMES).concat([JUDGE_HON_RE]);
   newSectionRegex = [SECTION_NAMES_AS_GROUP, JUDGE_HON_RE];
+  courtNameMatcher = getCourtNameMatcher();
   PEEK_FORWARD = 6;
 
   isSectionEnd(nextLine: string) {
@@ -69,6 +71,10 @@ export class CauselistLineParser extends ParserBase {
 
   heuristicSectionEnd(file: FileLines): boolean {
     if (file.end()) return true;
+    const mr = this.courtNameMatcher.match(file.clone());
+    if (mr.ok()) {
+      return true;
+    }
     const nextLine = file.peekNext();
     if (this.isSectionEnd(nextLine)) {
       return true;
@@ -304,6 +310,7 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   ]),
   new MatchRegExSequence([/^CAUSELIST\s+FOR/, /^DATED?\s+AT/]),
   new MatchRegExSequence([/TO\s+CHECKs+CASEs+STATUS/, /^SUBJECTs+TOs+CHANGES/]),
+  new MatchRegExSequence([JUDGE_HON_RE]),
 ];
 
 export class CauselistMultiDocumentParser extends ParserBase {
@@ -321,7 +328,7 @@ export class CauselistMultiDocumentParser extends ParserBase {
     document.tryParse();
     while (!this.file.end()) {
       this.file.skipEmptyLines();
-      const ignorePhrases = [...IGNORE_BETWEEN_DOCUMENTS, JUDGE_HON_RE];
+      const ignorePhrases = [...IGNORE_BETWEEN_DOCUMENTS];
       this.skipLinesWithMatchers(MATCHERS_IGNORE_BETWEEN_DOCUMENTS);
       this.skipLinesContainingPhrase(ignorePhrases);
       this.skipLinesWithMatchers(MATCHERS_IGNORE_BETWEEN_DOCUMENTS);

@@ -33,7 +33,11 @@ import {
   UnassignedMattersLineParsed,
   UnassignedMattersParsed,
 } from '../../interfaces/index.js';
-import { MatchRegExSequence } from './multi-line-matcher.js';
+import {
+  MatchRegExAny,
+  MatchRegExSequence,
+  MatchersListSequence,
+} from './multi-line-matcher.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import {
   CAUSE_LIST_CASE_NUMBER_RE,
@@ -41,6 +45,7 @@ import {
   CAUSE_LIST_NUM_RE,
   CAUSE_LIST_PARTIES_RE,
   CAUSE_LIST_RE,
+  EMAIL_RE,
   JUDGE_HON_RE,
   JUDGE_RE,
   SECTION_NAMES_AS_GROUP,
@@ -175,7 +180,7 @@ export class CauselistLineParser2 extends CauselistLineParserBase {
     new MatchRegExSequence(
       [
         CAUSE_LIST_NUM_RE,
-        CAUSE_LIST_CASE_NUMBER_RE,
+        new RegExp(`(?:${CAUSE_LIST_CASE_NUMBER_RE.source}|\s*)`, 'i'),
         new RegExp(
           `^(?:${CAUSE_LIST_PARTIES_RE.source}|${CAUSE_LIST_DESCRIPTION_RE.source})$`,
           'i',
@@ -183,6 +188,7 @@ export class CauselistLineParser2 extends CauselistLineParserBase {
       ],
       {
         forceFullLineMatches: true,
+        skipEmptyLines: false,
       },
     ),
   );
@@ -321,10 +327,32 @@ const IGNORE_BETWEEN_DOCUMENTS = [
 ];
 
 const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
+  new MatchRegExSequence([
+    /^(?:HON\.?\s+)?(?:\w[\w\.]*\s+)+\w+$/i, // name
+    /COURT\s+(?:ADMINISTRATOR|ADMN|ADMIN)/,
+    /LAW\s+COURTS?\.?$/,
+  ]),
+  new MatchRegExSequence([
+    /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
+    /PRINCIPAL\s+MAGISTRATE$/,
+  ]),
+
   new MatchRegExSequence([/COURT\s+ADMINISTRATOR/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
+  new MatchRegExSequence([
+    /DEPUTY\s+REGISTRAR/,
+    /(?:LAND|HIGH)\s+COURTS?$/,
+    /^email/i,
+  ]),
+  new MatchRegExSequence([
+    /DEPUTY\s+REGISTRAR/,
+    /^HIGH\s+COURT.*(?:AT|-)/,
+    /^N\/B:/i,
+    EMAIL_RE,
+    /(?:LAND|HIGH)\s+COURTS?$/,
+  ]),
   new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /(?:LAND|HIGH)\s+COURTS?$/]),
-  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /^HIGH\s+COURT.*AT/]),
+  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /^HIGH\s+COURT.*(?:AT|-)/]),
   new MatchRegExSequence([
     /FOR/,
     /PRINCIPAL\s+MAGISTRATE/,
@@ -340,22 +368,21 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /\d+\.\s+/,
   ]),
   new MatchRegExSequence([
-    /^(?:HON\.?\s+)?(?:\w[\w\.]*\s+)+\w+$/i, // name
-    /COURT\s+(?:ADMINISTRATOR|ADMN|ADMIN)/,
-    /LAW\s+COURTS?$/,
-  ]),
-  new MatchRegExSequence([
-    /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
-    /PRINCIPAL\s+MAGISTRATE$/,
-  ]),
-  new MatchRegExSequence([
     /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
     /KADHI$/,
   ]),
   new MatchRegExSequence([/^CAUSELIST\s+FOR/, /^DATED?\s+AT/]),
-  new MatchRegExSequence([/TO\s+CHECKs+CASEs+STATUS/, /^SUBJECTs+TOs+CHANGES/]),
+  new MatchRegExSequence([
+    /TO\s+CHECK\s+CASE\s+STATUS/,
+    /^SUBJECT\s+TO\s+CHANGES/,
+  ]),
   new MatchRegExSequence([JUDGE_HON_RE]),
   new MatchRegExSequence([/^DEPUTY\s+REGISTRAR$/]),
+  new MatchRegExAny([/VISIT:/]),
+  new MatchersListSequence([
+    new MatchRegExAny([/C\.?C\.?:?/i]),
+    new MatchRegExAny([EMAIL_RE, /COUNCIL/], { maxTimes: 20 }),
+  ]),
 ];
 
 export class CauselistMultiDocumentParser extends ParserBase {

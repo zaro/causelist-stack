@@ -158,6 +158,14 @@ export class CauselistLineParser extends ParserBase {
 
 export class CauseListSectionParser extends ParserBase {
   dateTime: ExtractTimeField;
+  causelistType = new ExtractStringField(-10, [
+    /CIVIL\s*CAUSELIST/,
+    /CRIMINAL\s*CAUSELIST/,
+    /NAIROBI\s+ CAUSELIST/,
+    /CIVIL\s+MATTER/,
+    /MIGWANI MATTERS/,
+    /All matters are handled virtual/,
+  ]);
   section = new ExtractStringField(-10, [SECTION_NAMES_AS_GROUP]);
   // causelist = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
   cases: CauselistLineParser;
@@ -172,6 +180,7 @@ export class CauseListSectionParser extends ParserBase {
 
   tryParse() {
     this.dateTime.tryParse(this.file);
+    this.causelistType.tryParse(this.file);
 
     this.section.tryParse(this.file);
     // this.causelist.tryParse(this.file);
@@ -258,13 +267,14 @@ const IGNORE_BETWEEN_DOCUMENTS = [
   /^NAROK$/,
   /^GATHIRIMU$/,
   /^KAPENGURIA$/,
+  /^NYERI\.?$/,
   /^MAGISTRATE$/,
 ];
 
 const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   new MatchRegExSequence([/COURT\s+ADMINISTRATOR/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
-  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /LAND\s+COURTS?$/]),
+  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /(?:LAND|HIGH)\s+COURTS?$/]),
   new MatchRegExSequence([
     /FOR/,
     /PRINCIPAL\s+MAGISTRATE/,
@@ -280,7 +290,7 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /\d+\.\s+/,
   ]),
   new MatchRegExSequence([
-    /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
+    /^(?:HON\.?\s+)?(?:\w[\w\.]*\s+)+\w+$/i, // name
     /COURT\s+(?:ADMINISTRATOR|ADMN|ADMIN)/,
     /LAW\s+COURTS?$/,
   ]),
@@ -288,8 +298,12 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
     /PRINCIPAL\s+MAGISTRATE$/,
   ]),
-
+  new MatchRegExSequence([
+    /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
+    /KADHI$/,
+  ]),
   new MatchRegExSequence([/^CAUSELIST\s+FOR/, /^DATED?\s+AT/]),
+  new MatchRegExSequence([/TO\s+CHECKs+CASEs+STATUS/, /^SUBJECTs+TOs+CHANGES/]),
 ];
 
 export class CauselistMultiDocumentParser extends ParserBase {

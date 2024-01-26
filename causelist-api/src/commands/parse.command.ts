@@ -285,6 +285,33 @@ export class ParseCommand {
   }
 
   @Command({
+    command: 'parse:unparsed-stats',
+    describe: 'print unparsed documents stats',
+  })
+  async unparsedStats(
+    @Positional({
+      name: 'path',
+      describe: 'menu path to parse',
+      type: 'string',
+    })
+    menuPath: string,
+  ) {
+    const unparsed = await this.infoFileModel
+      .find({ parsedAt: { $exists: false } })
+      .exec();
+    const counts: Record<string, number> = {};
+    for (const doc of unparsed) {
+      counts[doc.parentPath] = (counts[doc.parentPath] ?? 0) + 1;
+    }
+    const countKeysSorted = Object.keys(counts).toSorted(
+      (a, b) => counts[b] - counts[a],
+    );
+    for (const k of countKeysSorted) {
+      console.log(`${counts[k]}\t${k}`);
+    }
+  }
+
+  @Command({
     command: 'parse:gen-html <menuPath> <documentsPath> <outputDir>',
     describe: 'Parse Cuaselists under path',
   })

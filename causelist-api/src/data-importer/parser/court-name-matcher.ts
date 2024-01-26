@@ -19,6 +19,7 @@ function makeCourtNameMatcher() {
     const f = path.join(cfgPath, 'courtNames.json');
     if (fs.existsSync(f)) {
       courtNamesArray = JSON.parse(fs.readFileSync(f).toString());
+      break;
     }
   }
 

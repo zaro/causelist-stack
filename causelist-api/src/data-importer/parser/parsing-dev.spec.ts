@@ -13,17 +13,14 @@ describe('parsing development', () => {
       .map((f) =>
         JSON.parse(fs.readFileSync(path.join(fixturesDir, f)).toString()),
       );
-    it.each(documents)(
-      'should parse textContent $textContentHash',
-      (document) => {
-        const fileLines = new FileLines(document.textContent);
-        const parser = new CauselistMultiDocumentParser(fileLines);
-        parser.tryParse();
-        // We must have consumed all text
-        expect(parser.file.end()).toBe(true);
+    it.each(documents)('should parse textContent $fileSha1', (document) => {
+      const fileLines = new FileLines(document.textContent);
+      const parser = new CauselistMultiDocumentParser(fileLines);
+      parser.tryParse();
+      // We must have consumed all text
+      expect(parser.file.end()).toBe(true);
 
-        expect(parser.getParsed()).toMatchSnapshot();
-      },
-    );
+      expect(parser.getParsed()).toMatchSnapshot();
+    });
   });
 });

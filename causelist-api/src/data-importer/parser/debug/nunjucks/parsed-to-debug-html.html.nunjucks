@@ -3,6 +3,11 @@
       <tr>
         <th colspan=2>CauseList</th>
       </tr>
+      {% if not doc.header %}
+      <tr>
+        <th colspan="2">INVALID</th>
+      </tr>
+      {% else %}
       <tr>
         <th>Court</th> <td>{{ doc.header.court | join(', ' )}}</td>
       </tr>
@@ -24,7 +29,9 @@
       <tr>
         <th>Phone</th> <td>{{ doc.header.phone}}</td>
       </tr>
+      {% endif %}
     </table>
+    {% if doc.header %}
     <ul>
       {% for section in doc.causeLists %}
       <li>
@@ -38,6 +45,7 @@
       </li>
       {% endfor %}
     </ul>
+    {% endif %}
     <hr>
 {% endmacro %}
 
@@ -46,15 +54,23 @@
       <tr>
         <th colspan=2>Unassigned Matters</th>
       </tr>
+      {% if not doc.header %}
+      <tr>
+        <th colspan="2">INVALID</th>
+      </tr>
+      {% else %}
       <tr>
         <th>Date</th> <td>{{ doc.header.date | date }}</td>
       </tr>
+      {% endif %}
     </table>
+    {% if doc.header %}
     <ul>
       {% for c in doc.cases %}
         <li>{% if c.num %}{{ c.num }}.{% endif %} <b>{{ c.typeOfCause }}</b> <b>{{ c.caseNumber | default('???')}}</b> {% if c.description %}{{ c.description }}{% else %}{{ c.partyA}} <b>VS</b> {{ c.partyB }}{% endif %}</li>
       {% endfor %}
     </ul>
+    {% endif %}
     <hr>
 {% endmacro %}
 

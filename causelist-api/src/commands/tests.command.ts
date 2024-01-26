@@ -50,8 +50,8 @@ export class TestsCommand {
       parentPath: document.doc.parentPath,
       textContentHash: document.textContentSha1,
     };
-    // Store under MD5(textContent) filename
-    const fileName = `${data.textContentHash}.json`;
+    // Store under sha1(originalFile) filename
+    const fileName = `${data.fileSha1}.json`;
     fs.writeFileSync(
       path.join(outputDir, fileName),
       JSON.stringify(data, undefined, 2),

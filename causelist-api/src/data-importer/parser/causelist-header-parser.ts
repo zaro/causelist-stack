@@ -28,6 +28,9 @@ export abstract class CauselistHeaderParserBase extends ParserBase {
 
   getParsed(): CauselistHeaderParsed {
     const d = this.date.get();
+    if (!d) {
+      return;
+    }
     return {
       court: this.court.get(),
       date: getDateOnlyISOFromDate(d),

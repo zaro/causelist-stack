@@ -42,6 +42,7 @@ import {
   SECTION_NAMES_AS_GROUP,
 } from './regexes.js';
 import { UnassignedMattersParser } from './unassigned-matters-parser.js';
+import { getCourtNameMatcher } from './court-name-matcher.js';
 
 export class CauselistLineParser extends ParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
@@ -296,6 +297,11 @@ export class CauselistMultiDocumentParser extends ParserBase {
 
   tryParse(): void {
     this.documents = new ParserArray(this.file, DocumentParser);
+    // Skip up to 50 lines until a court name is found
+    if (!this.skipLinesUntilMatch(getCourtNameMatcher(), 30)) {
+      return;
+    }
+
     new DocumentParser(this.file);
     let document = this.documents.appendNewParser();
     document.tryParse();

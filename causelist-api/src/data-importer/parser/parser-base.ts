@@ -85,6 +85,21 @@ export abstract class ParserBase extends ParserInterface {
     } while (skipped > 0);
   }
 
+  skipLinesUntilMatch(matcher: Matcher, maxLines = Number.MAX_SAFE_INTEGER) {
+    let skipped = 0;
+    let workFile = this.file.clone();
+    do {
+      let mr = matcher.match(workFile.clone());
+      if (mr.ok()) {
+        this.file.catchUpWithClone(workFile);
+        return true;
+      }
+      workFile.move(1);
+      skipped++;
+    } while (skipped < maxLines);
+    return false;
+  }
+
   skipUntilPhrase(phrases: string | string[]) {
     if (!Array.isArray(phrases)) {
       phrases = [phrases];

@@ -9,7 +9,7 @@ export class FileLines {
       this.lines = textContentOrLines
         .trim()
         .split('\n')
-        .map((l) => l.trim());
+        .map((l) => l.trim().replace('&amp;', '&'));
       this.current = 0;
     } else {
       this.lines = textContentOrLines.lines;

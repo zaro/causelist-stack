@@ -298,7 +298,7 @@ export class CauselistMultiDocumentParser extends ParserBase {
   tryParse(): void {
     this.documents = new ParserArray(this.file, DocumentParser);
     // Skip up to 50 lines until a court name is found
-    if (!this.skipLinesUntilMatch(getCourtNameMatcher(), 30)) {
+    if (!this.skipLinesUntilMatch(getCourtNameMatcher(), 50)) {
       return;
     }
 

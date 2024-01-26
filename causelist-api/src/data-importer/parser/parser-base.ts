@@ -85,7 +85,18 @@ export abstract class ParserBase extends ParserInterface {
     } while (skipped > 0);
   }
 
-  skipLinesUntilMatch(matcher: Matcher, maxLines = Number.MAX_SAFE_INTEGER) {
+  skipLinesUntilMatch(
+    matcher: Matcher,
+    opts?: {
+      maxLines?: number;
+      matchOnEnd?: boolean;
+    },
+  ) {
+    const { maxLines, matchOnEnd } = {
+      maxLines: Number.MAX_SAFE_INTEGER,
+      matchOnEnd: false,
+      ...opts,
+    };
     let skipped = 0;
     let workFile = this.file.clone();
     do {
@@ -97,6 +108,10 @@ export abstract class ParserBase extends ParserInterface {
       workFile.move(1);
       skipped++;
     } while (skipped < maxLines);
+    if (matchOnEnd && workFile.end()) {
+      this.file.catchUpWithClone(workFile);
+      return true;
+    }
     return false;
   }
 

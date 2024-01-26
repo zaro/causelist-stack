@@ -324,6 +324,7 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   new MatchRegExSequence([/COURT\s+ADMINISTRATOR/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /(?:LAND|HIGH)\s+COURTS?$/]),
+  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /^HIGH\s+COURT.*AT/]),
   new MatchRegExSequence([
     /FOR/,
     /PRINCIPAL\s+MAGISTRATE/,
@@ -354,6 +355,7 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   new MatchRegExSequence([/^CAUSELIST\s+FOR/, /^DATED?\s+AT/]),
   new MatchRegExSequence([/TO\s+CHECKs+CASEs+STATUS/, /^SUBJECTs+TOs+CHANGES/]),
   new MatchRegExSequence([JUDGE_HON_RE]),
+  new MatchRegExSequence([/^DEPUTY\s+REGISTRAR$/]),
 ];
 
 export class CauselistMultiDocumentParser extends ParserBase {

@@ -96,11 +96,11 @@ export const JUDGE_RE = [
 
 export const CAUSE_LIST_NUM_RE = /(?<num>[1-9]\d*)\s*\.?\s*(?:\.\s*)?/;
 export const CAUSE_LIST_ADDITIONAL_NUMBER_RE =
-  /(?:(?<additionalNumber>\w+)\s+)/;
+  /(?:(?<additionalNumber>(?!ac|hc|mc|el)\w+)\s+)/;
 export const CAUSE_LIST_CASE_NUMBER_RE =
-  /(?<caseNumber>(?:\w+\/\w+\/\s*[21][09][0126789][0123456789]|[\w\.&\s]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789]))/;
+  /(?<caseNumber>(?:\/\w+|\w+\/\w+|[a-z]\w+|\w[\w\.&\s]*(:?\s*\/\s*|\s+)[\w()]+\s*)\/\s*[21][09][0126789][0123456789])/;
 export const CAUSE_LIST_PARTIES_RE =
-  /(?:(?<partyA>.*?)\s+(?:-?Vs[\-\.]?|Versus)\s+(?<partyB>.*?))/i;
+  /(?:(?<partyA>.*?)\s+-?(?:Vs\.?|Versus)-?\s+(?<partyB>.*?))/i;
 export const CAUSE_LIST_DESCRIPTION_RE = /(?<description>.*?)/;
 
 export const CAUSE_LIST_RE = [

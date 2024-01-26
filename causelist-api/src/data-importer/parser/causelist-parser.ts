@@ -51,7 +51,7 @@ export class CauselistLineParser extends ParserBase {
   PEEK_FORWARD = 6;
 
   isSectionEnd(nextLine: string) {
-    if (nextLine.match(/\bcourt|UNASSIGNED\s+MATTERS\b/i)) {
+    if (nextLine.match(/\bcourt|UNASSIGNED\s+MATTERS|DEPUTY\s+REGISTRAR\b/i)) {
       // console.log('>>>> new section court');
       return true;
     }

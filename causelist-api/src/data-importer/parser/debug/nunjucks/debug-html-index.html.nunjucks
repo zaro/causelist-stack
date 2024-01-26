@@ -11,6 +11,8 @@
         color: red;
       }
 
+
+
       .grey {
         background-color: lightgray;
         color: darkgrey;
@@ -57,9 +59,12 @@
 
     </style>
     <h3>{{ generatedFiles | length }} files</h3>
+    <h4>{{ generatedFiles| selectattr("parserReachedEnd") | length }} reached end</h2>
     <table>
-    {% for file in generatedFiles %}
-    <tr><td><a href="{{ file }}">{{ file }}</a></tr></td>
+    {% for fileInfo in generatedFiles %}
+    <tr ><td><a href="{{ fileInfo.file }}" class="{% if fileInfo.parserReachedEnd %}green{% else %}red{% endif %}">
+      {{ fileInfo.file }}
+      </a></tr></td>
     {% endfor %}
     <table>
     <hr>

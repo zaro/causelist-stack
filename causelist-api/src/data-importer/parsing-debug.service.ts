@@ -25,6 +25,9 @@ import {
 export interface DebugHtml {
   html: string;
   fileName: string;
+  matchScore: number;
+  minValidScore: number;
+  parserReachedEnd: boolean;
 }
 
 @Injectable()
@@ -87,19 +90,22 @@ export class ParsingDebugService {
     const env = this.makeNunjucksEnv();
     const currentLine = parsed.fileLines.getCurrentLine();
     const fileName = parsed.doc.fileName;
+    const matchScore = parsed.score;
+    const minValidScore = parsed.parser.minValidScore();
+    const parserReachedEnd = parsed.parser.file.end();
     const html = env.render('parsed-to-debug-html.html.nunjucks', {
       documents: parsed.parser.documents.getParsed(),
-      matchScore: parsed.score,
-      minValidScore: parsed.parser.minValidScore(),
+      matchScore,
+      minValidScore,
       fileName,
       textContent: parsed.textContent,
       currentLine,
       numberedLines: parsed.textContent
         .split('\n')
         .map((l, i) => ({ n: i + 1, l, current: currentLine == i })),
-      parserReachedEnd: parsed.parser.file.end(),
+      parserReachedEnd,
     });
-    return { html, fileName };
+    return { html, fileName, matchScore, minValidScore, parserReachedEnd };
   }
 
   async writeDebugHtmlForParseResults(
@@ -126,13 +132,13 @@ export class ParsingDebugService {
     }
     fs.mkdirSync(outputDir, { recursive: true });
     const absoluteFileNames: string[] = [];
-    const generatedFiles: string[] = [];
-    for (const { fileName, html } of files) {
+    const generatedFiles: { file: string; parserReachedEnd: boolean }[] = [];
+    for (const { fileName, html, parserReachedEnd } of files) {
       const file = fileName + '.html';
       const fullFileName = path.join(outputDir, file);
       fs.writeFileSync(fullFileName, html);
       absoluteFileNames.push(fullFileName);
-      generatedFiles.push(file);
+      generatedFiles.push({ file, parserReachedEnd });
     }
 
     if (indexContext) {

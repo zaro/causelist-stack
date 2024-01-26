@@ -133,11 +133,18 @@ export class ParseCommand {
     write: boolean,
     @Option({
       name: 'debug-html',
-      describe: 'Write parsed data to db',
+      describe: 'Write HTML for debugging',
       type: 'boolean',
       required: false,
     })
     debugHtml: boolean,
+    @Option({
+      name: 'partial-debug-html',
+      describe: 'Write HTML for debugging with all files',
+      type: 'boolean',
+      required: false,
+    })
+    partialDebugHtml: boolean,
     @Option({
       name: 'stats',
       describe: 'Output more stats',
@@ -156,9 +163,12 @@ export class ParseCommand {
     const haveCourt = good.filter(
       (e) => e.hasCourt && !e.isNotice && e.hasCauseList,
     );
-    if (debugHtml) {
-      const goodAtEnd = good.filter((e) => e.parser.file.end());
-      if (goodAtEnd.length) {
+    if (debugHtml || partialDebugHtml) {
+      let documentsToDebug = good;
+      if (debugHtml) {
+        documentsToDebug = documentsToDebug.filter((e) => e.parser.file.end());
+      }
+      if (documentsToDebug.length) {
         // Document counts
         const courts = await this.updateStatsService.getAllCourts();
         const prevCourtDocCount: Record<string, number> = {};
@@ -169,14 +179,14 @@ export class ParseCommand {
         const nextCourtDocCount = {
           ...prevCourtDocCount,
         };
-        for (const parsedDoc of goodAtEnd) {
+        for (const parsedDoc of documentsToDebug) {
           const path = parsedDoc.doc.parentPath;
           nextCourtDocCount[path] = (nextCourtDocCount[path] ?? 0) + 1;
         }
         // Generate HTML
         const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'debug-html-'));
         const debugHtmls = await Promise.all(
-          goodAtEnd.map((d) =>
+          documentsToDebug.map((d) =>
             this.parsingDebugService.debugHTMLForParsedDocument(d),
           ),
         );
@@ -285,7 +295,7 @@ export class ParseCommand {
   }
 
   @Command({
-    command: 'parse:unparsed-stats',
+    command: 'parse:unparsed-stats [path]',
     describe: 'print unparsed documents stats',
   })
   async unparsedStats(
@@ -296,8 +306,12 @@ export class ParseCommand {
     })
     menuPath: string,
   ) {
+    console.log('stats for ', menuPath);
     const unparsed = await this.infoFileModel
-      .find({ parsedAt: { $exists: false } })
+      .find({
+        parsedAt: { $exists: false },
+        ...(menuPath ? { parentPath: new RegExp(menuPath) } : {}),
+      })
       .exec();
     const counts: Record<string, number> = {};
     for (const doc of unparsed) {
@@ -308,6 +322,12 @@ export class ParseCommand {
     );
     for (const k of countKeysSorted) {
       console.log(`${counts[k]}\t${k}`);
+    }
+    if (Object.keys(counts).length == 1) {
+      console.log('Documents sha');
+      for (const doc of unparsed) {
+        console.log(doc.sha1);
+      }
     }
   }
 

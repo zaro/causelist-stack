@@ -98,7 +98,7 @@ export const CAUSE_LIST_ADDITIONAL_NUMBER_RE =
 export const CAUSE_LIST_CASE_NUMBER_RE =
   /(?<caseNumber>[\w\.&]+(:?\s*\/\s*|\s+)[\w()]+\s*\/\s*[21][09][0126789][0123456789])/;
 export const CAUSE_LIST_PARTIES_RE =
-  /(?:(?<partyA>.*?)\s+(?:Vs\.?|Versus)\s+(?<partyB>.*?))/i;
+  /(?:(?<partyA>.*?)\s+(?:-?Vs[\-\.]?|Versus)\s+(?<partyB>.*?))/i;
 export const CAUSE_LIST_DESCRIPTION_RE = /(?<description>.*?)/;
 
 export const CAUSE_LIST_RE = [

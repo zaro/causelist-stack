@@ -36,7 +36,10 @@ import {
 import { MatchRegExSequence } from './multi-line-matcher.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import {
+  CAUSE_LIST_CASE_NUMBER_RE,
+  CAUSE_LIST_DESCRIPTION_RE,
   CAUSE_LIST_NUM_RE,
+  CAUSE_LIST_PARTIES_RE,
   CAUSE_LIST_RE,
   JUDGE_HON_RE,
   JUDGE_RE,
@@ -45,7 +48,11 @@ import {
 import { UnassignedMattersParser } from './unassigned-matters-parser.js';
 import { getCourtNameMatcher } from './court-name-matcher.js';
 
-export class CauselistLineParser extends ParserBase {
+export abstract class CauselistLineParserBase extends ParserBase {
+  abstract getParsed(): CauselistLineParsed[];
+}
+
+export class CauselistLineParser1 extends CauselistLineParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
   // newSectionRegex = phrasesToRegex(SECTION_NAMES).concat([JUDGE_HON_RE]);
   newSectionRegex = [SECTION_NAMES_AS_GROUP, JUDGE_HON_RE];
@@ -162,6 +169,38 @@ export class CauselistLineParser extends ParserBase {
   }
 }
 
+export class CauselistLineParser2 extends CauselistLineParserBase {
+  lines = new ExtractMultiStringListField(
+    10,
+    new MatchRegExSequence(
+      [
+        CAUSE_LIST_NUM_RE,
+        CAUSE_LIST_CASE_NUMBER_RE,
+        new RegExp(
+          `^(?:${CAUSE_LIST_PARTIES_RE.source}|${CAUSE_LIST_DESCRIPTION_RE.source})$`,
+          'i',
+        ),
+      ],
+      {
+        forceFullLineMatches: true,
+      },
+    ),
+  );
+  tryParse(): void {
+    this.lines.tryParse(this.file);
+  }
+
+  getParsed(): CauselistLineParsed[] {
+    return this.lines.get() as unknown as CauselistLineParsed[];
+  }
+}
+
+export class CauselistLineParser extends MultiParser<CauselistLineParsed[]> {
+  constructor(file: FileLines) {
+    super(file, [CauselistLineParser1, CauselistLineParser2]);
+  }
+}
+
 export class CauseListSectionParser extends ParserBase {
   dateTime: ExtractTimeField;
   causelistType = new ExtractStringField(-10, [
@@ -171,9 +210,12 @@ export class CauseListSectionParser extends ParserBase {
     /CIVIL\s+MATTER/,
     /MIGWANI MATTERS/,
     /All matters are handled virtual/,
+    /[ab]\s*\.\s*(?:New|Old)/i,
   ]);
   section = new ExtractStringField(-10, [SECTION_NAMES_AS_GROUP]);
-  // causelist = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
+  causelistQualifier = new ExtractStringField(-10, [
+    /[ab]\s*\.\s*(?:New|Old)/i,
+  ]);
   cases: CauselistLineParser;
   constructor(
     file: FileLines,
@@ -189,6 +231,7 @@ export class CauseListSectionParser extends ParserBase {
     this.causelistType.tryParse(this.file);
 
     this.section.tryParse(this.file);
+    this.causelistQualifier.tryParse(this.file);
     // this.causelist.tryParse(this.file);
     this.cases.tryParse();
   }

@@ -57,6 +57,8 @@ const IGNORE_PHRASES = [
   'SERVICE MONTH',
   'ENTERING INTERLOCUTORY JUDGMENTS',
   'DUTY COURT',
+  /^NOTE[;:]/,
+  /^N\/B:/,
   ...COURT_ADMIN,
 ];
 
@@ -98,6 +100,6 @@ export class CauselistHeaderParser2 extends CauselistHeaderParserBase {
 
 export class CauselistHeaderParser extends MultiParser<CauselistHeaderParsed> {
   constructor(file: FileLines) {
-    super(file, [CauselistHeaderParser1, CauselistHeaderParser2]);
+    super(file, [CauselistHeaderParser1 /*, CauselistHeaderParser2*/]);
   }
 }

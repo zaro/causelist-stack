@@ -14,10 +14,6 @@ import { FileLines } from '../data-importer/parser/file-lines.js';
 import { CauselistHeaderParser } from '../data-importer/parser/causelist-header-parser.js';
 import { NoticeParser } from '../data-importer/parser/notice-parser.js';
 import { peekForRe, peekForWord } from '../data-importer/parser/util.js';
-import {
-  CauselistMultiDocumentParser,
-  CauselistParser,
-} from '../data-importer/parser/causelist-parser.js';
 import { format } from 'date-fns';
 import {
   DocumentWithData,

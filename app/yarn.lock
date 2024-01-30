@@ -2220,6 +2220,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mui/x-data-grid@npm:^6.19.2":
+  version: 6.19.2
+  resolution: "@mui/x-data-grid@npm:6.19.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+    "@mui/utils": "npm:^5.14.16"
+    clsx: "npm:^2.0.0"
+    prop-types: "npm:^15.8.1"
+    reselect: "npm:^4.1.8"
+  peerDependencies:
+    "@mui/material": ^5.4.1
+    "@mui/system": ^5.4.1
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+  checksum: b9c8c7c03de70b7e6c03f7269230753b424f6d5966acda342988b5d0d58ce2a6c7b9ddcb17c2ff0e8be6bcb887d42fad9494d7efa3294b7c96fb1ae679bc13cd
+  languageName: node
+  linkType: hard
+
 "@mui/x-date-pickers@npm:^6.18.5":
   version: 6.18.5
   resolution: "@mui/x-date-pickers@npm:6.18.5"
@@ -3215,6 +3233,7 @@ __metadata:
     "@mui/material-nextjs": "npm:^5.15.0"
     "@mui/styles": "npm:^5.15.2"
     "@mui/x-charts": "npm:^6.18.7"
+    "@mui/x-data-grid": "npm:^6.19.2"
     "@mui/x-date-pickers": "npm:^6.18.5"
     "@sentry/nextjs": "npm:^7.91.0"
     "@types/next-pwa": "npm:^5"
@@ -6854,6 +6873,13 @@ __metadata:
   version: 2.0.2
   resolution: "require-from-string@npm:2.0.2"
   checksum: aaa267e0c5b022fc5fd4eef49d8285086b15f2a1c54b28240fdf03599cbd9c26049fee3eab894f2e1f6ca65e513b030a7c264201e3f005601e80c49fb2937ce2
+  languageName: node
+  linkType: hard
+
+"reselect@npm:^4.1.8":
+  version: 4.1.8
+  resolution: "reselect@npm:4.1.8"
+  checksum: 06a305a504affcbb67dd0561ddc8306b35796199c7e15b38934c80606938a021eadcf68cfd58e7bb5e17786601c37602a3362a4665c7bf0a96c1041ceee9d0b7
   languageName: node
   linkType: hard
 

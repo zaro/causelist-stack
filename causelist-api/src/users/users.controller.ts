@@ -20,6 +20,8 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { RequestWithUser } from '../auth/request.js';
+import { Roles } from '../auth/roles.decorator.js';
+import { UserRole } from '../interfaces/users.js';
 
 export class UpdateUserParams {
   @IsString()
@@ -46,11 +48,13 @@ export class UsersController {
     return this.usersService.updateById(req.user.id, params);
   }
 
+  @Roles([UserRole.Admin])
   @Get('stats')
   async stats() {
     return this.usersService.userStats();
   }
 
+  @Roles([UserRole.Admin])
   @Get('export')
   async export(@Res() response: Response) {
     const csvStringify = stringify({

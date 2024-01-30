@@ -3,6 +3,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Res,
   UseInterceptors,
 } from '@nestjs/common';
 import { CourtsService } from './courts.service.js';
@@ -24,6 +25,8 @@ import { Roles } from '../auth/roles.decorator.js';
 import { User } from '../schemas/user.schema.js';
 import { UserRole } from '../interfaces/users.js';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { Response } from 'express';
+import { stringify } from 'csv-stringify/sync';
 
 export class SearchParams {
   @IsString()
@@ -89,6 +92,45 @@ export class CourtsController {
   @Get('random')
   random() {
     return this.service.getRandomDay();
+  }
+
+  @Roles([UserRole.Admin])
+  @Get('admin/stats')
+  adminStats() {
+    return this.service.getCourtsStats();
+  }
+
+  @Roles([UserRole.Admin])
+  @Get('admin/stats/export')
+  async adminStatsExport(@Res() response: Response) {
+    response.setHeader(
+      'Content-Disposition',
+      'attachment; filename="courts.csv"',
+    );
+    const rows = await this.service.getCourtsStats();
+    response.end(
+      stringify(rows, {
+        header: true,
+        columns: [
+          'id',
+          'name',
+          'type',
+          'path',
+          'documentsCount',
+          'unparsedCount',
+          'lastImportedDocumentTime',
+          'lastParsedDocumentTime',
+        ],
+        cast: {
+          boolean: (value: boolean) => {
+            return value.toString();
+          },
+          date: (value: Date) => {
+            return value.toISOString();
+          },
+        },
+      }),
+    );
   }
 
   @Get('document/:id')

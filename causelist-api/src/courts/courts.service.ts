@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CauseList } from '../schemas/causelist.schema.js';
 import { Model } from 'mongoose';
 import { Court } from '../schemas/court.schema.js';
-import { ICourt, ISearchResult } from '../interfaces/courts.js';
+import { ICourt, ICourtStats, ISearchResult } from '../interfaces/courts.js';
 import { RandomCourtData } from '../interfaces/ssr.js';
 import { CauseListDocumentParsed } from '../interfaces/index.js';
 import {
@@ -14,6 +14,7 @@ import {
 import { InfoFile } from '../schemas/info-file.schema.js';
 import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
 import { UnassignedMatters } from '../schemas/unassigned-matters.schema.js';
+import { escapeForRegex } from '../data-importer/parser/util.js';
 
 const RANDOM_COURTS = [
   'Chief Magistrates Court:Milimani Chief Magistrate Criminal Court',
@@ -281,5 +282,66 @@ export class CourtsService {
       court,
       causelist,
     };
+  }
+
+  async getCourtsStats(): Promise<ICourtStats[]> {
+    const courts = await this.courtModel.find().exec();
+    const courtsWithData = await Promise.all(
+      courts.map(async (c) => {
+        const s = await this.infoFileModel
+          .aggregate([
+            {
+              $match: {
+                parentPath: new RegExp('^' + escapeForRegex(c.path)),
+              },
+            },
+            {
+              $group: {
+                _id: c.path,
+                count: { $sum: 1 },
+                createdAt: { $max: '$createdAt' },
+                parsedAt: { $max: '$parsedAt' },
+                unparsedCount: {
+                  $sum: {
+                    $switch: {
+                      branches: [
+                        { case: { $gt: ['$parsedAt', null] }, then: 1 },
+                      ],
+                      default: 0,
+                    },
+                  },
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                documentsCount: '$count',
+                unparsedCount: '$unparsedCount',
+                lastImportedDocumentTime: '$createdAt',
+                lastParsedDocumentTime: '$parsedAt',
+              },
+            },
+          ])
+          .exec();
+        const {
+          documentsCount,
+          unparsedCount,
+          lastImportedDocumentTime,
+          lastParsedDocumentTime,
+        } = s[0] ?? {};
+        return {
+          id: c._id.toHexString(),
+          name: c.name,
+          type: c.type,
+          path: c.path,
+          documentsCount,
+          unparsedCount,
+          lastImportedDocumentTime,
+          lastParsedDocumentTime,
+        };
+      }),
+    );
+    return courtsWithData;
   }
 }

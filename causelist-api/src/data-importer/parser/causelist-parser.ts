@@ -217,10 +217,12 @@ export class CauseListSectionParser extends ParserBase {
     /MIGWANI MATTERS/,
     /All matters are handled virtual/,
     /[ab]\s*\.\s*(?:New|Old)/i,
+    /(?:KIAMBU|LANGATA|NAIROBI)\s+REMAND/,
   ]);
   section = new ExtractStringField(-10, [SECTION_NAMES_AS_GROUP]);
   causelistQualifier = new ExtractStringField(-10, [
     /[ab]\s*\.\s*(?:New|Old)/i,
+    /(?:KIAMBU|LANGATA|NAIROBI)\s+REMAND/,
   ]);
   cases: CauselistLineParser;
   constructor(

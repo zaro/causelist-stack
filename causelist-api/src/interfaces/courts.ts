@@ -20,3 +20,14 @@ export interface ISearchResult {
   case: CauselistLineParsed;
   casePosition: [number, number];
 }
+
+export interface ICourtStats {
+  id: string;
+  name: string;
+  type: string;
+  path: string;
+  documentsCount: number;
+  unparsedCount: number;
+  lastImportedDocumentTime: string;
+  lastParsedDocumentTime: string;
+}

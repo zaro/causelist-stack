@@ -19,7 +19,7 @@ docker_build('causelist-app', 'app',
   entrypoint='yarn dev',
   live_update=[
       sync('app/', '/app/'),
-      run('cd /app && yarn install --no-progress', trigger=['app//package.json', 'app//yarn.lock']),
+      run('cd /app && yarn install', trigger=['app//package.json', 'app//yarn.lock']),
   ])
 
 docker_build('causelist-api', 'causelist-api',

@@ -125,3 +125,5 @@ export const CAUSE_LIST_RE = [
     'i',
   ),
 ];
+
+export const CAUSELIST_ADV_RE = /(?<advocates>.*(?:ADV|PRISON))/i;

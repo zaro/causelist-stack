@@ -36,10 +36,12 @@ import {
 import {
   MatchRegExAny,
   MatchRegExSequence,
+  MatchStringsSequence,
   MatchersListSequence,
 } from './multi-line-matcher.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import {
+  CAUSELIST_ADV_RE,
   CAUSE_LIST_CASE_NUMBER_RE,
   CAUSE_LIST_DESCRIPTION_RE,
   CAUSE_LIST_NUM_RE,
@@ -201,9 +203,41 @@ export class CauselistLineParser2 extends CauselistLineParserBase {
   }
 }
 
+export class CauselistLineParser3 extends CauselistLineParserBase {
+  lines = new ExtractMultiStringListField(
+    15,
+    new MatchRegExSequence(
+      [
+        CAUSE_LIST_NUM_RE,
+        new RegExp(`(?:${CAUSE_LIST_CASE_NUMBER_RE.source}|\s*)`, 'i'),
+        new RegExp(
+          `^(?:${CAUSE_LIST_PARTIES_RE.source}|${CAUSE_LIST_DESCRIPTION_RE.source})$`,
+          'i',
+        ),
+        CAUSELIST_ADV_RE,
+      ],
+      {
+        forceFullLineMatches: true,
+        skipEmptyLines: false,
+      },
+    ),
+  );
+  tryParse(): void {
+    this.lines.tryParse(this.file);
+  }
+
+  getParsed(): CauselistLineParsed[] {
+    return this.lines.get() as unknown as CauselistLineParsed[];
+  }
+}
+
 export class CauselistLineParser extends MultiParser<CauselistLineParsed[]> {
   constructor(file: FileLines) {
-    super(file, [CauselistLineParser1, CauselistLineParser2]);
+    super(file, [
+      CauselistLineParser1,
+      CauselistLineParser2,
+      CauselistLineParser3,
+    ]);
   }
 }
 
@@ -225,6 +259,10 @@ export class CauseListSectionParser extends ParserBase {
     /(?:KIAMBU|LANGATA|NAIROBI)\s+REMAND/,
   ]);
   cases: CauselistLineParser;
+  caseListHeader = new ExtractStringField(
+    -10,
+    new MatchStringsSequence(['S/NO', 'CASE NO', 'PARTIES', 'ADVOCATE']),
+  );
   constructor(
     file: FileLines,
     public readonly parent: CauselistHeaderParserBase,
@@ -239,6 +277,8 @@ export class CauseListSectionParser extends ParserBase {
     this.causelistType.tryParse(this.file);
 
     this.section.tryParse(this.file);
+    this.caseListHeader.tryParse(this.file);
+
     this.causelistQualifier.tryParse(this.file);
     // this.causelist.tryParse(this.file);
     this.cases.tryParse();
@@ -343,8 +383,8 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([
     /DEPUTY\s+REGISTRAR/,
-    /(?:LAND|HIGH)\s+COURTS?$/,
-    /^email/i,
+    /(?:LAND|HIGH|LAW)\s+COURTS?$/,
+    /^email|link/i,
   ]),
   new MatchRegExSequence([
     /DEPUTY\s+REGISTRAR/,

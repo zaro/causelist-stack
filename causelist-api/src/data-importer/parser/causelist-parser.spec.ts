@@ -13,71 +13,65 @@ import { getCourtNameMatcher } from './court-name-matcher.js';
 import { CauselistMultiDocumentParser } from './causelist-parser.js';
 
 const text1 = `
-KIAMBU HIGH COURT
-HIGH COURT DIV
+KISII HIGH COURT
+HIGH COURT CRIMINAL
 CAUSE LIST
-MONDAY, 15 JANUARY 2024
-LADY JUSTICE MSHILA, ABIGAIL  HIGH COURT 1
-https://tinyurl.com/a8zhyt5h
+MONDAY, 29 JANUARY 2024
+HON. LADY JUSTICE ODERA TERESA ACHIENG  COURT 1
 
 09:00 AM
-SENTENCING
-    1. HC.P & A/4/2019     In The Matter Of The Estate Of Michael Gichuhi Muiru
 MENTION
-    2. HCCHRPET/10/2022   Samuel  Njogu  Wainaina And Republic   Vs
-    3. HC.CR.C/28/2017     The Republic    Vs  Monica Wanjiru Nyoro
-    4. HCCOMM/E009/2023   Patrick Karanja Ngugi And Everton Enterprises Limited   Vs  Co-operative Bank Of Kenya Limited
-    5. HCCC/E002/2023       Agnes Elizabeth Gathoni Waweru   Vs  Family Bank Limited
-SUMMONS FOR CONFIRMATION
-    6. HCFP&A/E101/2022   In The Estate Of Kahiga
+S/NO
+CASE NO
+PARTIES
+ADVOCATE
+1.
+HCCRA/19/2022
+Hesbon Onduso Obara   Vs  The Republic
+J.O.SOIRE & CO ADV
+2.
+HCCRC/E010/2022
+The Republic    Vs  Henry Nyabuto Kenyanya
+MR KEROSI ADV
+3.
+HCCRC/E045/2022
+The Republic    Vs  Samwel Nyangau Omweno
+MISS NYANDORO ADV
+4.
+HCCRC/56/2023
+The Republic    Vs  Stephen Charles Wambura Alias Orengo
+MR NYANG’ACHA ADV
+5.
+HCCRMISCAPPL/E075/2023
+Henry Oruta Nyarang'o   Vs  The Republic
+IN PERSON GK PRISON
+6.
+HCCRC/E016/2023
+The Republic    Vs  Casmill Ombati Ayora
+KHABURI ADV
+7.
+HCCRC/4/2021
+The Republic Vs Julius Mayaka Ong’era and another
+MISS NDUHUKIRE ADV
+8.
+HCCRC/E062/2023
+The Republic Vs Francis Momanyi Ogori
+MR MAGARA ADV
+9.
+HCCRC/E063/2023
+The Republic Vs Josephat Nyandwaro Onacho
+MR MAGARA ADV
 
 
-
-
-
-
-
-                                                     DEPUTY REGISTRAR
-HIGH COURT OF KENYA AT KIAMBU
-N/B: For further assistance or and clarification, kindly contact the registry through the
-Following email address kiambuhighcourt@court.go.ke; and Telephone number 0202690057 OR 0712796124
-KIAMBU HIGH COURT
-
-KIAMBU HIGH COURT
-HIGH COURT DIV
-CAUSE LIST
-MONDAY, 15 JANUARY 2024
-HON. LADY JUSTICE DORAH CHEPKWONY  HIGH COURT 2
-https://tinyurl.com/2p8kvwjr
-
-09:00 AM
-PLEA
-1.    HC.CR.C/4/2019       The Republic    Vs  Joseph Karichu Muhakia
-MENTION DATE FOR COMPLIANCE
-2.    HC.PET/5/2016         Isaiah Waweru Ngumi And Evason J.m.jomo  And 1 Others  Vs  Chair, National Land Commission And Director General,kenha
-3.    HCCC/22/2019           Sebastian Chege Kamau And Jackson Kagimbi Kagina  And 1 Others  Vs  The County Government Of Kiambu And National Housing Corporation
-4.    HCCRA/E090/2021     Joseph Kinyanjui Muthoni   Vs  The Republic
-MENTION
-5.    HC.CR.C/30/2017     The Republic    Vs  Cyrus Kamau Kinyanjui
-6.    HC.CR.C/55/2018     The Republic    Vs  Brian Ntongai Kithinji
-7.    HCCRA/E032/2021     Martin Njenga Ndung'u   Vs  Odpp
-8.    HCCRC/E014/2021     The Republic    Vs  Alfred Nyabuto Atani Alias Baba Michelle
-9.    HCCRA/E092/2021     Eric Ngugi Kimani   Vs  Republic
-10.  HCCRA/E036/2022     Nicholas Nganga Gathogo   Vs
-11.  HCCRMISCAPPL/E113/2023Peter Gichuru Wanjohi   Vs  Republic
-12.  HCCRA/E066/2023     Lucy Muthoni Wambui   Vs  The Republic
-13.  HCCRMISCAPPL/E104/2023Peter Thanga Kago   Vs  The Republic
-DIRECTIONS
-14.  HCCRMISCAPPL/3/2023Karren Jepkemo   Vs  The Republic
 HEARING OF APPLICATIONS
-15.  HCFP&A/E123/2023   In The Estate Of Janet Wanjiku Kabui
-
-
-                                                     DEPUTY REGISTRAR
-HIGH COURT OF KENYA AT KIAMBU
-N/B: For further assistance or and clarification, kindly contact the registry through the
-Following email address kiambuhighcourt@court.go.ke; and Telephone number 0202690057 OR 0712796124
-KIAMBU HIGH COURT
+10.
+HCCRMISCAPPL/E038/2023
+Martin Omollo Odongo   Vs  The Republic
+IN PERSON GK PRISON
+11.
+HCCRMISCAPPL/E036/2023
+Joeph Ragira   Vs  The Republic
+IN PERSON GK PRISON
 
 `;
 

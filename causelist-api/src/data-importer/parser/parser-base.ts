@@ -311,9 +311,6 @@ export class MultiParser<ParsedT> extends ParserInterface {
       const c = new klass(this.file.clone());
       c.tryParse();
       parsed.push(c);
-      if (c.matchScore() === c.minValidScore()) {
-        break;
-      }
     }
     parsed.sort((a, b) => b.matchScore() - a.matchScore());
     // console.log(parsed.map((p) => [p.constructor.name, p.matchScore()]));

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd causelist-api/
+
+rm -f src/data-importer/parser/__snapshots__/parsing-dev.*
+rm -f src/data-importer/parser/__fixtures__/dev-data/*.json
+
+yarn cli:dev tests:make-dev-fixtures-from-db

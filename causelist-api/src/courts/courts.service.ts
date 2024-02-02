@@ -38,7 +38,6 @@ export class CourtsService {
     @InjectModel(InfoFile.name) private infoFileModel: Model<InfoFile>,
     protected parsingDebugService: ParsingDebugService,
   ) {}
-  header;
 
   async findAll(): Promise<ICourt[]> {
     const courts = await this.courtModel
@@ -73,19 +72,23 @@ export class CourtsService {
 
   async getCauseListDebug(
     id: string,
-  ): Promise<{ causelist: CauseList; infoFile: InfoFile; debugHTML: string }> {
-    const causelist = await this.causeListModel.findOne({ _id: id }).exec();
-    if (!causelist) {
-      throw new NotFoundException();
-    }
-    const infoFile = await this.infoFileModel.findOne({
-      _id: causelist.parsedFrom,
+  ): Promise<{ infoFile: InfoFile; debugHTML: string }> {
+    let infoFile = await this.infoFileModel.findOne({
+      _id: id,
     });
+    if (!infoFile) {
+      const causelist = await this.causeListModel.findOne({ _id: id }).exec();
+      if (!causelist) {
+        throw new NotFoundException();
+      }
+      infoFile = await this.infoFileModel.findOne({
+        _id: causelist.parsedFrom,
+      });
+    }
     const { html } = await this.parsingDebugService.debugHTMLForHash(
       infoFile.sha1,
     );
     return {
-      causelist,
       infoFile,
       debugHTML: html,
     };
@@ -305,7 +308,7 @@ export class CourtsService {
                   $sum: {
                     $switch: {
                       branches: [
-                        { case: { $gt: ['$parsedAt', null] }, then: 1 },
+                        { case: { $lte: ['$parsedAt', null] }, then: 1 },
                       ],
                       default: 0,
                     },

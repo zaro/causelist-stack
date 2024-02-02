@@ -10,7 +10,6 @@ import open from 'open';
 import { InjectModel } from '@nestjs/mongoose';
 import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { FilterQuery, Model } from 'mongoose';
-import { FileLines } from '../data-importer/parser/file-lines.js';
 import { CauselistHeaderParser } from '../data-importer/parser/causelist-header-parser.js';
 import { NoticeParser } from '../data-importer/parser/notice-parser.js';
 import { peekForRe, peekForWord } from '../data-importer/parser/util.js';
@@ -77,7 +76,7 @@ export class ParseCommand {
     await this.importerService.processMenu(crawlTime);
     await this.importerService.importFiles();
     await this.parserService.parseCourts(crawlTime);
-    await this.parseFiles('.', null, null, true, false, false);
+    await this.parseFiles('.', null, null, true, false, false, false);
   }
 
   @Command({

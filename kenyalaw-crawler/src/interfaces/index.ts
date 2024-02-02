@@ -49,3 +49,9 @@ export interface UnassignedMattersParsed {
 }
 
 export type CauseListDocumentParsed = CauseListParsed | UnassignedMattersParsed;
+
+export type DocumentTypeHint =
+  | 'AUTO'
+  | UnassignedMattersParsed['type']
+  | CauseListDocumentParsed['type']
+  | 'NOTICE';

@@ -5,6 +5,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { Court } from '../schemas/court.schema.js';
 import { InfoFile } from '../schemas/info-file.schema.js';
 import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
+import { UpdateDocumentBody } from './info-files.controller.js';
 
 @Injectable()
 export class InfoFilesService {
@@ -24,5 +25,13 @@ export class InfoFilesService {
       q.parsedAt = { $exists: false };
     }
     return this.infoFileModel.find(q);
+  }
+
+  async updateInfoFile(id: string, body: UpdateDocumentBody) {
+    const doc = await this.infoFileModel.findById(id);
+    for (const [k, v] of Object.entries(body)) {
+      doc[k] = v;
+    }
+    return doc.save();
   }
 }

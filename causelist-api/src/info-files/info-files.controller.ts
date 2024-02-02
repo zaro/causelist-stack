@@ -1,7 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import {
   IsDate,
   IsDateString,
+  IsIn,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -21,6 +23,18 @@ export class GetInfoFilesForCourt {
   parsedAfter: Date;
 }
 
+export class UpdateDocumentTypeParams {
+  @IsNotEmpty()
+  @IsMongoId()
+  infoFileId: string;
+}
+
+export class UpdateDocumentBody {
+  @IsNotEmpty()
+  @IsIn(['AUTO', 'NOTICE'])
+  overrideDocumentType: string;
+}
+
 @Controller('info-files')
 export class InfoFilesController {
   constructor(protected infoFilesService: InfoFilesService) {}
@@ -32,5 +46,13 @@ export class InfoFilesController {
       params.courtPath,
       params.parsedAfter,
     );
+  }
+
+  @Patch(':infoFileId')
+  updateDocument(
+    @Param() params: UpdateDocumentTypeParams,
+    @Body() doc: UpdateDocumentBody,
+  ) {
+    return this.infoFilesService.updateInfoFile(params.infoFileId, doc);
   }
 }

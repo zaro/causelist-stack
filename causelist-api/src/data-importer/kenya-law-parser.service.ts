@@ -244,6 +244,7 @@ export class KenyaLawParserService {
     if (req.onlyAlreadyParsed) {
       filter = { parsedAt: { $exists: true } };
     }
+    filter.overrideDocumentType = { $ne: 'NOTICE' };
     const infoFiles = await this.infoFileModel.find(filter).exec();
     this.log.log(`Loading data for ${infoFiles.length} InfoFiles`);
     const resultList: DocumentWithData[] = [];

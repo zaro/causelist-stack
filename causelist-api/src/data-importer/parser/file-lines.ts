@@ -7,7 +7,6 @@ export class FileLines {
   constructor(textContentOrLines: string | FileLines) {
     if (typeof textContentOrLines === 'string') {
       this.lines = textContentOrLines
-        .trim()
         .split('\n')
         .map((l) => l.trim().replace('&amp;', '&'));
       this.current = 0;

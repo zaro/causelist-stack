@@ -19,6 +19,7 @@ import {
   CrawlerCronParams,
   CrawlerCronProcessor,
 } from './crawler-cron.processor.js';
+import { K8sJobsController } from './k8s-jobs.controller.js';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import {
     CrawlerCronProcessor,
   ],
   exports: [BullModule],
+  controllers: [K8sJobsController],
 })
 export class K8sJobsModule {
   protected log = new Logger(K8sJobsModule.name);

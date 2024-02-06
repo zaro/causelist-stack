@@ -2,13 +2,14 @@ import * as stream from 'stream';
 import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { Readable } from 'stream';
+import { Readable } from 'node:stream';
 import {
   S3Client,
   HeadObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   ListObjectsV2Command,
+  DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { ConfiguredRetryStrategy } from '@aws-sdk/util-retry';
 
@@ -63,7 +64,7 @@ export interface S3DownloadRequest extends S3Key, S3DownloadOptions {}
 export interface S3DownloadResult {
   key: string;
   fileName: string;
-  data: Buffer | string | Uint8Array | ReadableStream;
+  data: Buffer | string | Uint8Array | Readable;
   dataAsObject?: any;
   status: number;
   mimeType: string;
@@ -199,6 +200,15 @@ export class S3Service {
     return fileMeta.ContentLength;
   }
 
+  async removeKey(key: string): Promise<Boolean> {
+    const deleteCommand = new DeleteObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+    });
+    await this.s3.send(deleteCommand);
+    return true;
+  }
+
   async downloadFile(req: S3DownloadRequest): Promise<S3DownloadResult> {
     const key = this.getKeyFromRequest(req);
     const response: S3DownloadResult = {
@@ -216,10 +226,15 @@ export class S3Service {
       });
       return this.s3.send(headCommand).then(async (headers) => {
         response.headers = Object.fromEntries(
-          Object.entries(headers).filter(([k, v]) => !key.startsWith('$')),
+          Object.entries(headers).filter(([k, v]) => !k.startsWith('$')),
         );
         const r = await this.s3.send(command);
-        response.data = r.Body.transformToWebStream();
+        if (!(r.Body instanceof Readable)) {
+          // never encountered this error, but you never know
+          throw new Error(`unsupported data representation: ${r.Body}`);
+        }
+
+        response.data = r.Body;
 
         return response;
       });

@@ -10,10 +10,12 @@ import {
   UnassignedMatters,
   UnassignedMattersSchema,
 } from '../schemas/unassigned-matters.schema.js';
+import { S3Module } from '../s3/s3.module.js';
 
 @Module({
   imports: [
     DataImporterModule,
+    S3Module,
     MongooseModule.forFeature([
       { name: CauseList.name, schema: CauseListSchema },
       { name: UnassignedMatters.name, schema: UnassignedMattersSchema },

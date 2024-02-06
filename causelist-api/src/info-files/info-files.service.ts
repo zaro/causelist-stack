@@ -27,6 +27,14 @@ export class InfoFilesService {
     return this.infoFileModel.find(q);
   }
 
+  async get(id: string) {
+    const doc = await this.infoFileModel.findById(id);
+    if (!doc) {
+      throw new NotFoundException(`Invalid InfoFIle id ${id}`);
+    }
+    return doc;
+  }
+
   async updateInfoFile(id: string, body: UpdateDocumentBody) {
     const doc = await this.infoFileModel.findById(id);
     for (const [k, v] of Object.entries(body)) {

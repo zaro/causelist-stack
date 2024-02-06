@@ -70,10 +70,14 @@ export class ParsingDebugService {
     return env;
   }
 
-  async debugHTMLForHash(docSha1: string): Promise<DebugHtml> {
+  async debugHTMLForHash(
+    docSha1: string,
+    useCorrection?: boolean,
+  ): Promise<DebugHtml> {
     const [document] = await this.parserService.loadDocumentsWithData({
       sha1: docSha1,
       includeAlreadyParsed: true,
+      useCorrection: useCorrection,
     });
     if (!document) {
       throw new Error('No file found with sha1: ' + docSha1);

@@ -249,6 +249,35 @@ class SimpleS3 {
     }
   }
 
+  async getFileContent(
+    record: ProcessedFile,
+    key: string,
+    writeAsFile?: string
+  ) {
+    const Key = this.filesPrefix + record.sha1 + "/" + key;
+
+    const command = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key,
+    });
+
+    try {
+      const response = await this.s3.send(command);
+      const body = await response.Body?.transformToByteArray();
+      if (!body) {
+        log.error(`${Key} has no body`);
+        return null;
+      }
+      if (writeAsFile) {
+        fs.writeFileSync(writeAsFile, body);
+      }
+      return body;
+    } catch (e: any) {
+      this.logError(`getFileContent(${fileSha1}):`, e);
+      return false;
+    }
+  }
+
   async putFileAsFileContent(
     record: ProcessedFile,
     key: string,
@@ -387,7 +416,11 @@ async function processMenuEntries(
   log.info(`Saved menuEntires as ${r}`);
 }
 
-async function processData(storageDir: string, crawlTime: Date) {
+async function processData(
+  storageDir: string,
+  crawlTime: Date,
+  ...additionalArgs: string[]
+) {
   const s3 = new SimpleS3("files/", "menu-entries/", "logs/");
   const convertedDir = path.join(storageDir, "converted/");
   fs.mkdirSync(convertedDir, { recursive: true });
@@ -396,7 +429,11 @@ async function processData(storageDir: string, crawlTime: Date) {
   return true;
 }
 
-async function uploadLogs(storageDir: string, crawlTime: Date) {
+async function uploadLogs(
+  storageDir: string,
+  crawlTime: Date,
+  ...additionalArgs: string[]
+) {
   const s3 = new SimpleS3("files/", "menu-entries/", "logs");
   const logsFiles = fs
     .readdirSync(storageDir)
@@ -417,7 +454,58 @@ async function uploadLogs(storageDir: string, crawlTime: Date) {
   return allFileUploaded;
 }
 
-const allowedCommands = [processData, uploadLogs];
+async function processCorrection(
+  storageDir: string,
+  crawlTime: Date,
+  ...additionalArgs: string[]
+) {
+  const sha1WithCorrection =
+    process.env.PROCESS_CORRECTION_FOR_SHA1 ?? additionalArgs[0];
+  if (!sha1WithCorrection) {
+    log.error(`PROCESS_CORRECTION_FOR_SHA1 is missing`);
+    return false;
+  }
+  const s3 = new SimpleS3("files/", "menu-entries/", "logs");
+  const convertedDir = path.join(storageDir, "converted/");
+
+  const existingFile: ProcessedFile | null = await s3.getFileRecord(
+    sha1WithCorrection
+  );
+  if (!existingFile) {
+    log.error(`${sha1WithCorrection}, not found`);
+    return false;
+  }
+  const dlDir = path.join(storageDir, "downloaded");
+  fs.mkdirSync(dlDir, { recursive: true });
+  const localFile = path.join(dlDir, "CORRECTED-" + existingFile.fileName);
+  await s3.getFileContent(existingFile, "corrected", localFile);
+
+  log.info(`Converting ${localFile} ...`);
+  const { textContent, textContentType, mimeType, error } =
+    await convertFileToTxt(localFile, convertedDir);
+  if (error) {
+    log.warning(`Failed to parse ${localFile} : ${error}`);
+  }
+
+  if (!textContent || !textContent.trim().length) {
+    log.warning(`Empty content for ${localFile} skipping`);
+    return false;
+  }
+
+  await s3.putFileContent(
+    existingFile,
+    "textCorrected",
+    textContent,
+    "text/plain"
+  );
+  existingFile.hasCorrection = true;
+  existingFile.correctedTextContentSha1 = textSha1(textContent);
+  existingFile.correctedTextContentType = textContentType;
+  await s3.putFileRecord(existingFile);
+  return true;
+}
+
+const allowedCommands = [processData, uploadLogs, processCorrection];
 const command = process.argv[2];
 const storageDir = process.argv[3];
 const cmd = allowedCommands.find((f) => f.name === command);
@@ -441,7 +529,7 @@ if (!crawlTime) {
 }
 log.info(`Detected crawTime: ${crawlTime.toISOString()}`);
 
-cmd(storageDir, crawlTime)
+cmd(storageDir, crawlTime, ...process.argv.slice(4))
   .then((r) => {
     if (!r) {
       log.error("Command finished unsuccessfully!");

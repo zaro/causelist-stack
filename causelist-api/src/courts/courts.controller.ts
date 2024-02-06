@@ -10,10 +10,12 @@ import { CourtsService } from './courts.service.js';
 import { InternalRoute, Public } from '../auth/public.decorator.js';
 
 import {
+  IsBoolean,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsNumberString,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -45,6 +47,15 @@ export class GetCauseListParams {
   @IsNotEmpty()
   @IsMongoId()
   id: string;
+}
+
+export class GetCauseListDebugParams extends GetCauseListParams {
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) =>
+    ['true', 'false'].includes(value) ? value === 'true' : value,
+  )
+  useCorrection: boolean;
 }
 
 export class DaysInMonthParam {
@@ -188,8 +199,8 @@ export class CourtsController {
   }
 
   @Roles([UserRole.Admin])
-  @Get('causelist/debug/:id')
-  async getCauselistDebug(@Param() params: GetCauseListParams) {
-    return this.service.getCauseListDebug(params.id);
+  @Get('causelist/debug/:id/:useCorrection?')
+  async getCauselistDebug(@Param() params: GetCauseListDebugParams) {
+    return this.service.getCauseListDebug(params.id, params.useCorrection);
   }
 }

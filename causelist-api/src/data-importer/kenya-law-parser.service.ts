@@ -17,6 +17,7 @@ import { MenuEntry } from './kenya-law-importer.service.js';
 export interface DocumentParseRequest {
   onlyAlreadyParsed?: boolean;
   includeAlreadyParsed?: boolean;
+  useCorrection?: boolean;
   path?: string;
   docId?: string;
   sha1?: string;
@@ -249,9 +250,14 @@ export class KenyaLawParserService {
     this.log.log(`Loading data for ${infoFiles.length} InfoFiles`);
     const resultList: DocumentWithData[] = [];
     for (const file of infoFiles) {
+      const useCorrection =
+        typeof req.useCorrection === 'boolean'
+          ? req.useCorrection
+          : file.hasCorrection;
+      const contentFile = useCorrection ? 'textCorrected' : 'text';
       const downloaded = await this.s3Service.downloadMultipleFiles([
         {
-          key: fileKey(file.sha1 + '/text'),
+          key: fileKey(file.sha1 + '/' + contentFile),
         },
         {
           key: fileKey(file.sha1 + '/meta.json'),

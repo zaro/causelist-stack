@@ -1,11 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { DocumentTypeHint } from '../interfaces/index.js';
+import { IInfoFile } from '../interfaces/info-file.js';
 
 export type InfoFileDocument = HydratedDocument<InfoFile>;
 
-@Schema({ timestamps: true })
-export class InfoFile {
+@Schema({
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+})
+export class InfoFile implements IInfoFile {
+  id: string;
+
   @Prop()
   fileName: string;
 
@@ -40,6 +47,9 @@ export class InfoFile {
   overrideDocumentType?: DocumentTypeHint;
 
   @Prop()
+  hasCorrection?: boolean;
+
+  @Prop()
   createdAt?: Date;
 
   @Prop()
@@ -47,3 +57,10 @@ export class InfoFile {
 }
 
 export const InfoFileSchema = SchemaFactory.createForClass(InfoFile);
+InfoFileSchema.virtual('id')
+  .get(function (this: InfoFileDocument) {
+    return this._id;
+  })
+  .set(function (this: InfoFileDocument, id: string) {
+    this.set({ _id: id });
+  });

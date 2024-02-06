@@ -60,6 +60,7 @@ metadata:
   labels:
     {{- include "causelist-stack.labels" . | nindent 4 }}
   annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 32m
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   {{- with .Values.app.ingress.annotations }}
     {{- toYaml . | nindent 4 }}

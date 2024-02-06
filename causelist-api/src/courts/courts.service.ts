@@ -72,7 +72,12 @@ export class CourtsService {
 
   async getCauseListDebug(
     id: string,
-  ): Promise<{ infoFile: InfoFile; debugHTML: string }> {
+    useCorrection?: boolean | undefined,
+  ): Promise<{
+    infoFile: InfoFile;
+    debugHTML: string;
+    usedCorrectedVersion: boolean;
+  }> {
     let infoFile = await this.infoFileModel.findOne({
       _id: id,
     });
@@ -85,12 +90,19 @@ export class CourtsService {
         _id: causelist.parsedFrom,
       });
     }
+    const useCorrectedVersion =
+      typeof useCorrection === 'boolean'
+        ? useCorrection
+        : infoFile.hasCorrection;
+
     const { html } = await this.parsingDebugService.debugHTMLForHash(
       infoFile.sha1,
+      useCorrectedVersion,
     );
     return {
       infoFile,
       debugHTML: html,
+      usedCorrectedVersion: useCorrectedVersion,
     };
   }
 

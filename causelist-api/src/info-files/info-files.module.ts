@@ -11,6 +11,11 @@ import {
   UnassignedMattersSchema,
 } from '../schemas/unassigned-matters.schema.js';
 import { S3Module } from '../s3/s3.module.js';
+import { BullModule } from '@nestjs/bull';
+import {
+  PROCESS_CORRECTION_JOB_DEFAULT_OPTIONS,
+  PROCESS_CORRECTION_JOB_QUEUE_NAME,
+} from '../k8s-jobs/process-correction.processor.js';
 
 @Module({
   imports: [
@@ -22,6 +27,10 @@ import { S3Module } from '../s3/s3.module.js';
       { name: Court.name, schema: CourtSchema },
       { name: InfoFile.name, schema: InfoFileSchema },
     ]),
+    BullModule.registerQueue({
+      name: PROCESS_CORRECTION_JOB_QUEUE_NAME,
+      defaultJobOptions: PROCESS_CORRECTION_JOB_DEFAULT_OPTIONS,
+    }),
   ],
   controllers: [InfoFilesController],
   providers: [InfoFilesService],

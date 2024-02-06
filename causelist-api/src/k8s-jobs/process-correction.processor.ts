@@ -22,6 +22,7 @@ export class ProcessCorrectionJobProcessor extends K8sJobProcessorBase {
   protected readonly logsPrefix = 'corrections/logs/';
   protected readonly nodeEnvProduction: boolean;
   protected readonly currentPodName: string;
+  protected readonly crawlerImage: string;
 
   constructor(
     protected s3Service: S3Service,
@@ -30,6 +31,7 @@ export class ProcessCorrectionJobProcessor extends K8sJobProcessorBase {
     super(new Logger(ProcessCorrectionJobProcessor.name));
     this.nodeEnvProduction = configService.get('NODE_ENV') === 'production';
     this.currentPodName = configService.getOrThrow('CURRENT_POD_NAME');
+    this.crawlerImage = configService.getOrThrow('CRAWLER_IMAGE');
   }
 
   getCurrentPodName() {
@@ -58,7 +60,7 @@ export class ProcessCorrectionJobProcessor extends K8sJobProcessorBase {
     job: Job<any>,
     currentPodContainers: k8s.V1Container[],
   ): string {
-    return currentPodContainers[0].image;
+    return this.crawlerImage;
   }
 
   buildContainerName(job: Job<any>): string {

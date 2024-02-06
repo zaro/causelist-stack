@@ -419,7 +419,7 @@ async function processMenuEntries(
 async function processData(
   storageDir: string,
   crawlTime: Date,
-  ...additionalArgs: string[]
+  ..._additionalArgs: string[]
 ) {
   const s3 = new SimpleS3("files/", "menu-entries/", "logs/");
   const convertedDir = path.join(storageDir, "converted/");
@@ -432,7 +432,7 @@ async function processData(
 async function uploadLogs(
   storageDir: string,
   crawlTime: Date,
-  ...additionalArgs: string[]
+  ..._additionalArgs: string[]
 ) {
   const s3 = new SimpleS3("files/", "menu-entries/", "logs");
   const logsFiles = fs
@@ -456,7 +456,7 @@ async function uploadLogs(
 
 async function processCorrection(
   storageDir: string,
-  crawlTime: Date,
+  _crawlTime: Date,
   ...additionalArgs: string[]
 ) {
   const sha1WithCorrection =

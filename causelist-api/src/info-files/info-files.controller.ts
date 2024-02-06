@@ -25,6 +25,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { S3Service } from '../s3/s3.service.js';
 import { Readable } from 'node:stream';
+import { InjectQueue } from '@nestjs/bull';
+import {
+  PROCESS_CORRECTION_JOB_QUEUE_NAME,
+  ProcessCorrectionJobParams,
+} from '../k8s-jobs/process-correction.processor.js';
+import type { Queue } from 'bull';
 
 export class GetInfoFilesForCourt {
   @IsString()
@@ -54,6 +60,8 @@ export class InfoFilesController {
   constructor(
     protected infoFilesService: InfoFilesService,
     protected s3Service: S3Service,
+    @InjectQueue(PROCESS_CORRECTION_JOB_QUEUE_NAME)
+    private processCorrectionQueue: Queue<ProcessCorrectionJobParams>,
   ) {}
 
   @CacheTTL(1)
@@ -109,6 +117,10 @@ export class InfoFilesController {
     });
     infoFile.hasCorrection = true;
     await infoFile.save();
+    await this.processCorrectionQueue.add({
+      correctionTime: new Date().toISOString(),
+      sha1: infoFile.sha1,
+    });
     return true;
   }
 
@@ -119,8 +131,7 @@ export class InfoFilesController {
     @Param() params: UpdateDocumentTypeParams,
   ) {
     const infoFile = await this.infoFilesService.get(params.infoFileId);
-    //
-    this.s3Service.removeKey(`files/${infoFile.sha1}/corrected`);
+    // TODO: maybe delete actual files and update
     infoFile.hasCorrection = false;
     await infoFile.save();
     return true;

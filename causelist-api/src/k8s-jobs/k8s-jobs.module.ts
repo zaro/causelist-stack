@@ -20,10 +20,20 @@ import {
   CrawlerCronProcessor,
 } from './crawler-cron.processor.js';
 import { K8sJobsController } from './k8s-jobs.controller.js';
+import {
+  PROCESS_CORRECTION_JOB_DEFAULT_OPTIONS,
+  PROCESS_CORRECTION_JOB_QUEUE_NAME,
+  ProcessCorrectionJobProcessor,
+} from './process-correction.processor.js';
+import { MongooseModule } from '@nestjs/mongoose';
+import { InfoFile, InfoFileSchema } from '../schemas/info-file.schema.js';
 
 @Module({
   imports: [
     S3Module,
+    MongooseModule.forFeature([
+      { name: InfoFile.name, schema: InfoFileSchema },
+    ]),
     BullModule.registerQueue(
       {
         name: CRAWLER_JOB_QUEUE_NAME,
@@ -32,6 +42,10 @@ import { K8sJobsController } from './k8s-jobs.controller.js';
       {
         name: PARSE_CRAWLED_JOB_QUEUE_NAME,
         defaultJobOptions: PARSE_CRAWLED_JOB_DEFAULT_OPTIONS,
+      },
+      {
+        name: PROCESS_CORRECTION_JOB_QUEUE_NAME,
+        defaultJobOptions: PROCESS_CORRECTION_JOB_DEFAULT_OPTIONS,
       },
       {
         name: CRAWLER_CRON_QUEUE_NAME,
@@ -43,6 +57,7 @@ import { K8sJobsController } from './k8s-jobs.controller.js';
     CrawlerJobProcessor,
     ParseCrawledJobProcessor,
     CrawlerCronProcessor,
+    ProcessCorrectionJobProcessor,
   ],
   exports: [BullModule],
   controllers: [K8sJobsController],

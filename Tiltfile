@@ -36,7 +36,7 @@ docker_build('kenyalaw-crawler', 'kenyalaw-crawler',
   extra_tag='crawler-test',
   live_update=[
       sync('kenyalaw-crawler/', '/crawler-dev/'),
-      run('cd /api && yarn install --no-progress', trigger=['kenyalaw-crawler/package.json', 'kenyalaw-crawler/yarn.lock']),
+      run('cd /crawler-dev && yarn install --no-progress', trigger=['kenyalaw-crawler/package.json', 'kenyalaw-crawler/yarn.lock']),
   ])
 #
 local_resource('api-interfaces',

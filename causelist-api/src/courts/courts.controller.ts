@@ -105,12 +105,14 @@ export class CourtsController {
     return this.service.getRandomDay();
   }
 
+  @CacheTTL(60000)
   @Roles([UserRole.Admin])
   @Get('admin/stats')
   adminStats() {
     return this.service.getCourtsStats();
   }
 
+  @CacheTTL(1)
   @Roles([UserRole.Admin])
   @Get('admin/stats/export')
   async adminStatsExport(@Res() response: Response) {

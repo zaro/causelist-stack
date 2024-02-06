@@ -94,6 +94,55 @@ export class ParseCommand {
     return this.parserService.parseCourts(crawlTime);
   }
 
+  async writeParsed(toWrite: DocumentParseResult[]) {
+    const now = new Date();
+    const goodAtEnd = toWrite.filter((e) => e.parser.file.end());
+    let deletedOld = 0,
+      savedNew = 0,
+      updatedInfoFiles = 0;
+    for (const parsed of goodAtEnd) {
+      const savePromises = [];
+      const infoFile = parsed.doc;
+      const data = parsed.parser.getParsed();
+      const deleted = await this.causeListModel
+        .deleteMany({
+          parsedFrom: infoFile._id,
+        })
+        .exec();
+      deletedOld += deleted.deletedCount;
+      for (const document of data.documents) {
+        if (document.type === 'CAUSE LIST') {
+          const causeList = new this.causeListModel({
+            ...document,
+            parsedFrom: infoFile._id,
+            parentPath: infoFile.parentPath,
+          });
+          savePromises.push(causeList.save());
+        } else if (document.type === 'UNASSIGNED MATTERS') {
+          const unassignedMatters = new this.unassignedMattersModel({
+            ...document,
+            parsedFrom: infoFile._id,
+            parentPath: infoFile.parentPath,
+          });
+          savePromises.push(unassignedMatters.save());
+        }
+      }
+      await Promise.all(savePromises);
+      savedNew += savePromises.length;
+      infoFile.parsedAt = now;
+      await infoFile.save();
+      updatedInfoFiles++;
+    }
+    this.log.log(`Deleted ${deletedOld} existing !`);
+    this.log.log(`Writing ${savedNew} CauseList|UnassignedMatters to db!`);
+    this.log.log(`Updated ${updatedInfoFiles} InfoFile as parsed...`);
+
+    if (savedNew > 0 || deletedOld > 0) {
+      this.log.log(`Updating court document count...`);
+      await this.updateStatsService.updateCourtsStats();
+    }
+  }
+
   @Command({
     command: 'parse:files <path>',
     describe: 'Parse Cuaselists under path',
@@ -201,50 +250,7 @@ export class ParseCommand {
       return;
     }
     if (write) {
-      const now = new Date();
-      const goodAtEnd = good.filter((e) => e.parser.file.end());
-      let deletedOld = 0,
-        savedNew = 0,
-        updatedInfoFiles = 0;
-      for (const parsed of goodAtEnd) {
-        const savePromises = [];
-        const infoFile = parsed.doc;
-        const data = parsed.parser.getParsed();
-        const deleted = await this.causeListModel
-          .deleteMany({
-            parsedFrom: infoFile._id,
-          })
-          .exec();
-        deletedOld += deleted.deletedCount;
-        for (const document of data.documents) {
-          if (document.type === 'CAUSE LIST') {
-            const causeList = new this.causeListModel({
-              ...document,
-              parsedFrom: infoFile._id,
-              parentPath: infoFile.parentPath,
-            });
-            savePromises.push(causeList.save());
-          } else if (document.type === 'UNASSIGNED MATTERS') {
-            const unassignedMatters = new this.unassignedMattersModel({
-              ...document,
-              parsedFrom: infoFile._id,
-              parentPath: infoFile.parentPath,
-            });
-            savePromises.push(unassignedMatters.save());
-          }
-        }
-        await Promise.all(savePromises);
-        savedNew += savePromises.length;
-        infoFile.parsedAt = now;
-        await infoFile.save();
-        updatedInfoFiles++;
-      }
-      this.log.log(`Deleted ${deletedOld} existing !`);
-      this.log.log(`Writing ${savedNew} CauseList|UnassignedMatters to db!`);
-      this.log.log(`Updated ${updatedInfoFiles} InfoFile as parsed...`);
-
-      this.log.log(`Updating court document count...`);
-      await this.updateStatsService.updateCourtsStats();
+      await this.writeParsed(good);
       return;
     }
     // console.dir(
@@ -287,6 +293,22 @@ export class ParseCommand {
         }
       }
     }
+  }
+
+  @Command({
+    command: 'parse:corrections',
+    describe: 'Parse All unparsed documents with corrections',
+  })
+  async parseCorrections() {
+    const parsedList = await this.parserService.parseFilesAsData({
+      onlyUnparsedWithCorrection: true,
+      docId: '',
+      path: '',
+      sha1: '',
+    });
+    this.parserService.printParsedDataStats(parsedList);
+    const good = parsedList.filter((e) => e.score >= e.parser.minValidScore());
+    await this.writeParsed(good);
   }
 
   @Command({

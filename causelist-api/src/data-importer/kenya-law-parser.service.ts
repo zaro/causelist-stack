@@ -16,6 +16,7 @@ import { MenuEntry } from './kenya-law-importer.service.js';
 
 export interface DocumentParseRequest {
   onlyAlreadyParsed?: boolean;
+  onlyUnparsedWithCorrection?: boolean;
   includeAlreadyParsed?: boolean;
   useCorrection?: boolean;
   path?: string;
@@ -244,6 +245,12 @@ export class KenyaLawParserService {
 
     if (req.onlyAlreadyParsed) {
       filter = { parsedAt: { $exists: true } };
+    }
+    if (req.onlyUnparsedWithCorrection) {
+      filter = {
+        parsedAt: { $exists: false },
+        hasCorrection: true,
+      };
     }
     filter.overrideDocumentType = { $ne: 'NOTICE' };
     const infoFiles = await this.infoFileModel.find(filter).exec();

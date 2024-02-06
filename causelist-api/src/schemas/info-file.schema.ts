@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { DocumentTypeHint } from '../interfaces/index.js';
+import type { DocumentTypeHint } from '../interfaces/index.js';
 import { IInfoFile } from '../interfaces/info-file.js';
 
 export type InfoFileDocument = HydratedDocument<InfoFile>;
@@ -43,7 +43,7 @@ export class InfoFile implements IInfoFile {
   @Prop()
   parsedAt?: Date;
 
-  @Prop()
+  @Prop({ type: String })
   overrideDocumentType?: DocumentTypeHint;
 
   @Prop()

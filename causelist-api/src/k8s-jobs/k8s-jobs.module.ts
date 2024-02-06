@@ -27,6 +27,11 @@ import {
 } from './process-correction.processor.js';
 import { MongooseModule } from '@nestjs/mongoose';
 import { InfoFile, InfoFileSchema } from '../schemas/info-file.schema.js';
+import {
+  PARSE_CORRECTED_JOB_DEFAULT_OPTIONS,
+  PARSE_CORRECTED_JOB_QUEUE_NAME,
+  ParseCorrectedJobProcessor,
+} from './parse-corrected.processor.js';
 
 @Module({
   imports: [
@@ -48,6 +53,10 @@ import { InfoFile, InfoFileSchema } from '../schemas/info-file.schema.js';
         defaultJobOptions: PROCESS_CORRECTION_JOB_DEFAULT_OPTIONS,
       },
       {
+        name: PARSE_CORRECTED_JOB_QUEUE_NAME,
+        defaultJobOptions: PARSE_CORRECTED_JOB_DEFAULT_OPTIONS,
+      },
+      {
         name: CRAWLER_CRON_QUEUE_NAME,
         defaultJobOptions: CRAWLER_CRON_DEFAULT_OPTIONS,
       },
@@ -58,6 +67,7 @@ import { InfoFile, InfoFileSchema } from '../schemas/info-file.schema.js';
     ParseCrawledJobProcessor,
     CrawlerCronProcessor,
     ProcessCorrectionJobProcessor,
+    ParseCorrectedJobProcessor,
   ],
   exports: [BullModule],
   controllers: [K8sJobsController],

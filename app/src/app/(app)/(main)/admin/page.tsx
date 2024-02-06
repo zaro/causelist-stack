@@ -12,7 +12,7 @@ import DisplayCourts from "./display-courts.tsx";
 import DisplayStats from "./display-stats.tsx";
 import UnprocessedFiles from "./unprocessed-files.tsx";
 import useSearchParamState from "./use-search-param-state.hook.ts";
-import DisplayCorrectionJobs from "./display-correction-jobs.tsx";
+import DisplayJobs from "./display-jobs.tsx";
 
 export default function Page() {
   const { searchParams, setParam } = useSearchParamState();
@@ -32,7 +32,7 @@ export default function Page() {
               <Tab label="Home" value="stats" />
               <Tab label="Courts" value="courts" />
               <Tab label="Unprocessed" value="unprocessed" />
-              <Tab label="Correction Jobs" value="correction-jobs" />
+              <Tab label="Jobs" value="jobs" />
             </TabList>
           </Box>
           <TabPanel value="stats">
@@ -44,8 +44,8 @@ export default function Page() {
           <TabPanel value="unprocessed">
             <UnprocessedFiles />
           </TabPanel>
-          <TabPanel value="correction-jobs">
-            <DisplayCorrectionJobs />
+          <TabPanel value="jobs">
+            <DisplayJobs />
           </TabPanel>
         </TabContext>
       </Box>

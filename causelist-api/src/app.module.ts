@@ -70,6 +70,15 @@ AdminJS.registerAdapter({
         configService: ConfigService,
       ): Promise<BullRootModuleOptions> => ({
         url: configService.getOrThrow('REDIS_URL'),
+        defaultJobOptions: {
+          removeOnComplete: {
+            age: 24 * 3600, // keep up to 24 hour
+            count: 100, // keep up to 100 jobs
+          },
+          removeOnFail: {
+            age: 72 * 3600, // keep up to 72 hours
+          },
+        },
       }),
       inject: [ConfigService],
     }),

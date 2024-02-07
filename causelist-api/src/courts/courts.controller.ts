@@ -105,7 +105,7 @@ export class CourtsController {
     return this.service.getRandomDay();
   }
 
-  @CacheTTL(60000)
+  @CacheTTL(1)
   @Roles([UserRole.Admin])
   @Get('admin/stats')
   adminStats() {
@@ -200,6 +200,7 @@ export class CourtsController {
     );
   }
 
+  @CacheTTL(1)
   @Roles([UserRole.Admin])
   @Get('causelist/debug/:id/:useCorrection?')
   async getCauselistDebug(@Param() params: GetCauseListDebugParams) {

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CourtsService } from './courts.service';
+import { CourtsService } from './courts.service.js';
 import { DataImporterModule } from '../data-importer/data-importer.module.js';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CauseList, CauseListSchema } from '../schemas/causelist.schema.js';

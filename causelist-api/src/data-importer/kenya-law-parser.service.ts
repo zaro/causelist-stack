@@ -131,7 +131,9 @@ export class KenyaLawParserService {
       });
     }
     hightCourt.children = hightCourt.children.filter(
-      (e) => e.name !== 'Vacation Notice' && e.name !== 'Milimani Law Courts',
+      (e) =>
+        e.name !== 'High Court Vacation Notice' &&
+        e.name !== 'Milimani Law Courts',
     );
     for (const d of hightCourt.children) {
       toSave.push({

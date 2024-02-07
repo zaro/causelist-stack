@@ -21,6 +21,7 @@ import {
   DocumentWithData,
   KenyaLawParserService,
 } from './kenya-law-parser.service.js';
+import { loadCourtNames } from './parser/court-name-matcher.js';
 
 export interface DebugHtml {
   html: string;
@@ -156,5 +157,14 @@ export class ParsingDebugService {
     }
 
     return absoluteFileNames;
+  }
+
+  courtNamesHtml() {
+    const courtNames = loadCourtNames();
+    const env = this.makeNunjucksEnv();
+    const html = env.render('court-names.html.nunjucks', {
+      courtNames,
+    });
+    return { html };
   }
 }

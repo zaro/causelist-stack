@@ -106,8 +106,16 @@ export default function DisplayCourts() {
   return (
     <Stack height={"100%"}>
       <Grid container>
-        <Grid item xs={10}>
+        <Grid item xs={8}>
           <Alert severity="info">{rows.length} courts total</Alert>
+        </Grid>
+        <Grid item xs={2}>
+          <Button
+            href={`/api/info-files/recognized-court-names?jwt=${accessToken}`}
+            target="_blank"
+          >
+            Recognized Courts
+          </Button>
         </Grid>
         <Grid item xs={2}>
           <Button

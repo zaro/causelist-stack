@@ -13,7 +13,7 @@ const configPaths = [
 
 let courtNamesMatcher: Matcher;
 
-function makeCourtNameMatcher() {
+export function loadCourtNames() {
   let courtNamesArray: string[][];
   for (const cfgPath of configPaths) {
     const f = path.join(cfgPath, 'courtNames.json');
@@ -22,6 +22,11 @@ function makeCourtNameMatcher() {
       break;
     }
   }
+  return courtNamesArray;
+}
+
+function makeCourtNameMatcher() {
+  let courtNamesArray: string[][] = loadCourtNames();
 
   courtNamesMatcher = new MatchersListAny(
     courtNamesArray.map((c) => new MatchStringsSequence(c)),

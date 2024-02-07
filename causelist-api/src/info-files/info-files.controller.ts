@@ -31,6 +31,9 @@ import {
   ProcessCorrectionJobParams,
 } from '../k8s-jobs/process-correction.processor.js';
 import type { Queue } from 'bull';
+import { Roles } from '../auth/roles.decorator.js';
+import { UserRole } from '../interfaces/users.js';
+import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
 
 export class GetInfoFilesForCourt {
   @IsString()
@@ -60,6 +63,7 @@ export class InfoFilesController {
   constructor(
     protected infoFilesService: InfoFilesService,
     protected s3Service: S3Service,
+    protected parseDebugService: ParsingDebugService,
     @InjectQueue(PROCESS_CORRECTION_JOB_QUEUE_NAME)
     private processCorrectionQueue: Queue<ProcessCorrectionJobParams>,
   ) {}
@@ -71,6 +75,14 @@ export class InfoFilesController {
       params.courtPath,
       params.parsedAfter,
     );
+  }
+
+  @CacheTTL(1)
+  @Roles([UserRole.Admin])
+  @Get('recognized-court-names')
+  getRecognizedCourtNames() {
+    const { html } = this.parseDebugService.courtNamesHtml();
+    return html;
   }
 
   @Patch(':infoFileId')

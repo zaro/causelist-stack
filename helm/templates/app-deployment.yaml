@@ -41,7 +41,7 @@ spec:
           livenessProbe:
             periodSeconds: 30
             httpGet:
-              path: /
+              path: /health
               port: http
           {{- end }}
           envFrom:

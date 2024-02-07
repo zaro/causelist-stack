@@ -68,4 +68,4 @@ service:
 ingress:
   enabled: true
   className: "nginx"
-  appsMainDomain: tilt
+  appsMainDomain: causelist.tilt

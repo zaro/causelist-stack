@@ -85,7 +85,7 @@ export class CauseList implements ParsedDocument, CauseListParsed {
   @Prop({ required: true, type: 'ObjectId', ref: 'InfoFile' })
   parsedFrom: InfoFile;
 
-  @Prop()
+  @Prop({ index: 1 })
   parentPath: string;
 }
 
@@ -103,3 +103,7 @@ CauseListSchema.index(
     name: 'search',
   },
 );
+
+CauseListSchema.index({
+  'header.date': 1,
+});

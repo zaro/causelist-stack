@@ -56,7 +56,7 @@ export class UnassignedMatters
   @Prop({ required: true, type: 'ObjectId', ref: 'InfoFile' })
   parsedFrom: InfoFile;
 
-  @Prop()
+  @Prop({ index: 1 })
   parentPath: string;
 }
 
@@ -75,3 +75,7 @@ UnassignedMattersSchema.index(
     name: 'search',
   },
 );
+
+UnassignedMattersSchema.index({
+  'header.date': 1,
+});

@@ -11,7 +11,7 @@ export class Court {
   @Prop()
   type: string;
 
-  @Prop()
+  @Prop({ index: 1 })
   path: string;
 
   @Prop()

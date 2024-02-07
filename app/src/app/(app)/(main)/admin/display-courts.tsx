@@ -24,7 +24,7 @@ const dataColumns: GridColDef[] = [
     field: "documentsCount",
     description:
       "This is the total number of documents for the court we have in the system",
-    headerName: "Doc #️⃣",
+    headerName: "Doc #",
     width: 100,
     type: "number",
   },
@@ -32,7 +32,7 @@ const dataColumns: GridColDef[] = [
     field: "unparsedCount",
     description:
       "This is the number of  Unprocessed documents for the court we have in the system",
-    headerName: "Unp #️⃣",
+    headerName: "Unp #",
     width: 100,
     type: "number",
   },
@@ -40,7 +40,7 @@ const dataColumns: GridColDef[] = [
     field: "unparsedNoticeCount",
     description:
       "This is the number of  Notices for the court we have in the system",
-    headerName: "Notice #️⃣",
+    headerName: "Notice #",
     width: 100,
     type: "number",
   },

@@ -320,7 +320,15 @@ export class CourtsService {
                   $sum: {
                     $switch: {
                       branches: [
-                        { case: { $lte: ['$parsedAt', null] }, then: 1 },
+                        {
+                          case: {
+                            $and: [
+                              { $lte: ['$parsedAt', null] },
+                              { $ne: ['$overrideDocumentType', 'NOTICE'] },
+                            ],
+                          },
+                          then: 1,
+                        },
                       ],
                       default: 0,
                     },

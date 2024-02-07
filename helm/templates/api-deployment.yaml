@@ -68,6 +68,8 @@ spec:
               value: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
             - name: CRAWLER_IMAGE
               value:  "{{ .Values.api.crawlerImage.repository }}:{{ .Values.api.crawlerImage.tag }}"
+            - name: APP_MAIN_DOMAIN
+              value:  "{{ .Values.ingress.appsMainDomain }}"
           envFrom:
             - configMapRef:
                 name: "{{- include "causelist-stack.cmNameForApi" .Values.api }}"

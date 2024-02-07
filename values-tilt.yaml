@@ -37,6 +37,9 @@ api:
     SMTP_HOST: mailhog
     SMTP_PORT: 1025
     SMTP_SSL: false
+    IPAY_AFRICA_TEST_MODE: "yes"
+    IPAY_AFRICA_VENDOR_ID: "111"
+    IPAY_AFRICA_SECRET: bTjz*db@hefgETbm6cD75HBQ&fB#vFdQ
 
     # ZETTATEL_API_KEY: c2395debd6724a0bf871de8d904861e10bf304f4
     # ZETTATEL_USER: zaro

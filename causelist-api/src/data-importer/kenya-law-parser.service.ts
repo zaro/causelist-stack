@@ -15,6 +15,7 @@ import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
 import { MenuEntry } from './kenya-law-importer.service.js';
 
 export interface DocumentParseRequest {
+  debug?: boolean;
   onlyAlreadyParsed?: boolean;
   onlyUnparsedWithCorrection?: boolean;
   includeAlreadyParsed?: boolean;
@@ -252,7 +253,9 @@ export class KenyaLawParserService {
         hasCorrection: true,
       };
     }
-    filter.overrideDocumentType = { $ne: 'NOTICE' };
+    if (!req.debug) {
+      filter.overrideDocumentType = { $ne: 'NOTICE' };
+    }
     const infoFiles = await this.infoFileModel.find(filter).exec();
     this.log.log(`Loading data for ${infoFiles.length} InfoFiles`);
     const resultList: DocumentWithData[] = [];

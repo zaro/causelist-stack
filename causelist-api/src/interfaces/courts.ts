@@ -28,6 +28,7 @@ export interface ICourtStats {
   path: string;
   documentsCount: number;
   unparsedCount: number;
+  unparsedNoticeCount: number;
   lastImportedDocumentTime: string;
   lastParsedDocumentTime: string;
 }

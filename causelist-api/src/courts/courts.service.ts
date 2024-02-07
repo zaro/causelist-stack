@@ -326,6 +326,24 @@ export class CourtsService {
                     },
                   },
                 },
+                unparsedNoticeCount: {
+                  $sum: {
+                    $switch: {
+                      branches: [
+                        {
+                          case: {
+                            $and: [
+                              { $lte: ['$parsedAt', null] },
+                              { $eq: ['$overrideDocumentType', 'NOTICE'] },
+                            ],
+                          },
+                          then: 1,
+                        },
+                      ],
+                      default: 0,
+                    },
+                  },
+                },
               },
             },
             {
@@ -333,6 +351,7 @@ export class CourtsService {
                 _id: 0,
                 documentsCount: '$count',
                 unparsedCount: '$unparsedCount',
+                unparsedNoticeCount: '$unparsedNoticeCount',
                 lastImportedDocumentTime: '$createdAt',
                 lastParsedDocumentTime: '$parsedAt',
               },
@@ -342,6 +361,7 @@ export class CourtsService {
         const {
           documentsCount,
           unparsedCount,
+          unparsedNoticeCount,
           lastImportedDocumentTime,
           lastParsedDocumentTime,
         } = s[0] ?? {};
@@ -352,6 +372,7 @@ export class CourtsService {
           path: c.path,
           documentsCount,
           unparsedCount,
+          unparsedNoticeCount,
           lastImportedDocumentTime,
           lastParsedDocumentTime,
         };

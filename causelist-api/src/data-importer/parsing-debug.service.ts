@@ -75,6 +75,7 @@ export class ParsingDebugService {
     useCorrection?: boolean,
   ): Promise<DebugHtml> {
     const [document] = await this.parserService.loadDocumentsWithData({
+      debug: true,
       sha1: docSha1,
       includeAlreadyParsed: true,
       useCorrection: useCorrection,

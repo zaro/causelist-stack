@@ -20,6 +20,7 @@ import {
   GridValueGetterParams,
   GridRowParams,
   GridActionsCellItem,
+  GridFilterModel,
 } from "@mui/x-data-grid";
 import useSearchParamState from "./use-search-param-state.hook.ts";
 import { DocumentTypeHint } from "../../../../api/index.ts";
@@ -32,6 +33,9 @@ import { IInfoFile } from "../../../../api/info-file.ts";
 import RemoveCorrectionDialog, {
   RemoveCorrectionDialogProps,
 } from "./remove-correction-dialog.tsx";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 const dataColumns: GridColDef[] = [
   {
@@ -81,6 +85,7 @@ export default function UnprocessedFiles() {
   const accessToken = userStore.use.accessToken();
   const { searchParams } = useSearchParamState();
   const [error, setError] = useState<string[]>([]);
+  const [hideNotices, setHideNotices] = useState(true);
   const [correctionDialogProps, setCorrectionDialogProps] = useState<
     Omit<UploadCorrectionDialogProps, "onClose" | "onComplete">
   >(initCorrectionDialogProps);
@@ -200,6 +205,21 @@ export default function UnprocessedFiles() {
     }
   }, [correctionDialogProps, mutate]);
 
+  const filterModel: GridFilterModel = hideNotices
+    ? {
+        items: [
+          {
+            id: 1,
+            field: "overrideDocumentType",
+            operator: "equals",
+            value: "AUTO",
+          },
+        ],
+      }
+    : {
+        items: [],
+      };
+
   if (!rows) {
     return <h1>Invalid parameters</h1>;
   }
@@ -226,11 +246,24 @@ export default function UnprocessedFiles() {
       />
 
       <Grid container>
-        <Grid item xs={12}>
+        <Grid item xs={10}>
           <Alert severity="info">{court}</Alert>
         </Grid>
+        <Grid item xs={2}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={hideNotices}
+                  onChange={(event) => setHideNotices(event.target.checked)}
+                />
+              }
+              label="Hide Notices"
+            />
+          </FormGroup>
+        </Grid>
       </Grid>
-      <DataGrid rows={rows} columns={columns} />
+      <DataGrid rows={rows} columns={columns} filterModel={filterModel} />
     </Stack>
   );
 }

@@ -100,7 +100,7 @@ export class ParsingDebugService {
     const minValidScore = parsed.parser.minValidScore();
     const parserReachedEnd = parsed.parser.file.end();
     const html = env.render('parsed-to-debug-html.html.nunjucks', {
-      documents: parsed.parser.documents.getParsed(),
+      documents: parsed.parser.getParsed().documents,
       matchScore,
       minValidScore,
       fileName,

@@ -47,6 +47,12 @@ export abstract class ExtractedField<T> {
   get(): T {
     return this.v;
   }
+
+  cloneValueFrom(o: ExtractedField<T>) {
+    if (o.valid()) {
+      this.set(o.get());
+    }
+  }
 }
 
 const DATE_FORMATS = [
@@ -283,5 +289,11 @@ export class ExtractMultiStringListField extends ExtractListWithRegexField<{
 export class ExtractedFieldsContainer {
   getExtractedFields() {
     return Object.keys(this).filter((k) => this[k] instanceof ExtractedField);
+  }
+
+  getExtractedFieldsAsMap(): Record<string, ExtractedField<any>> {
+    return Object.fromEntries(
+      Object.entries(this).filter(([k, v]) => v instanceof ExtractedField),
+    );
   }
 }

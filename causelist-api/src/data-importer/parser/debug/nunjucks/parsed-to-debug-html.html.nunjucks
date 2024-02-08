@@ -9,13 +9,13 @@
       </tr>
       {% else %}
       <tr>
-        <th>Court</th> <td>{{ doc.header.court | join(', ' )}}</td>
+        <th>Court</th> <td>{{ doc.header.court | default(['<MISSING>']) | join(', ' )}}</td>
       </tr>
       <tr>
         <th>Date</th> <td>{{ doc.header.date | date }}</td>
       </tr>
       <tr>
-        <th>Judge</th> <td>{{ doc.header.judge}}</td>
+        <th>Judge</th> <td>{{ doc.header.judge }}</td>
       </tr>
       <tr>
         <th>Court Room</th> <td>{{ doc.header.courtRoom}}</td>

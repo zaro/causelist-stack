@@ -52,6 +52,7 @@ export abstract class ExtractedField<T> {
 const DATE_FORMATS = [
   'EEEE, d MMMM yyyy',
   'EEEE, do MMMM yyyy',
+  'EEEE do MMMM yyyy',
   'EEEE, do MMMM, yyyy',
 ];
 export class ExtractDateField extends ExtractedField<Date> {

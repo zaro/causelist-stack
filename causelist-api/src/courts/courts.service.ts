@@ -109,7 +109,7 @@ export class CourtsService {
   async findAllJudgesForCourt(courtPath: string): Promise<string[]> {
     return this.causeListModel
       .distinct('header.judge', {
-        parentPath: new RegExp(`^${courtPath}`),
+        parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
       })
       .exec();
   }
@@ -123,7 +123,7 @@ export class CourtsService {
     return this.causeListModel
       .find({
         'header.date': getDateOnlyISOFromParts(year, month, day),
-        parentPath: new RegExp(`^${courtPath}`),
+        parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
       })
       .exec();
   }
@@ -136,7 +136,7 @@ export class CourtsService {
     return this.causeListModel
       .distinct('header.date', {
         'header.date': new RegExp(`^${getMonthOnlyISOFromParts(year, month)}`),
-        parentPath: new RegExp(`^${courtPath}`),
+        parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
       })
       .exec();
   }
@@ -239,7 +239,7 @@ export class CourtsService {
         {
           $match: {
             'header.date': new RegExp(`^${reV}`),
-            parentPath: new RegExp(`^${courtPath}`),
+            parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
           },
         },
         { $group: { _id: '$header.date', count: { $sum: 1 } } },
@@ -277,7 +277,7 @@ export class CourtsService {
         this.causeListModel
           .find({
             'header.date': day,
-            parentPath: new RegExp(`^${courtPath}`),
+            parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
           })
           .exec(),
       ),
@@ -288,7 +288,7 @@ export class CourtsService {
     const daysWithData = await this.causeListModel
       .distinct('header.date', {
         'header.date': new RegExp(`^${days[0].replace(/-\d+$/, '')}`),
-        parentPath: new RegExp(`^${courtPath}`),
+        parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
       })
       .exec();
 

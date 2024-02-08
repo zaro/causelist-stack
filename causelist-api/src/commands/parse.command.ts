@@ -12,7 +12,7 @@ import { InfoFile, InfoFileDocument } from '../schemas/info-file.schema.js';
 import { FilterQuery, Model } from 'mongoose';
 import { CauselistHeaderParser } from '../data-importer/parser/causelist-header-parser.js';
 import { NoticeParser } from '../data-importer/parser/notice-parser.js';
-import { peekForRe, peekForWord } from '../data-importer/parser/util.js';
+import { escapeForRegex } from '../data-importer/parser/util.js';
 import { CauseList } from '../schemas/causelist.schema.js';
 import { Court } from '../schemas/court.schema.js';
 import {
@@ -327,7 +327,9 @@ export class ParseCommand {
     const unparsed = await this.infoFileModel
       .find({
         parsedAt: { $exists: false },
-        ...(menuPath ? { parentPath: new RegExp(menuPath) } : {}),
+        ...(menuPath
+          ? { parentPath: new RegExp(escapeForRegex(menuPath)) }
+          : {}),
       })
       .exec();
     const counts: Record<string, number> = {};

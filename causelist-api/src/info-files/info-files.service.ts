@@ -6,6 +6,7 @@ import { Court } from '../schemas/court.schema.js';
 import { InfoFile } from '../schemas/info-file.schema.js';
 import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
 import { UpdateDocumentBody } from './info-files.controller.js';
+import { escapeForRegex } from '../data-importer/parser/util.js';
 
 @Injectable()
 export class InfoFilesService {
@@ -17,7 +18,7 @@ export class InfoFilesService {
 
   async listForCourt(courtPath: string, parsedAfter?: Date) {
     const q: FilterQuery<InfoFile> = {
-      parentPath: new RegExp(`^${courtPath}`),
+      parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
     };
     if (parsedAfter) {
       q.parsedAt = { $gte: parsedAfter };

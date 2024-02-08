@@ -10,7 +10,7 @@ import { fileKey, getTimedKey, menuEntryKey } from './const.js';
 import { FileLines } from './parser/file-lines.js';
 import { CauselistHeaderParser } from './parser/causelist-header-parser.js';
 import { NoticeParser } from './parser/notice-parser.js';
-import { peekForRe, peekForWord } from './parser/util.js';
+import { escapeForRegex, peekForRe, peekForWord } from './parser/util.js';
 import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
 import { MenuEntry } from './kenya-law-importer.service.js';
 
@@ -240,7 +240,7 @@ export class KenyaLawParserService {
             sha1: req.sha1,
           }
         : {
-            parentPath: { $regex: `^${req.path}` },
+            parentPath: { $regex: `^${escapeForRegex(req.path)}` },
           };
     if (!req.includeAlreadyParsed) {
       filter.parsedAt = { $exists: false };

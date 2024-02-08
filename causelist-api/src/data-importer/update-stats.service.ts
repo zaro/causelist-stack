@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { Court, CourtDocument } from '../schemas/court.schema.js';
 
 import { CauseList } from '../schemas/causelist.schema.js';
+import { escapeForRegex } from './parser/util.js';
 
 @Injectable()
 export class UpdateStatsService {
@@ -29,7 +30,7 @@ export class UpdateStatsService {
     for (const court of courts) {
       const clCount = await this.causeListModel
         .count({
-          parentPath: new RegExp(`^${court.path}`),
+          parentPath: new RegExp(`^${escapeForRegex(court.path)}`),
         })
         .exec();
       if (clCount != court.documentsCount) {

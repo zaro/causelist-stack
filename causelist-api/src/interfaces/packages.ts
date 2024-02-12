@@ -1,10 +1,19 @@
-export const PACKAGES: Array<{
+export interface SubscriptionPackage {
   id: string;
   period: number;
   unit: 'day' | 'week' | 'month' | 'year';
   price: number;
   title: string;
-}> = [
+}
+
+export const TRIAL_PACKAGE: SubscriptionPackage = {
+  id: 'trial',
+  period: 1,
+  unit: 'month',
+  price: 0,
+  title: 'Trial Subscription',
+};
+export const PACKAGES: SubscriptionPackage[] = [
   {
     id: 'week1',
     period: 1,

@@ -28,6 +28,8 @@ import {
   MinLength,
   ValidateIf,
 } from 'class-validator';
+import { SubscriptionService } from '../subscription/subscription.service.js';
+import { TRIAL_PACKAGE } from '../interfaces/packages.js';
 
 export class UpdateUserDataParams implements IUpdateUserDataParams {
   @IsNotEmpty({
@@ -66,6 +68,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Otp.name) private otpModel: Model<Otp>,
+    protected subscriptionService: SubscriptionService,
   ) {}
 
   normalizePhone(userPhone: string) {
@@ -161,6 +164,15 @@ export class UsersService {
       role: UserRole.Lawyer,
     });
     await newUser.save();
+
+    // Give the user Trial subscription
+    await this.subscriptionService.newForUser(
+      newUser.id,
+      TRIAL_PACKAGE.period,
+      TRIAL_PACKAGE.unit,
+      0,
+      new Date(),
+    );
     return newUser;
   }
 

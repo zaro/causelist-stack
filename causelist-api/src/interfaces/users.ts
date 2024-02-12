@@ -36,7 +36,6 @@ export interface IUserStats {
 }
 
 export enum SubscriptionTier {
-  TRIAL = 'TRIAL',
   STANDARD = 'STANDARD',
 }
 

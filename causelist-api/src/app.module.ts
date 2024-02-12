@@ -26,6 +26,7 @@ import { Court, CourtSchema } from './schemas/court.schema.js';
 import { EmailModule } from './email/email.module.js';
 import { InfoFilesModule } from './info-files/info-files.module.js';
 import { PaymentsModule } from './payments/payments.module.js';
+import { SubscriptionModule } from './subscription/subscription.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -132,6 +133,7 @@ AdminJS.registerAdapter({
     EmailModule,
     InfoFilesModule,
     PaymentsModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -37,9 +37,13 @@ api:
     SMTP_HOST: mailhog
     SMTP_PORT: 1025
     SMTP_SSL: false
-    IPAY_AFRICA_TEST_MODE: "yes"
-    IPAY_AFRICA_VENDOR_ID: "111"
-    IPAY_AFRICA_SECRET: bTjz*db@hefgETbm6cD75HBQ&fB#vFdQ
+    # IPAY_AFRICA_LIVE_MODE: 1
+    # IPAY_AFRICA_VENDOR_ID: "bookstore"
+    # IPAY_AFRICA_SECRET: "9srp*cJ6&FJ%Y4S&zX23X74RchhKVBbv"
+    IPAY_AFRICA_LIVE_MODE: 0
+    IPAY_AFRICA_VENDOR_ID: "demo"
+    IPAY_AFRICA_SECRET: demoCHANGED
+    IPAY_AFRICA_OVERRIDE_CALLBACK_URL: https://wild-streets-beg.loca.lt/api/payments/ipay-africa-callback
 
     # ZETTATEL_API_KEY: c2395debd6724a0bf871de8d904861e10bf304f4
     # ZETTATEL_USER: zaro

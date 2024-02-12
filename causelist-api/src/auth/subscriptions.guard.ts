@@ -10,7 +10,7 @@ import { RequiresSubscription } from './subscription.decorator.js';
 import { SubscriptionTier, UserRole } from '../interfaces/users.js';
 import { InjectModel } from '@nestjs/mongoose';
 import { Subscription } from '../schemas/subscription.schema.js';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class SubscriptionsGuard implements CanActivate {
@@ -41,9 +41,9 @@ export class SubscriptionsGuard implements CanActivate {
     const now = new Date();
     const active = await this.subscriptionModel
       .distinct('tier', {
-        user: user.id,
-        to: { $lte: now },
-        from: { $gte: now },
+        user: new Types.ObjectId(user.id),
+        to: { $gte: now },
+        from: { $lte: now },
       })
       .exec();
     for (const r of requiredSet) {

@@ -1,6 +1,6 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { SubscriptionService } from './subscription.service.js';
-import { RequestWithUser } from '../auth/request.js';
+import type { RequestWithUser } from '../auth/request.js';
 
 @Controller('subscription')
 export class SubscriptionController {

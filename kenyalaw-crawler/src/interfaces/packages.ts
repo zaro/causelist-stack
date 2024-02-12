@@ -9,7 +9,7 @@ export const PACKAGES: Array<{
     id: 'week1',
     period: 1,
     unit: 'week',
-    price: 1,
+    price: 100,
     title: '1 Week',
   },
   {

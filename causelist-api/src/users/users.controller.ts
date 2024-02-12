@@ -6,7 +6,7 @@ import {
 } from './users.service.js';
 import { Public } from '../auth/public.decorator.js';
 import { Types } from 'mongoose';
-import { Response } from 'express';
+import type { Response } from 'express';
 import { stringify } from 'csv-stringify';
 import {
   IsMongoId,
@@ -19,7 +19,7 @@ import {
   MinLength,
   ValidateIf,
 } from 'class-validator';
-import { RequestWithUser } from '../auth/request.js';
+import type { RequestWithUser } from '../auth/request.js';
 import { Roles } from '../auth/roles.decorator.js';
 import { UserRole } from '../interfaces/users.js';
 

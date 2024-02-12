@@ -8,8 +8,16 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import NextLink from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { appStore } from "../../_store/index.ts";
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    appStore.set.isPwa(searchParams.get("pwa") == "1");
+  }, [searchParams]);
+
   return (
     <Stack spacing={"2em"} alignItems="center">
       <Typography component="h5" variant="h5" textAlign="center">

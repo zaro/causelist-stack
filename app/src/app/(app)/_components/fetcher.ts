@@ -1,14 +1,5 @@
+import { FetcherError } from "../../_common/fetcher-error.ts";
 import { userStore } from "../_store/index.ts";
-
-export class FetcherError extends Error {
-  constructor(
-    msg: string,
-    public readonly object: any,
-    public readonly status: number
-  ) {
-    super(msg);
-  }
-}
 
 export const addAuthHeader = (init: RequestInit | undefined) => {
   const accessToken = userStore.get.accessToken();

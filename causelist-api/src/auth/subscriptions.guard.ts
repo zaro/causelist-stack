@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { RequestWithUser } from './request.js';
 import { RequiresSubscription } from './subscription.decorator.js';
-import { SubscriptionTier } from '../interfaces/users.js';
+import { SubscriptionTier, UserRole } from '../interfaces/users.js';
 import { InjectModel } from '@nestjs/mongoose';
 import { Subscription } from '../schemas/subscription.schema.js';
 import { Model } from 'mongoose';
@@ -34,6 +34,10 @@ export class SubscriptionsGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const user = request.user;
+    if (user.role === UserRole.Admin) {
+      return true;
+    }
+
     const now = new Date();
     const active = await this.subscriptionModel
       .distinct('tier', {

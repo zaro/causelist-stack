@@ -2,26 +2,10 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ViewListIcon from "@mui/icons-material/ViewList";
-import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
-import { userStore } from "../../_store/index.ts";
 import useSWR from "swr";
-import { ICourtStats } from "../../../../api/courts.ts";
-import { addAuthHeader, fetcher } from "../../_components/fetcher.ts";
+import { fetcher } from "../../_components/fetcher.ts";
 
-import {
-  DataGrid,
-  GridRowsProp,
-  GridColDef,
-  GridValueGetterParams,
-  GridActionsCellItem,
-  gridDateComparator,
-  GridRowParams,
-} from "@mui/x-data-grid";
-import { useMemo, useState } from "react";
-import { ICorrectionJob } from "../../../../api/jobs.ts";
+import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import { ISubscription } from "../../../../api/users.ts";
 import { formatDistance } from "date-fns/esm";
 
@@ -54,17 +38,6 @@ const columns: GridColDef[] = [
 ];
 
 export default function Subscriptions() {
-  const accessToken = userStore.use.accessToken();
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const {
     data: rows,
     error,

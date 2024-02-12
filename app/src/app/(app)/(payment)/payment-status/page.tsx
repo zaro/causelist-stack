@@ -23,10 +23,12 @@ import useSWR from "swr";
 import { fetcher } from "../../_components/fetcher.ts";
 import { IOrderStatus, PaymentStatus } from "../../../../api/payments.ts";
 import CircularProgress from "@mui/material/CircularProgress";
+import { appStore } from "../../_store/index.ts";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("oid");
+  const isPwa = appStore.use.isPwa();
 
   const { data, error, isLoading, isValidating } = useSWR<IOrderStatus>(
     orderId ? `/api/payments/check-order-status/${orderId}` : null,
@@ -83,9 +85,15 @@ export default function Page() {
             <Grid item xs={12}>
               {data ? msg : <CircularProgress color="inherit" />}
             </Grid>
-            <Grid item xs={12}>
-              {msg2}
-            </Grid>
+            {isPwa ? (
+              <Grid item xs={12}>
+                <AppLink href="/home">Home</AppLink>
+              </Grid>
+            ) : (
+              <Grid item xs={12}>
+                {msg2}
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Box>

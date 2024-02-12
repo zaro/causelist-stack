@@ -58,3 +58,11 @@ export const userStore = createStore("user")(
     },
   }
 );
+
+interface AppState {
+  isPwa: boolean;
+}
+
+export const appStore = createStore("app")({
+  isPwa: false,
+} as AppState);

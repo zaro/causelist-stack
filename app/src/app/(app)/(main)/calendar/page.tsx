@@ -7,6 +7,8 @@ import DailyCauseLists from "../../_components/daily-causelist.tsx";
 import Calendar from "../../_components/calendar.tsx";
 import JudgeSelector from "../../_components/judge-selector.tsx";
 import Centered from "../../_components/centered.tsx";
+import ErrorBoundary from "../../../_common/error-boundary.tsx";
+import SubscriptionRequired from "../../_components/subscription-required.tsx";
 
 export default function Page() {
   const selectedCourt = causeListStore.use.selectedCourt();
@@ -20,9 +22,14 @@ export default function Page() {
           <>
             <JudgeSelector court={selectedCourt} />
             <Calendar />
-            <Suspense fallback={<h3>Loading data</h3>}>
-              <DailyCauseLists date={selectedDate} court={selectedCourt} />
-            </Suspense>
+            <ErrorBoundary
+              fallback={<h3>failed</h3>}
+              subscriptionRequired={<SubscriptionRequired />}
+            >
+              <Suspense fallback={<h3>Loading data</h3>}>
+                <DailyCauseLists date={selectedDate} court={selectedCourt} />
+              </Suspense>
+            </ErrorBoundary>
           </>
         ) : (
           <Centered sx={{ marginBottom: "10em" }}>

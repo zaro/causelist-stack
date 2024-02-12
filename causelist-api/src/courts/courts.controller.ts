@@ -29,6 +29,7 @@ import { UserRole } from '../interfaces/users.js';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Response } from 'express';
 import { stringify } from 'csv-stringify/sync';
+import { RequiresSubscription } from '../auth/subscription.decorator.js';
 
 export class SearchParams {
   @IsString()
@@ -93,6 +94,7 @@ export class CourtsController {
     return this.service.findAll();
   }
 
+  @RequiresSubscription()
   @Get('search/:text*')
   search(@Param() params: SearchParams) {
     return this.service.search(params.text);
@@ -181,6 +183,7 @@ export class CourtsController {
     return this.service.findAllJudgesForCourt(params.courtPath);
   }
 
+  @RequiresSubscription()
   @Get(':year/:month/:day/:courtPath/list')
   getDay(@Param() params: GetDayParams) {
     return this.service.getDay(

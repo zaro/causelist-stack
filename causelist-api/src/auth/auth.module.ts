@@ -17,6 +17,7 @@ import {
   Subscription,
   SubscriptionSchema,
 } from '../schemas/subscription.schema.js';
+import { SubscriptionsGuard } from './subscriptions.guard.js';
 
 @Module({
   imports: [
@@ -48,6 +49,11 @@ import {
       // Make Roles guard global
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      // Make Subscription guard global
+      provide: APP_GUARD,
+      useClass: SubscriptionsGuard,
     },
   ],
   controllers: [AuthController],

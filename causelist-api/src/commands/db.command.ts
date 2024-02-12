@@ -1,4 +1,4 @@
-import { Command } from 'nestjs-command/dist/index.js';
+import { Command, Positional } from 'nestjs-command/dist/index.js';
 import { Injectable, Logger } from '@nestjs/common';
 import * as util from 'node:util';
 import * as child_process from 'node:child_process';
@@ -49,6 +49,33 @@ export class DbCommand {
     );
     this.log.log(`Created : id=${user.id}, phone=${user.phone}`);
 
+    this.log.log(`Done!`);
+  }
+
+  @Command({
+    command: 'db:set-admin <userPhoneOrEmail> <isAdmin>',
+    describe: 'Set user admin status',
+  })
+  async setAdmin(
+    @Positional({
+      name: 'userPhoneOrEmail',
+      describe: 'User Phone or Email',
+      type: 'string',
+    })
+    userPhoneOrEmail: string,
+    @Positional({
+      name: 'isAdmin',
+      describe: 'admin status',
+      type: 'boolean',
+    })
+    isAdmin: boolean,
+  ) {
+    let user = await this.userModel.findOne({
+      $or: [{ phone: userPhoneOrEmail }, { email: userPhoneOrEmail }],
+    });
+
+    user.role = isAdmin ? UserRole.Admin : UserRole.Lawyer;
+    await user.save();
     this.log.log(`Done!`);
   }
 }

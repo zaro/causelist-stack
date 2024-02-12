@@ -10,7 +10,7 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import AppFooter from "../../_components/app-footer.tsx";
-import { AppLink } from "../../_components/app-link.tsx";
+import { AppButtonLink, AppLink } from "../../_components/app-link.tsx";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import useUser from "../../(main)/use-user.hook.ts";
@@ -23,12 +23,11 @@ import useSWR from "swr";
 import { fetcher } from "../../_components/fetcher.ts";
 import { IOrderStatus, PaymentStatus } from "../../../../api/payments.ts";
 import CircularProgress from "@mui/material/CircularProgress";
-import { appStore } from "../../_store/index.ts";
+import Stack from "@mui/material/Stack";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("oid");
-  const isPwa = appStore.use.isPwa();
 
   const { data, error, isLoading, isValidating } = useSWR<IOrderStatus>(
     orderId ? `/api/payments/check-order-status/${orderId}` : null,
@@ -80,22 +79,16 @@ export default function Page() {
         <Typography component="h1" variant="h5">
           Payment Status
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {data ? msg : <CircularProgress color="inherit" />}
-            </Grid>
-            {isPwa ? (
-              <Grid item xs={12}>
-                <AppLink href="/home">Home</AppLink>
-              </Grid>
-            ) : (
-              <Grid item xs={12}>
-                {msg2}
-              </Grid>
-            )}
-          </Grid>
-        </Box>
+        <Stack>
+          <Box sx={{ marginY: "1em" }}>
+            {data ? msg : <CircularProgress color="inherit" />}
+          </Box>
+          <Box sx={{ marginY: "1em" }}>
+            <AppButtonLink href="/home" variant="outlined">
+              Go to Home Page
+            </AppButtonLink>
+          </Box>
+        </Stack>
       </Box>
     </Container>
   );

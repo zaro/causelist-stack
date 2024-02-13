@@ -218,20 +218,32 @@ router.addHandler(
         }
       }
     }
-    log.info(`Saving ${url} as key ${recordKey}`);
+    try {
+      log.info(`Saving ${url} as key ${recordKey}`);
+      recordKey = recordKey.replaceAll(
+        /[^a-zA-Z0-9!\-_.'()]/g,
+        (m) => `%${m.charCodeAt(0).toString(16).toUpperCase()}`
+      );
 
-    KeyValueStore.setValue(recordKey, body, {
-      contentType: contentType.type,
-    });
+      await KeyValueStore.setValue(recordKey, body, {
+        contentType: contentType.type,
+      });
 
-    dataset.pushData({
-      url,
-      fileName,
-      recordKey,
-      extension,
-      contentType: contentType.type,
-      statusCode: response.statusCode,
-      parent,
-    });
+      await dataset.pushData({
+        url,
+        fileName,
+        recordKey,
+        extension,
+        contentType: contentType.type,
+        statusCode: response.statusCode,
+        parent,
+      });
+    } catch (e) {
+      log.error(`Failed to save ${url} as ${recordKey}`, {
+        error: e,
+        parent,
+        contentType: contentType.type,
+      });
+    }
   }
 );

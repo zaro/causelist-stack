@@ -76,7 +76,7 @@ export class ParseCommand {
     await this.importerService.processMenu(crawlTime);
     await this.importerService.importFiles();
     await this.parserService.parseCourts(crawlTime);
-    await this.parseFiles('.', null, null, true, false, false, false);
+    await this.parseFiles('', null, null, true, false, false, false);
   }
 
   @Command({
@@ -144,7 +144,7 @@ export class ParseCommand {
   }
 
   @Command({
-    command: 'parse:files <path>',
+    command: 'parse:files [path]',
     describe: 'Parse Cuaselists under path',
   })
   async parseFiles(
@@ -152,6 +152,7 @@ export class ParseCommand {
       name: 'path',
       describe: 'menu path to parse',
       type: 'string',
+      default: '',
     })
     menuPath: string,
     @Option({

@@ -253,6 +253,10 @@ export class ParseCommand {
     if (write) {
       await this.writeParsed(good);
       return;
+    } else {
+      const goodAtEnd = good.filter((e) => e.parser.file.end());
+      this.log.log(`Can write parsed data for ${goodAtEnd.length} InfoFiles`);
+      this.log.log(`First 5 ${goodAtEnd.slice(0, 5).map((e) => e.doc.sha1)}`);
     }
     // console.dir(
     //   good.map((e) => e.p.documents[0].header.getParsed().court),

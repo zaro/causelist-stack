@@ -4,6 +4,20 @@ import { FileLines } from './file-lines.js';
 import { peekForPhrase } from './util.js';
 import { MatchResult, Matcher } from './multi-line-matcher.js';
 
+interface MatchScoreTree {
+  [key: string]: number | MatchScoreTree | MatchScoreTree[];
+}
+
+export class ParserException extends Error {
+  constructor(
+    msg: string,
+    public readonly line: number,
+    public readonly data: any,
+  ) {
+    super(msg);
+  }
+}
+
 export abstract class ParserInterface extends ExtractedFieldsContainer {
   constructor(
     public readonly file: FileLines,
@@ -13,6 +27,7 @@ export abstract class ParserInterface extends ExtractedFieldsContainer {
   }
 
   abstract matchScore(): number;
+  abstract dumpMatchScores(): MatchScoreTree | MatchScoreTree[];
   abstract minValidScore(): number;
   goodEnough() {
     return this.matchScore() >= this.minValidScore();
@@ -50,6 +65,19 @@ export abstract class ParserBase extends ParserInterface {
       score += this[p].valid() ? this[p].score : 0;
     }
     return score;
+  }
+
+  dumpMatchScores() {
+    const result: MatchScoreTree = {};
+
+    for (const f of this.getSubParsers()) {
+      result[f] = this[f].dumpMatchScores();
+    }
+
+    for (const p of this.getExtractedFields()) {
+      result[p] = this[p].valid() ? this[p].score : 0;
+    }
+    return result;
   }
 
   minValidScore() {
@@ -275,6 +303,10 @@ export class ParserArray<
     return this.reduce((a, e) => a + e.matchScore(), 0);
   }
 
+  dumpMatchScores() {
+    return this.map((e) => e.dumpMatchScores()) as MatchScoreTree[];
+  }
+
   minValidScore() {
     if (this.length < 1) {
       return Number.MAX_SAFE_INTEGER;
@@ -305,19 +337,35 @@ export class ParserArray<
   }
 }
 
+export interface MultiParserOpts {
+  requireValidSelection?: boolean;
+}
 export class MultiParser<ParsedT> extends ParserInterface {
   protected _populateFieldsFrom: ExtractedFieldsContainer;
+  protected parsed: ParserInterface[] = [];
   selected: ParserInterface;
+  protected requireValidSelection: boolean;
   constructor(
     file: FileLines,
     protected parserClasses: ParserConstructor<ParserInterface>[],
+    opts?: MultiParserOpts,
   ) {
     super(file);
     assert(parserClasses.length > 0);
+    this.requireValidSelection = !!opts?.requireValidSelection;
   }
 
   matchScore(): number {
     return this.selected?.matchScore() ?? 0;
+  }
+
+  dumpMatchScores(): MatchScoreTree {
+    const result: MatchScoreTree = {};
+    for (const p of this.parsed) {
+      const s = p === this.selected ? '>' : '#';
+      result[`${s}${p.constructor.name}`] = p.dumpMatchScores();
+    }
+    return result;
   }
 
   minValidScore(): number {
@@ -336,23 +384,33 @@ export class MultiParser<ParsedT> extends ParserInterface {
   }
 
   tryParse() {
-    const parsed: ParserInterface[] = [];
+    this.parsed = [];
     for (const klass of this.parserClasses) {
       const c = new klass(this.file.clone());
       if (this._populateFieldsFrom) {
         c.populateFieldsFrom(this._populateFieldsFrom);
       }
       c.tryParse();
-      parsed.push(c);
+      this.parsed.push(c);
     }
-    parsed.sort((a, b) => b.matchScore() - a.matchScore());
+    let best = this.parsed.slice();
+    if (this.requireValidSelection) {
+      best = best.filter((p) => p.goodEnough());
+    }
+    best.sort((a, b) => b.matchScore() - a.matchScore());
     // console.log(parsed.map((p) => [p.constructor.name, p.matchScore()]));
     // console.dir(
     //   parsed.map((p) => [p.constructor.name, p.getParsed()]),
     //   { depth: null },
     // );
-    assert(parsed.length > 0);
-    this.selected = parsed[0];
+    if (best.length <= 0) {
+      throw new ParserException(
+        '[MultiParser]Failed to select parser',
+        this.file.getCurrentLine(),
+        this.dumpMatchScores(),
+      );
+    }
+    this.selected = best[0];
     this.file.catchUpWithClone(this.selected.file);
   }
 

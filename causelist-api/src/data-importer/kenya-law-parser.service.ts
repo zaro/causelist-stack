@@ -13,6 +13,7 @@ import { NoticeParser } from './parser/notice-parser.js';
 import { escapeForRegex, peekForRe, peekForWord } from './parser/util.js';
 import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
 import { MenuEntry } from './kenya-law-importer.service.js';
+import { ParserException } from './parser/parser-base.js';
 
 export interface DocumentParseRequest {
   debug?: boolean;
@@ -42,6 +43,7 @@ export interface DocumentParseResult {
   hasCourt: boolean;
   hasCauseList: boolean;
   isNotice: boolean;
+  error?: ParserException | Error;
 }
 
 function isCourtTypeContainedInName(type: string, name: string) {
@@ -304,7 +306,12 @@ export class KenyaLawParserService {
       const fileLines = new FileLines(textContent);
       const f = fileLines.clone();
       const parser = new CauselistMultiDocumentParser(fileLines);
-      parser.tryParse();
+      let error;
+      try {
+        parser.tryParse();
+      } catch (e) {
+        error = e;
+      }
 
       parsedList.push({
         doc: dd.doc,
@@ -315,6 +322,7 @@ export class KenyaLawParserService {
         hasCourt: peekForWord(f, 'court', 1),
         hasCauseList: peekForRe(f, /cause\s+list/i),
         isNotice: peekForWord(f, 'notice'),
+        error,
       });
     }
     return parsedList;

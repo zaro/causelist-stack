@@ -100,8 +100,9 @@ export class ParsingDebugService {
     const minValidScore = parsed.parser.minValidScore();
     const parserReachedEnd = parsed.parser.file.end();
     const html = env.render('parsed-to-debug-html.html.nunjucks', {
-      documents: parsed.parser.getParsed().documents,
+      documents: parsed.parser.getParsed()?.documents,
       matchScore,
+      matchScoreTree: parsed.parser.dumpMatchScores(),
       minValidScore,
       fileName,
       textContent: parsed.textContent,
@@ -110,6 +111,7 @@ export class ParsingDebugService {
         .split('\n')
         .map((l, i) => ({ n: i + 1, l, current: currentLine == i })),
       parserReachedEnd,
+      error: parsed.error,
     });
     return { html, fileName, matchScore, minValidScore, parserReachedEnd };
   }

@@ -7,6 +7,7 @@ import {
   Logger,
   Body,
   Get,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service.js';
@@ -49,7 +50,11 @@ export class AuthController {
 
   @Get('me')
   async me(@Request() req) {
-    return this.userService.findById(req.user.id);
+    const me = await this.userService.findById(req.user.id);
+    if (!me) {
+      throw new UnauthorizedException();
+    }
+    return me;
   }
 
   @Public()

@@ -8,7 +8,13 @@ export class FileLines {
     if (typeof textContentOrLines === 'string') {
       this.lines = textContentOrLines
         .split('\n')
-        .map((l) => l.trim().replace('&amp;', '&'));
+        .map((l) =>
+          l
+            .trim()
+            .replaceAll('&amp;', '&')
+            .replaceAll('’', "'")
+            .replaceAll('`', "'"),
+        );
       this.current = 0;
     } else {
       this.lines = textContentOrLines.lines;

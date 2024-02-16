@@ -12,9 +12,14 @@ export abstract class ExtractedField<T> {
   public readonly score: number;
   public readonly optional: boolean;
 
+  public matchStartLine: number;
+  public matchEndLine: number;
+
   constructor(score: number) {
     this.optional = score <= 0;
     this.score = Math.abs(score);
+    this.matchStartLine = -1;
+    this.matchEndLine = -1;
   }
 
   valid(): boolean {
@@ -35,7 +40,9 @@ export abstract class ExtractedField<T> {
     if (!file.skipEmptyLines()) return false;
     const r = this.setFrom(file.peekNext().trim());
     if (r) {
+      this.matchStartLine = file.getCurrentLine();
       file.move();
+      this.matchEndLine = file.getCurrentLine();
     }
     return r;
   }
@@ -139,9 +146,12 @@ export abstract class ExtractWithRegexField<T> extends ExtractedField<T> {
   protected abstract _setFrom(_: MatchResult): void;
 
   tryParse(file: FileLines): boolean {
+    const saveFile = file.clone();
     const r = this.matcher.match(file);
     if (r.ok()) {
       this._setFrom(r);
+      this.matchStartLine = saveFile.getCurrentLine();
+      this.matchEndLine = file.getCurrentLine();
     }
     return r.ok();
   }
@@ -190,26 +200,46 @@ export abstract class ExtractListWithRegexField<
   }
 
   tryParse(file: FileLines): boolean {
+    const saveFile = file.clone();
+    let ok = false;
     let r = this.matcher.match(file);
     while (r.ok()) {
       this._addFrom(r);
       r = this.matcher.match(file);
+      ok = true;
     }
-    return r.ok();
+    if (ok) {
+      this.matchStartLine = saveFile.getCurrentLine();
+      this.matchEndLine = file.getCurrentLine();
+    }
+    return ok;
   }
 
   tryParseAndAdd(file: FileLines): boolean {
+    const saveFile = file.clone();
     const r = this.matcher.match(file);
     if (r.ok()) {
       this._addFrom(r);
+      if (!this.matchStartLine) {
+        this.matchStartLine = saveFile.getCurrentLine();
+      }
+      this.matchEndLine = file.getCurrentLine();
     }
     return r.ok();
   }
 
   tryParseAndReplace(file: FileLines, index: number = -1) {
+    const saveFile = file.clone();
     const r = this.matcher.match(file);
     if (r.ok()) {
       this._replaceFrom(r, index);
+      if (
+        !this.matchStartLine ||
+        this.matchStartLine < saveFile.getCurrentLine()
+      ) {
+        this.matchStartLine = saveFile.getCurrentLine();
+      }
+      this.matchEndLine = file.getCurrentLine();
       return true;
     }
     return false;

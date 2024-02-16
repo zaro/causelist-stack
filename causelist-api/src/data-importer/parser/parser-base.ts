@@ -4,8 +4,24 @@ import { FileLines } from './file-lines.js';
 import { peekForPhrase } from './util.js';
 import { MatchResult, Matcher } from './multi-line-matcher.js';
 
-interface MatchScoreTree {
-  [key: string]: number | MatchScoreTree | MatchScoreTree[];
+interface ExtractFieldDebug {
+  score: number;
+  start?: number;
+  end?: number;
+  value?: string;
+}
+
+interface ParserDebug {}
+
+interface MatchScoreTree
+  extends Record<
+    string,
+    | ExtractFieldDebug
+    | MatchScoreTree
+    | MatchScoreTree[]
+    | Record<number, string>
+  > {
+  skippedLines: Record<number, string>;
 }
 
 export class ParserException extends Error {
@@ -27,7 +43,7 @@ export abstract class ParserInterface extends ExtractedFieldsContainer {
   }
 
   abstract matchScore(): number;
-  abstract dumpMatchScores(): MatchScoreTree | MatchScoreTree[];
+  abstract dumpDebugTree(): MatchScoreTree | MatchScoreTree[];
   abstract minValidScore(): number;
   goodEnough() {
     return this.matchScore() >= this.minValidScore();
@@ -40,6 +56,7 @@ export abstract class ParserInterface extends ExtractedFieldsContainer {
 }
 
 export abstract class ParserBase extends ParserInterface {
+  protected skippedLines: Record<number, string> = {};
   abstract tryParse(): void;
   abstract getParsed(): any;
 
@@ -67,15 +84,27 @@ export abstract class ParserBase extends ParserInterface {
     return score;
   }
 
-  dumpMatchScores() {
-    const result: MatchScoreTree = {};
+  dumpDebugTree(): MatchScoreTree {
+    const result: MatchScoreTree = {
+      skippedLines: this.skippedLines,
+    };
 
     for (const f of this.getSubParsers()) {
-      result[f] = this[f].dumpMatchScores();
+      result[f] = this[f].dumpDebugTree();
     }
 
     for (const p of this.getExtractedFields()) {
-      result[p] = this[p].valid() ? this[p].score : 0;
+      const o: ExtractFieldDebug = this[p].valid()
+        ? {
+            score: this[p].score,
+            start: this[p].matchStartLine,
+            end: this[p].matchEndLine,
+            value: this[p].get(),
+          }
+        : {
+            score: 0,
+          };
+      result[p] = o;
     }
     return result;
   }
@@ -102,6 +131,7 @@ export abstract class ParserBase extends ParserInterface {
       skipped = 0;
       for (const p of phrases) {
         while (peekForPhrase(this.file, p, 1)) {
+          this.skippedLines[this.file.getCurrentLine()] = 'phrase';
           this.file.move(1);
           skipped++;
         }
@@ -116,10 +146,12 @@ export abstract class ParserBase extends ParserInterface {
       for (const matcher of matchers) {
         let mr: MatchResult;
         while (true) {
+          const saved = this.file.clone();
           mr = matcher.match(this.file);
           if (!mr.ok()) {
             break;
           }
+          this.skippedLines[saved.getCurrentLine()] = 'withMatch';
           // console.log('>>>m', matcher);
           // console.log('>>>mi', mr.allAsFlatArray());
           skipped++;
@@ -145,6 +177,13 @@ export abstract class ParserBase extends ParserInterface {
     do {
       let mr = matcher.match(workFile.clone());
       if (mr.ok()) {
+        for (
+          let i = this.file.getCurrentLine();
+          i < workFile.getCurrentLine();
+          ++i
+        ) {
+          this.skippedLines[i] = 'untilMatch';
+        }
         this.file.catchUpWithClone(workFile);
         return true;
       }
@@ -156,52 +195,6 @@ export abstract class ParserBase extends ParserInterface {
       return true;
     }
     return false;
-  }
-
-  skipUntilPhrase(phrases: string | string[]) {
-    if (!Array.isArray(phrases)) {
-      phrases = [phrases];
-    }
-    let skipped;
-    do {
-      skipped = 0;
-      for (const p of phrases) {
-        let file = this.file.clone();
-        let found;
-        while (!(found = peekForPhrase(file, p, 1)) && !file.end()) {
-          file.move(1);
-          skipped++;
-        }
-        if (found) {
-          this.file.catchUpWithClone(file);
-          break;
-        }
-      }
-    } while (skipped > 0);
-  }
-
-  skipUntilLines(lines: string[]): boolean {
-    let line = lines[0];
-    if (!line) {
-      return false;
-    }
-    let found;
-    const fileB = this.file.clone();
-    while (!fileB.end() && !(found = fileB.peekNext().trim() === line)) {
-      fileB.move(1);
-    }
-    if (fileB.end()) {
-      return false;
-    }
-    const fileN = fileB.clone();
-    for (let i = 1; i < lines.length; i++) {
-      fileN.move();
-      if (fileN.peekNext().trim() !== lines[i]) {
-        return false;
-      }
-    }
-    this.file.catchUpWithClone(fileB);
-    return true;
   }
 
   allFieldsValid(ignoreOptional: boolean = true) {
@@ -256,6 +249,10 @@ export type ParserConstructor<
   P extends ParserInterface = ParserInterface,
 > = new (file: FileLines, parent?: P) => T;
 
+export interface AppendParserOpts {
+  clonedFile?: boolean;
+}
+
 export class ParserArray<
     T extends ParserInterface,
     P extends ParserInterface = ParserInterface,
@@ -273,16 +270,17 @@ export class ParserArray<
     super();
   }
 
-  newParser(): T {
-    const parser = new this.parserClass(this.file, this.parent as P);
+  newParser(opts?: AppendParserOpts): T {
+    const file = opts?.clonedFile ? this.file.clone() : this.file;
+    const parser = new this.parserClass(file, this.parent as P);
     if (this._populateFieldsFrom) {
       parser.populateFieldsFrom(this._populateFieldsFrom);
     }
     return parser;
   }
 
-  appendNewParser(): T {
-    const p = this.newParser();
+  appendNewParser(opts?: AppendParserOpts): T {
+    const p = this.newParser(opts);
     this.push(p);
     return p;
   }
@@ -303,8 +301,8 @@ export class ParserArray<
     return this.reduce((a, e) => a + e.matchScore(), 0);
   }
 
-  dumpMatchScores() {
-    return this.map((e) => e.dumpMatchScores()) as MatchScoreTree[];
+  dumpDebugTree() {
+    return this.map((e) => e.dumpDebugTree()) as MatchScoreTree[];
   }
 
   minValidScore() {
@@ -359,11 +357,13 @@ export class MultiParser<ParsedT> extends ParserInterface {
     return this.selected?.matchScore() ?? 0;
   }
 
-  dumpMatchScores(): MatchScoreTree {
-    const result: MatchScoreTree = {};
+  dumpDebugTree(): MatchScoreTree {
+    const result: MatchScoreTree = {
+      skippedLines: undefined,
+    };
     for (const p of this.parsed) {
       const s = p === this.selected ? '>' : '#';
-      result[`${s}${p.constructor.name}`] = p.dumpMatchScores();
+      result[`${s}${p.constructor.name}`] = p.dumpDebugTree();
     }
     return result;
   }
@@ -407,7 +407,7 @@ export class MultiParser<ParsedT> extends ParserInterface {
       throw new ParserException(
         '[MultiParser]Failed to select parser',
         this.file.getCurrentLine(),
-        this.dumpMatchScores(),
+        this.dumpDebugTree(),
       );
     }
     this.selected = best[0];

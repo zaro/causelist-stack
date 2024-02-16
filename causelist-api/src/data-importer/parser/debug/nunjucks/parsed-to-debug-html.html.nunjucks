@@ -143,6 +143,11 @@
     <b> UNKNOWN DOCUMENT TYPE: {{ doc.type}} </b>
     {% endif %}
     {% endfor %}
+    {% if error %}
+    <h4>Parsing Error</h4>
+    <pre>{{ error.stack }}</pre>
+    <hr>
+    {% endif %}
     <details {% if not error %}open{% endif %}>
       <summary>
         Document plain text

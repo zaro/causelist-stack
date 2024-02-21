@@ -29,7 +29,12 @@ function makeCourtNameMatcher() {
   let courtNamesArray: string[][] = loadCourtNames();
 
   courtNamesMatcher = new MatchersListAny(
-    courtNamesArray.map((c) => new MatchStringsSequence(c)),
+    courtNamesArray.map(
+      (c) =>
+        new MatchStringsSequence(c, {
+          forceFullLineMatches: true,
+        }),
+    ),
     {
       forceFullLineMatches: true,
     },

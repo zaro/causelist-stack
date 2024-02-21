@@ -303,11 +303,12 @@ export abstract class CauseListParseBase extends ParserBase {
       CauselistHeaderParserBase
     >(this.file, CauseListSectionParser, parent);
     while (true) {
-      const section = this.sections.newParser();
+      const section = this.sections.newParser({ clonedFile: true });
       section.tryParse();
       // console.log('section v =', section.allValid(), section.getParsed());
       if (section.allValid()) {
         this.sections.push(section);
+        this.file.catchUpWithClone(section.file);
       } else {
         break;
       }
@@ -414,6 +415,16 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /\d+\.\s+/,
     /\d+\.\s+/,
   ]),
+  new MatchRegExSequence(
+    [
+      /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
+      /KADHI$/,
+      /KADHI\s+COURT\.?$/,
+    ],
+    {
+      skipEmptyLines: false,
+    },
+  ),
   new MatchRegExSequence([
     /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
     /KADHI$/,

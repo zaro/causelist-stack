@@ -13,124 +13,45 @@ import { getCourtNameMatcher } from './court-name-matcher.js';
 import { CauselistMultiDocumentParser } from './causelist-parser.js';
 
 const text1 = `
-
-JKIA MAGISTRATE COURT
-MAGISTRATE COURT
+NAKURU COURT OF APPEAL
+MAGISTRATE COURT TRAFFIC
 CAUSE LIST
-MONDAY, 18 DECEMBER 2023
-HON. NJERI THUKU (SPM) COURT ROOM 1
-https://www.shorturl.at/wHLZ4
+MONDAY, 22 JANUARY 2024
+HON. EUNICE KELLY AOMA  COURT 5
+https://bit.ly/3mEqCoq
 
-For any inquiries, please reach us on 0202328614 or jkiacourt@court.go.ke (all letters in lower case). You can also reach the JKIA prosecution office via their email address: jkia@odpp.go.ke
-
+09:00 AM
 MENTION
-1.
-MCCR/E074/2021
-REPUBLIC VS BIZU HALIMA
-2.
-MCCRMISC/E091/2023
-REPUBLIC VS INT  JAN AND CHILD PROTECTION UNIT
+1.    MCTR/E644/2023       The Republic   Vs  Joseph Wainaina Gichui
+FRESH HEARING
+2.    MCTR/E648/2023       The Republic   Vs  Joseph Juma Ekesa
+
+NAKURU COURT OF APPEAL
+MAGISTRATE COURT TRAFFIC
+CAUSE LIST
+MONDAY, 22 JANUARY 2024
+HON. J. NDENG'ERI (SRM)  COURT 3
+https://bit.ly/3O2SGAh
+
+09:00 AM
+MENTION
+1.    MCTR/26/2017           Republic   Vs  Peter Njuguna
 HEARING
-3.
-MCCHCR/E010/2022
-REPUBLIC VS ABDI ANYANGA ALIAS ABDI ALI AND JAIRUS MARTINE
-4.
-MCCR/E054/2023
-REPUBLIC VS HARRISON  MWANIKI AND LUCK  ODHIAMBO AND 2 OTHER(S)
-RULING
-5.
-MCCR/E116/2023
-REPUBLIC VS ALABI LATEEF AND CHRISTINE KABIRU AND 2 OTHER(S)
+2.    MCTR/560/2018         Republic Vs  Eliud Maina Maraka
 JUDGMENT
-6.
-MCCR/85/2019
-REPUBLIC VS SCOLA IMBITI NAMUNYU
- 7.    MCCR/E069/2021                 REPUBLIC VS JOHN SULEIMAN FRANCO
+3.    MCTR/5/2017             Republic  Vs  Robert Kamau Njoki
 
-SENTENCING
-8.
-MCCR/E018/2023
-REPUBLIC VS EVANS ILLUVE
-
-
-
-
-
-
-
-
-TUESDAY, 19 DECEMBER 2023
-HON. NJERI THUKU (SPM) COURT ROOM 1
-https://www.shorturl.at/wHLZ4
-
-For any inquiries, please reach us on 0202328614 or jkiacourt@court.go.ke (all letters in lower case). You can also reach the JKIA prosecution office via their email address: jkia@odpp.go.ke
-
-MENTION
-    1. MCCR/E054/2023
-REPUBLIC VS HARRISON  MWANIKI AND LUCK  ODHIAMBO AND 2 OTHER(S)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-JKIA MAGISTRATE COURT
-MAGISTRATE COURT
+NAKURU COURT OF APPEAL
+MAGISTRATE COURT TRAFFIC
 CAUSE LIST
-TUESDAY, 19 DECEMBER 2023
-HON. R. KITAGWA (PM) COURT ROOM 2
+MONDAY, 22 JANUARY 2024
+HON. W. O. RADING, SRM   COURT 4
+https://bit.ly/3FtwmOp
 
-For any inquiries, please reach us on 0202328614 or jkiacourt@court.go.ke (all letters in lower case). You can also reach the JKIA prosecution office via their email address: jkia@odpp.go.ke
-
-RULING (VIRTUALLY)
-1.
-MCCR/E133/2023
-REPUBLIC VS KENNEDY  AOMAH AND PETER  CHEPKURUI
-
-
-JKIA MAGISTRATE COURT
-MAGISTRATE COURT
-CAUSE LIST
-WEDNESDAY, 20 DECEMBER 2023
-HON. NJERI THUKU (SPM) COURT ROOM 1
-https://www.shorturl.at/wHLZ4
-
-For any inquiries, please reach us on 0202328614 or jkiacourt@court.go.ke (all letters in lower case). You can also reach the JKIA prosecution office via their email address: jkia@odpp.go.ke
-
-MENTION
-1.
-MCCHCR/E009/20  22
-REPUBLIC VS PHILANDER CRAIG  AND MUHANDO DANIEL  AND 3 OTHER(S)
-2.
-MCCR/E130/2023
-REPUBLIC VS TIMOTHY  OMANWA
-3.
-MCCR/36/2020
-REPUBLIC VS MARTIN MUTANGALI MUKAU
-
-PART HEARD HEARING
-4.
-MCSO/E002/2023
-REPUBLIC VS DERICK  WANYONYI
+09:00 AM
 HEARING
-5.
-MCCHCR/E004/2022
-REPUBLIC VS OLINGA SHEILA
+1.    MCTR/E710/2023       The Republic   Vs  Philip Sang
+
 
 `;
 

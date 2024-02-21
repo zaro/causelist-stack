@@ -378,7 +378,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   ]),
   new MatchRegExSequence([
     /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
-    /PRINCIPAL\s+MAGISTRATE$/,
+    /(?:PRINCIPAL|RESIDENT)\s+MAGISTRATE$/,
   ]),
 
   new MatchRegExSequence([/COURT\s+ADMIN(?:ISTRATOR)?/, /LAW\s+COURTS?$/]),

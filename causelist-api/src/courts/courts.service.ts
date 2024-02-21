@@ -312,7 +312,10 @@ export class CourtsService {
             },
             {
               $group: {
-                _id: c.path,
+                _id: {
+                  path: c.path,
+                  hint: '$overrideDocumentType',
+                },
                 count: { $sum: 1 },
                 createdAt: { $max: '$createdAt' },
                 parsedAt: { $max: '$parsedAt' },
@@ -321,12 +324,7 @@ export class CourtsService {
                     $switch: {
                       branches: [
                         {
-                          case: {
-                            $and: [
-                              { $lte: ['$parsedAt', null] },
-                              { $ne: ['$overrideDocumentType', 'NOTICE'] },
-                            ],
-                          },
+                          case: { $lte: ['$parsedAt', null] },
                           then: 1,
                         },
                       ],
@@ -334,45 +332,42 @@ export class CourtsService {
                     },
                   },
                 },
-                unparsedNoticeCount: {
-                  $sum: {
-                    $switch: {
-                      branches: [
-                        {
-                          case: {
-                            $and: [
-                              { $lte: ['$parsedAt', null] },
-                              { $eq: ['$overrideDocumentType', 'NOTICE'] },
-                            ],
-                          },
-                          then: 1,
-                        },
-                      ],
-                      default: 0,
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                documentsCount: '$count',
-                unparsedCount: '$unparsedCount',
-                unparsedNoticeCount: '$unparsedNoticeCount',
-                lastImportedDocumentTime: '$createdAt',
-                lastParsedDocumentTime: '$parsedAt',
               },
             },
           ])
           .exec();
-        const {
-          documentsCount,
-          unparsedCount,
-          unparsedNoticeCount,
+        let documentsCount = 0,
+          unparsedCount = 0,
+          noticeCount = 0,
+          ignoredCount = 0,
           lastImportedDocumentTime,
-          lastParsedDocumentTime,
-        } = s[0] ?? {};
+          lastParsedDocumentTime;
+        for (const row of s) {
+          documentsCount += row.count;
+          switch (row._id.hint) {
+            case 'NOTICE':
+              noticeCount += row.count;
+              break;
+            case 'IGNORE':
+              ignoredCount += row.count;
+              break;
+            default:
+              unparsedCount += row.unparsedCount;
+              break;
+          }
+          if (
+            !lastImportedDocumentTime ||
+            lastImportedDocumentTime < row.createdAt
+          ) {
+            lastImportedDocumentTime = row.createdAt;
+          }
+          if (
+            !lastParsedDocumentTime ||
+            lastParsedDocumentTime < row.parsedAt
+          ) {
+            lastParsedDocumentTime = row.parsedAt;
+          }
+        }
         return {
           id: c._id.toHexString(),
           name: c.name,
@@ -380,7 +375,9 @@ export class CourtsService {
           path: c.path,
           documentsCount,
           unparsedCount,
-          unparsedNoticeCount,
+          noticeCount,
+          ignoredCount,
+          totalIgnoreCount: noticeCount + ignoredCount,
           lastImportedDocumentTime,
           lastParsedDocumentTime,
         };

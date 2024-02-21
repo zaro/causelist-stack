@@ -16,14 +16,37 @@ export class InfoFilesService {
     protected parsingDebugService: ParsingDebugService,
   ) {}
 
-  async listForCourt(courtPath: string, parsedAfter?: Date) {
-    const q: FilterQuery<InfoFile> = {
+  async listForCourt(
+    courtPath: string,
+    documentType: string,
+    parsedAfter?: Date,
+  ) {
+    let q: FilterQuery<InfoFile> = {
       parentPath: new RegExp(`^${escapeForRegex(courtPath)}`),
     };
     if (parsedAfter) {
       q.parsedAt = { $gte: parsedAfter };
     } else {
       q.parsedAt = { $exists: false };
+    }
+    if (documentType != 'ANY') {
+      if (documentType === 'AUTO') {
+        q = {
+          $and: [
+            q,
+            {
+              $or: [
+                { overrideDocumentType: 'AUTO' },
+                { overrideDocumentType: { $exists: false } },
+              ],
+            },
+          ],
+        };
+      } else if (documentType === 'PARSED') {
+        q.parsedAt = { $exists: true };
+      } else {
+        q.overrideDocumentType = documentType;
+      }
     }
     return this.infoFileModel.find(q);
   }

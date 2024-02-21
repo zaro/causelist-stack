@@ -258,7 +258,7 @@ export class KenyaLawParserService {
       };
     }
     if (!req.debug) {
-      filter.overrideDocumentType = { $ne: 'NOTICE' };
+      filter.overrideDocumentType = { $nin: ['NOTICE', 'IGNORE'] };
     }
     const infoFiles = await this.infoFileModel.find(filter).exec();
     this.log.log(`Loading data for ${infoFiles.length} InfoFiles`);

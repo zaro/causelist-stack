@@ -54,4 +54,5 @@ export type DocumentTypeHint =
   | 'AUTO'
   | UnassignedMattersParsed['type']
   | CauseListDocumentParsed['type']
-  | 'NOTICE';
+  | 'NOTICE'
+  | 'IGNORE';

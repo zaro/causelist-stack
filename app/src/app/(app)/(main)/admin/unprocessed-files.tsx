@@ -5,6 +5,7 @@ import Stack from "@mui/material/Stack";
 import LinkIcon from "@mui/icons-material/Link";
 import AdbIcon from "@mui/icons-material/Adb";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
+import DoNotTouchIcon from "@mui/icons-material/DoNotTouch";
 import PermDeviceInformationIcon from "@mui/icons-material/PermDeviceInformation";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -36,6 +37,11 @@ import RemoveCorrectionDialog, {
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import ListSubheader from "@mui/material/ListSubheader";
 
 const dataColumns: GridColDef[] = [
   {
@@ -85,7 +91,7 @@ export default function UnprocessedFiles() {
   const accessToken = userStore.use.accessToken();
   const { searchParams } = useSearchParamState();
   const [error, setError] = useState<string[]>([]);
-  const [hideNotices, setHideNotices] = useState(true);
+  const [documentType, setDocumentType] = useState("AUTO");
   const [correctionDialogProps, setCorrectionDialogProps] = useState<
     Omit<UploadCorrectionDialogProps, "onClose" | "onComplete">
   >(initCorrectionDialogProps);
@@ -95,7 +101,9 @@ export default function UnprocessedFiles() {
     );
 
   const court = searchParams.get("court");
-  const apiURL = court ? `api/info-files/for-court/${court}/` : null;
+  const apiURL = court
+    ? `api/info-files/for-court/${court}/${documentType}/`
+    : null;
 
   const { data: rows, mutate } = useSWR<IInfoFile[]>(apiURL, fetcher, {
     suspense: true,
@@ -188,6 +196,15 @@ export default function UnprocessedFiles() {
           <GridActionsCellItem
             showInMenu={true}
             key="6"
+            icon={<DoNotTouchIcon />}
+            label="Set to be processed as IGNORE"
+            onClick={() => {
+              updateDocumentType(params.row.id, "IGNORE");
+            }}
+          />,
+          <GridActionsCellItem
+            showInMenu={true}
+            key="7"
             icon={<HdrAutoIcon />}
             label="Set to be processed as AUTO"
             onClick={() => {
@@ -204,21 +221,6 @@ export default function UnprocessedFiles() {
       mutate(undefined, { revalidate: true });
     }
   }, [correctionDialogProps, mutate]);
-
-  const filterModel: GridFilterModel = hideNotices
-    ? {
-        items: [
-          {
-            id: 1,
-            field: "overrideDocumentType",
-            operator: "equals",
-            value: "AUTO",
-          },
-        ],
-      }
-    : {
-        items: [],
-      };
 
   if (!rows) {
     return <h1>Invalid parameters</h1>;
@@ -250,20 +252,26 @@ export default function UnprocessedFiles() {
           <Alert severity="info">{court}</Alert>
         </Grid>
         <Grid item xs={2}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={hideNotices}
-                  onChange={(event) => setHideNotices(event.target.checked)}
-                />
-              }
-              label="Hide Notices"
-            />
-          </FormGroup>
+          <FormControl fullWidth>
+            <InputLabel id="select-document-type">Show</InputLabel>
+            <Select
+              id="select-document-type"
+              value={documentType}
+              label="Show"
+              onChange={(event) => setDocumentType(event.target.value)}
+            >
+              <ListSubheader>Unparsed</ListSubheader>
+              <MenuItem value="ANY">Any</MenuItem>
+              <MenuItem value="AUTO">Auto</MenuItem>
+              <MenuItem value="NOTICE">Notice</MenuItem>
+              <MenuItem value="IGNORE">Ignore</MenuItem>
+              <ListSubheader>Parsed</ListSubheader>
+              <MenuItem value="PARSED">All</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
-      <DataGrid rows={rows} columns={columns} filterModel={filterModel} />
+      <DataGrid rows={rows} columns={columns} />
     </Stack>
   );
 }

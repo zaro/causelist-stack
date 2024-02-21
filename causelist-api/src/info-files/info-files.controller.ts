@@ -34,11 +34,17 @@ import type { Queue } from 'bull';
 import { Roles } from '../auth/roles.decorator.js';
 import { UserRole } from '../interfaces/users.js';
 import { ParsingDebugService } from '../data-importer/parsing-debug.service.js';
+import { DocumentTypeHint } from '../interfaces/index.js';
 
+const HINTS: (DocumentTypeHint | 'ANY')[] = ['AUTO', 'NOTICE', 'IGNORE'];
 export class GetInfoFilesForCourt {
   @IsString()
   @IsNotEmpty()
   courtPath: string;
+
+  @IsNotEmpty()
+  @IsIn(['ANY', 'PARSED', ...HINTS])
+  documentType: string;
 
   @IsDate()
   @IsOptional()
@@ -54,7 +60,7 @@ export class UpdateDocumentTypeParams {
 
 export class UpdateDocumentBody {
   @IsNotEmpty()
-  @IsIn(['AUTO', 'NOTICE'])
+  @IsIn(HINTS)
   overrideDocumentType: string;
 }
 
@@ -69,10 +75,11 @@ export class InfoFilesController {
   ) {}
 
   @CacheTTL(1)
-  @Get('for-court/:courtPath/:parsedAfter?')
+  @Get('for-court/:courtPath/:documentType/:parsedAfter?')
   getForCourt(@Param() params: GetInfoFilesForCourt) {
     return this.infoFilesService.listForCourt(
       params.courtPath,
+      params.documentType,
       params.parsedAfter,
     );
   }

@@ -37,10 +37,9 @@ const dataColumns: GridColDef[] = [
     type: "number",
   },
   {
-    field: "unparsedNoticeCount",
-    description:
-      "This is the number of  Notices for the court we have in the system",
-    headerName: "Notice #",
+    field: "totalIgnoreCount",
+    description: "The number of Notices or Ignored documents",
+    headerName: "NorI #",
     width: 100,
     type: "number",
   },

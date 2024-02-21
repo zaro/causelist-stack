@@ -425,6 +425,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
       skipEmptyLines: false,
     },
   ),
+  new MatchRegExSequence([/^FOR\s+ENQUIRIES/, EMAIL_RE]),
   new MatchRegExSequence([
     /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
     /KADHI$/,

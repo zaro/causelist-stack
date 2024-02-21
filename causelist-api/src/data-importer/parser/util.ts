@@ -1,8 +1,9 @@
 import { FileLines } from './file-lines.js';
 
 const WS_RE = /^[\.…\s]*$/;
+const WS_RE2 = /^\*+$/;
 export function isWhiteSpaceEquivalent(s: string): boolean {
-  return WS_RE.test(s);
+  return WS_RE.test(s) || WS_RE2.test(s);
 }
 
 export function asFullLineRe(re: RegExp) {

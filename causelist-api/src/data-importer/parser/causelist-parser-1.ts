@@ -380,7 +380,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /PRINCIPAL\s+MAGISTRATE$/,
   ]),
 
-  new MatchRegExSequence([/COURT\s+ADMINISTRATOR/, /LAW\s+COURTS?$/]),
+  new MatchRegExSequence([/COURT\s+ADMIN(?:ISTRATOR)?/, /LAW\s+COURTS?$/]),
   new MatchRegExAny([/COURT\s+ADMINISTRATOR/]),
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([

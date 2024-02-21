@@ -13,7 +13,11 @@ import { NoticeParser } from './parser/notice-parser.js';
 import { escapeForRegex, peekForRe, peekForWord } from './parser/util.js';
 import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
 import { MenuEntry } from './kenya-law-importer.service.js';
-import { ParserException } from './parser/parser-base.js';
+import {
+  FailedToSelectParserException,
+  ParserException,
+  ParserInterface,
+} from './parser/parser-base.js';
 
 export interface DocumentParseRequest {
   debug?: boolean;
@@ -44,6 +48,7 @@ export interface DocumentParseResult {
   hasCauseList: boolean;
   isNotice: boolean;
   error?: ParserException | Error;
+  parsersTried?: ParserInterface[];
 }
 
 function isCourtTypeContainedInName(type: string, name: string) {
@@ -307,10 +312,16 @@ export class KenyaLawParserService {
       const f = fileLines.clone();
       const parser = new CauselistMultiDocumentParser(fileLines);
       let error;
+      let parsersTried;
       try {
         parser.tryParse();
       } catch (e) {
         error = e;
+        if (e instanceof FailedToSelectParserException) {
+          parsersTried = e.parsers.toSorted(
+            (a, b) => b.file.getCurrentLine() - a.file.getCurrentLine(),
+          );
+        }
       }
 
       parsedList.push({
@@ -323,6 +334,7 @@ export class KenyaLawParserService {
         hasCauseList: peekForRe(f, /cause\s+list/i),
         isNotice: peekForWord(f, 'notice'),
         error,
+        parsersTried,
       });
     }
     return parsedList;

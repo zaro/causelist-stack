@@ -34,6 +34,16 @@ export class ParserException extends Error {
   }
 }
 
+export class FailedToSelectParserException extends ParserException {
+  constructor(
+    public readonly line: number,
+    public readonly data: any,
+    public readonly parsers: ParserInterface[],
+  ) {
+    super('Failed to select parser', line, data);
+  }
+}
+
 export abstract class ParserInterface extends ExtractedFieldsContainer {
   constructor(
     public readonly file: FileLines,
@@ -404,10 +414,10 @@ export class MultiParser<ParsedT> extends ParserInterface {
     //   { depth: null },
     // );
     if (best.length <= 0) {
-      throw new ParserException(
-        '[MultiParser]Failed to select parser',
+      throw new FailedToSelectParserException(
         this.file.getCurrentLine(),
         this.dumpDebugTree(),
+        this.parsed,
       );
     }
     this.selected = best[0];

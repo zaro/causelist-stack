@@ -74,6 +74,19 @@
     <hr>
 {% endmacro %}
 
+{% macro showDocuments(documents) %}
+    {% for doc in documents %}
+    {% if doc.type == 'CAUSE LIST' %}
+    {{ causeList(doc) }}
+    {% elif doc.type == 'UNASSIGNED MATTERS' %}
+    {{ unassignedMatters(doc) }}
+    {% else %}
+    <b> UNKNOWN DOCUMENT TYPE: {{ doc.type}} </b>
+    {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -126,6 +139,10 @@
           color: #000;
       }
 
+      .parserDebug {
+        margin-left: 1em;
+      }
+
     </style>
     <style>
         {% include 'render-json.css.nunjucks' %}
@@ -134,21 +151,19 @@
     <h3>Parsed content follows</h3>
     <h3>matchScore={{ matchScore }}, minValidScore={{minValidScore}}</h3>
     <hr>
-    {% for doc in documents %}
-    {% if doc.type == 'CAUSE LIST' %}
-    {{ causeList(doc) }}
-    {% elif doc.type == 'UNASSIGNED MATTERS' %}
-    {{ unassignedMatters(doc) }}
-    {% else %}
-    <b> UNKNOWN DOCUMENT TYPE: {{ doc.type}} </b>
-    {% endif %}
-    {% endfor %}
+    {{ showDocuments(documents) }}
     {% if error %}
     <h4>Parsing Error</h4>
     <pre>{{ error.stack }}</pre>
+    {% for p in  parsersTried %}
+      <div class="parserDebug">
+        <h3>{{ p.name}} - <a href="#line-{{ p.currentLine + 1}}">Stopped at line: {{ p.currentLine }}</a></h3>
+        {{ showDocuments(p.documents) }}
+      </div>
+    {% endfor %}
     <hr>
     {% endif %}
-    <details {% if not error %}open{% endif %}>
+    <details open>
       <summary>
         Document plain text
         <span class="icon">👇</span>
@@ -156,7 +171,7 @@
         <b>Parsing stopped on line {{ currentLine }}</b>
         <pre class="ln">
           {%- for l in numberedLines -%}
-          <span {% if l.current %}class="thick"{% endif %}>{{- l.l -}}{{- "\n" -}}</span>
+          <span id="line-{{ loop.index }}" {% if l.current %}class="thick"{% endif %}>{{- l.l -}}{{- "\n" -}}</span>
           {%- endfor -%}
         <pre>
     </details>

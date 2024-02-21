@@ -112,7 +112,7 @@ export class ParsingDebugService {
         .map((l, i) => ({ n: i + 1, l, current: currentLine == i })),
       parserReachedEnd,
       error: parsed.error,
-      parsersTried: parsed.parsersTried.map((p) => ({
+      parsersTried: parsed.parsersTried?.map((p) => ({
         name: p.constructor.name,
         currentLine: p.file.getCurrentLine(),
         documents: p.getParsed()?.documents,

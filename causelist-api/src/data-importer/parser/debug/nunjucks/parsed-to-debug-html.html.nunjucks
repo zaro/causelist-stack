@@ -150,14 +150,17 @@
     <h2 class="{% if parserReachedEnd %}green{% else %}red{% endif %}">{{ fileName }}</h2>
     <h3>Parsed content follows</h3>
     <h3>matchScore={{ matchScore }}, minValidScore={{minValidScore}}</h3>
+    {% if not parserReachedEnd %}
+    <h3><a href="#line-{{ currentLine + 1}}">Stopped at line: {{ currentLine + 1}}</a></h3>
+    {% endif %}
     <hr>
     {{ showDocuments(documents) }}
     {% if error %}
     <h4>Parsing Error</h4>
     <pre>{{ error.stack }}</pre>
-    {% for p in  parsersTried %}
+    {% for p in parsersTried %}
       <div class="parserDebug">
-        <h3>{{ p.name}} - <a href="#line-{{ p.currentLine + 1}}">Stopped at line: {{ p.currentLine }}</a></h3>
+        <h3>{{ p.name}} - <a href="#line-{{ p.currentLine + 1}}">Stopped at line: {{ p.currentLine + 1}}</a></h3>
         {{ showDocuments(p.documents) }}
       </div>
     {% endfor %}

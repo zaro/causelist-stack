@@ -1,4 +1,4 @@
-import { isWhiteSpaceEquivalent } from './util.js';
+import { isWhiteSpaceEquivalent, normalizeChars } from './util.js';
 
 export class FileLines {
   protected lines: string[];
@@ -8,13 +8,7 @@ export class FileLines {
     if (typeof textContentOrLines === 'string') {
       this.lines = textContentOrLines
         .split('\n')
-        .map((l) =>
-          l
-            .trim()
-            .replaceAll('&amp;', '&')
-            .replaceAll('’', "'")
-            .replaceAll('`', "'"),
-        );
+        .map((l) => normalizeChars(l.trim()));
       this.current = 0;
     } else {
       this.lines = textContentOrLines.lines;

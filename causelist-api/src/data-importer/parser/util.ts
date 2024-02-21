@@ -46,6 +46,10 @@ export function normalizeWhitespace(str: string) {
   return str.replaceAll(/\s{2,}/g, ' ');
 }
 
+export function normalizeChars(c: string) {
+  return c.replaceAll('&amp;', '&').replaceAll('’', "'").replaceAll('`', "'");
+}
+
 export function escapeForRegex(s: string): string {
   return s.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
 }

@@ -7,7 +7,7 @@ import { Model } from 'mongoose';
 import { Court, CourtDocument } from '../schemas/court.schema.js';
 
 import { CauseList } from '../schemas/causelist.schema.js';
-import { escapeForRegex } from './parser/util.js';
+import { escapeForRegex, normalizeChars } from './parser/util.js';
 
 @Injectable()
 export class UpdateStatsService {
@@ -57,7 +57,9 @@ export class UpdateStatsService {
       .find({}, { 'header.court': 1 })
       .exec();
 
-    let courtsFromDocuments = courtsDocuments.map((doc) => doc.header.court);
+    let courtsFromDocuments = courtsDocuments
+      .filter((d) => d.header?.court?.length > 0)
+      .map((doc) => doc.header.court.map((c) => normalizeChars(c)));
     // // Remove courts which are single item and are found, at index 1+ in other court names
     // let courtsToRemove = courtsFromDocuments.filter((c) => c.length == 1);
     // courtsToRemove = courtsToRemove.filter((c1) =>

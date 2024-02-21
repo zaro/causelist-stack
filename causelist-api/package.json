@@ -17,6 +17,7 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "TZ='Africa/Nairobi' jest",
+    "test:parsing": "TZ='Africa/Nairobi' jest src/data-importer/parser/parsing-dev.spec.ts",
     "test:watch": "TZ='Africa/Nairobi' jest --watch",
     "test:cov": "TZ='Africa/Nairobi' jest --coverage",
     "test:debug": "TZ='Africa/Nairobi' node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",

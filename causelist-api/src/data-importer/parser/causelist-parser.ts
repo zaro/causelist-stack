@@ -8,8 +8,12 @@ import { MultiParser } from './parser-base.js';
 
 export class CauselistMultiDocumentParser extends MultiParser<CauselistMultiDocumentParsed> {
   constructor(file: FileLines) {
-    super(file, [CauselistMultiDocumentParser1]);
-    // TODO: make it works w/o errors
-    // super(file, [CauselistMultiDocumentParser1, CauselistMultiDocumentParser2]);
+    super(
+      file,
+      [CauselistMultiDocumentParser1, CauselistMultiDocumentParser2],
+      {
+        requireValidSelection: true,
+      },
+    );
   }
 }

@@ -369,7 +369,7 @@ const IGNORE_BETWEEN_DOCUMENTS = [
   /^CC:/,
 ];
 
-const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
+export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   new MatchRegExSequence([
     /^(?:HON\.?\s+)?(?:\w[\w\.]*\s+)+\w+$/i, // name
     /COURT\s+(?:ADMINISTRATOR|ADMN|ADMIN)/,
@@ -381,6 +381,7 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   ]),
 
   new MatchRegExSequence([/COURT\s+ADMINISTRATOR/, /LAW\s+COURTS?$/]),
+  new MatchRegExAny([/COURT\s+ADMINISTRATOR/]),
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([
     /DEPUTY\s+REGISTRAR/,
@@ -395,7 +396,10 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /(?:LAND|HIGH)\s+COURTS?$/,
   ]),
   new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /(?:LAND|HIGH)\s+COURTS?$/]),
-  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /^HIGH\s+COURT.*(?:AT|-)/]),
+  new MatchRegExSequence([
+    /DEPUTY\s+REGISTRAR/,
+    /^(?:CONSTITUTIONAL|HIGH\s+COURT.*(?:AT|-))/,
+  ]),
   new MatchRegExSequence([
     /FOR/,
     /PRINCIPAL\s+MAGISTRATE/,
@@ -424,15 +428,18 @@ const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
   new MatchRegExAny([/VISIT:/]),
   new MatchersListSequence([
     new MatchRegExAny([/C\.?C\.?:?/i]),
-    new MatchRegExAny([EMAIL_RE, /COUNCIL/], { maxTimes: 20 }),
+    new MatchRegExAny([EMAIL_RE, /COUN(?:CI|SE)L/], { maxTimes: 20 }),
   ]),
+  new MatchRegExAny([/^CC:/i]),
 ];
 
 export class CauselistMultiDocumentParser1 extends ParserBase {
-  documents: ParserArray<DocumentParser>;
+  documents: ParserArray<DocumentParser> = new ParserArray(
+    this.file,
+    DocumentParser,
+  );
 
   tryParse(): void {
-    this.documents = new ParserArray(this.file, DocumentParser);
     // Skip up to 50 lines until a court name is found
     if (!this.skipLinesUntilMatch(getCourtNameMatcher(), { maxLines: 50 })) {
       return;

@@ -33,7 +33,7 @@ export class MatchResult {
   }
 
   protected _toObject(ma: RegExpMatchArray[], trim = false) {
-    let o = {};
+    let o: Record<string, string> = {};
     for (const m of ma) {
       o = {
         ...o,

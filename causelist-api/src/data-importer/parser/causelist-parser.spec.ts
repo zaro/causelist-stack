@@ -13,46 +13,85 @@ import { getCourtNameMatcher } from './court-name-matcher.js';
 import { CauselistMultiDocumentParser } from './causelist-parser.js';
 
 const text1 = `
-NAKURU COURT OF APPEAL
-MAGISTRATE COURT TRAFFIC
+﻿MILIMANI MAGISTRATE COURT
+MAGISTRATE COURT CRIMINAL
 CAUSE LIST
-MONDAY, 22 JANUARY 2024
-HON. EUNICE KELLY AOMA  COURT 5
-https://bit.ly/3mEqCoq
+TUESDAY, 16 JANUARY 2024
+HON. L.O.ONYINA (CM)  COURT 1
+http://shorturl.at/pKS25
 
 09:00 AM
 MENTION
-1.    MCTR/E644/2023       The Republic   Vs  Joseph Wainaina Gichui
+1.    MCCR/708/2018         Rep Vs  Naftary Mwangi Maina
+2.    MCCR/E802/2021       Republic Vs Galot Mohan  And London Distillers Kenya Ltd
+3.    MCCR/E999/2022       Republic Vs Christopher  Muriithi
+4.    MCCR/E1039/2023     Republic Vs Mercy Kirigo Jane
+PART HEARD HEARING
+5.    MCCR/1703/2018       Rep   Vs  Antony Muriithi Njogu
+6.    MCCR/E3914/2020     Republic Vs Ndanu Munyoki And 6 Other(s)
+7.    MCCR/E398/2022       Republic Vs Ouma Barasa Kennedy
 FRESH HEARING
-2.    MCTR/E648/2023       The Republic   Vs  Joseph Juma Ekesa
+8.    MCCR/E3416/2020     Republic Vs Gadafi Otieno Calvince
 
-NAKURU COURT OF APPEAL
-MAGISTRATE COURT TRAFFIC
+MILIMANI MAGISTRATE COURT
+MAGISTRATE COURT CRIMINAL
 CAUSE LIST
-MONDAY, 22 JANUARY 2024
-HON. J. NDENG'ERI (SRM)  COURT 3
-https://bit.ly/3O2SGAh
+TUESDAY, 16 JANUARY 2024
+HON. SUSAN SHITUBI - C.M  COURT 2
+https://bit.ly/3BEDAek
 
 09:00 AM
 MENTION
-1.    MCTR/26/2017           Republic   Vs  Peter Njuguna
-HEARING
-2.    MCTR/560/2018         Republic Vs  Eliud Maina Maraka
-JUDGMENT
-3.    MCTR/5/2017             Republic  Vs  Robert Kamau Njoki
+1.    MCCR/1163/2017       Rep Vs Mohammed Zafrullah Khan & 7 Others
+2.    MCCR/1891/2018       Rep   Vs  Paminus Kiage Gwaro And Collins Rogers Magak
+3.    MCCR/E620/2023       Republic Vs Dan  Okemwa
+4.    MCCR/E037/2024       Republic Vs Amos  M'anampiu
+5.    MCCR/E002/2024       Republic Vs Hillary  Samoei
+6.    MCCR/E043/2024       Republic Vs Millcent  Rachilo And Sharon  Angara
+PRE-TRIAL CONFERENCE
+7.    MCCR/E007/2024       Republic Vs Robert Kipngetich Alias Raphael Bet
+PART HEARD HEARING
+8.    MCCR/E438/2022       Republic Vs Nduati Kamau Ernest S.
+FRESH HEARING
+9.    MCCR/E1284/2021     Republic Vs Kamau Ephantus
+10.  MCCR/E672/2022       Republic Vs Anthony  Irungu
 
-NAKURU COURT OF APPEAL
-MAGISTRATE COURT TRAFFIC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTE:  KINDLY TAKE NOTICE THAT COURT NO.2 MATTERS LISTED FOR 25TH AND 26TH JANUARY 2024 WILL BE MENTIONED ON THURSDAY 1ST FEBRUARY 2024 FOR DIRECTIONS.
+
+MILIMANI MAGISTRATE COURT
+MAGISTRATE COURT CRIMINAL
 CAUSE LIST
-MONDAY, 22 JANUARY 2024
-HON. W. O. RADING, SRM   COURT 4
-https://bit.ly/3FtwmOp
+TUESDAY, 16 JANUARY 2024
+BERNARD OCHOI  COURT 3
+ https://shorturl.at/jlvxS
 
 09:00 AM
-HEARING
-1.    MCTR/E710/2023       The Republic   Vs  Philip Sang
-
-
+DIRECTIONS
+1.    MCSO/44/2017           Rep Vs George Morara Juma
+2.    MCCR/1183/2019       Rep Vs  Michael Onduru Kula And George Chemaket
 `;
 
 describe('causelist-parser', () => {
@@ -66,6 +105,7 @@ describe('causelist-parser', () => {
       const parser = new CauselistMultiDocumentParser(fileLines);
       parser.tryParse();
       // We must have consumed all text
+      console.log(parser.getParsed().documents[0]);
       expect(parser.file.end()).toBe(true);
     });
   });

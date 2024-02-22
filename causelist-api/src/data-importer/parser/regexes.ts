@@ -1,7 +1,9 @@
 import { escapeForRegex } from './util.js';
 
-export const URL_RE =
-  /(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+export const URL_RE = [
+  /(https?:\/\/)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i,
+  /(?:shorturl.at|bit.ly|cutt.ly|t.ly)\/\w+/i,
+];
 
 export const EMAIL_RE =
   /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
@@ -12,6 +14,7 @@ export const PHONE_RE = /^(:?TEL:|TELEPHONE\s+NO\.)?\s*[\d\s-]+\s*$/;
 export const SECTION_NAMES = [
   /APPOINTMENTS?\s+OF\s+MEDIATOR/,
   'MENTION DATE FOR COMPLIANCE',
+  /VIRTUAL (MENTIONS|RULINGS\/JUDGEMENTS|RULINGS|JUDGEMENTS)/,
   /MENTIONS?/,
   /JUDGMENTS?/,
   'WRITTEN SUBMISSIONS',
@@ -98,6 +101,7 @@ export const JUDGE_RE = [
   /(?<judge>(?:(?:BEFORE )?HON\.?\s+)?.*)\s+(?<courtRoom>(?:MAGISTRATE\s+COURT)|(?:COURTROOM))/i,
   /(?<judge>(?:HON\.?\s+)?.*)\s*[,-]?\s*\(?(?:SRM|CM|DR|SPM|PM)\)?/i,
   /(?<judge>(?:HON\.\s+).*)/i,
+  /(?<judge>WAMAE.*)/i,
 ];
 
 export const CAUSE_LIST_NUM_RE = /(?<num>[1-9]\d*)\s*\.?\s*(?:\.\s*)?/;

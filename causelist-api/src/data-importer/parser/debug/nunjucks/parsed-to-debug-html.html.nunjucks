@@ -5,7 +5,7 @@
       </tr>
       {% if not doc.header %}
       <tr>
-        <th colspan="2">INVALID</th>
+        <th colspan="2">INVALID HEADER</th>
       </tr>
       {% else %}
       <tr>
@@ -31,7 +31,7 @@
       </tr>
       {% endif %}
     </table>
-    {% if doc.header %}
+    {% if doc.causeLists %}
     <ul>
       {% for section in doc.causeLists %}
       <li>

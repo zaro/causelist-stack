@@ -49,7 +49,6 @@ import {
   CAUSE_LIST_RE,
   EMAIL_RE,
   JUDGE_HON_RE,
-  JUDGE_RE,
   SECTION_NAMES_AS_GROUP,
 } from './regexes.js';
 import { UnassignedMattersParser } from './unassigned-matters-parser.js';
@@ -278,6 +277,17 @@ export class CauseListSectionParser extends ParserBase {
     this.causelistType.tryParse(this.file);
 
     this.section.tryParse(this.file);
+    if (!this.section.valid()) {
+      // Maybe it's on the same line as dateTime
+      const dateTimeExtra = this.dateTime.getUnrecognizedMatches();
+      if (dateTimeExtra?.pre) {
+        this.section.tryParse(new FileLines(dateTimeExtra.pre));
+      }
+      if (dateTimeExtra?.post && !this.section.valid()) {
+        this.section.tryParse(new FileLines(dateTimeExtra.post));
+      }
+    }
+
     this.caseListHeader.tryParse(this.file);
 
     this.causelistQualifier.tryParse(this.file);
@@ -442,7 +452,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     new MatchRegExAny([/C\.?C\.?:?/i]),
     new MatchRegExAny([EMAIL_RE, /COUN(?:CI|SE)L/], { maxTimes: 20 }),
   ]),
-  new MatchRegExAny([/^CC:/i]),
+  new MatchRegExAny([/^(?:CC|NOTE):/i]),
 ];
 
 export class CauselistMultiDocumentParser1 extends ParserBase {

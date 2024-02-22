@@ -19,17 +19,15 @@ import {
   DocumentParser,
   MATCHERS_IGNORE_BETWEEN_DOCUMENTS,
 } from './causelist-parser-1.js';
-import { EMAIL_RE, JUDGE_RE, PHONE_RE, URL_RE } from './regexes.js';
+import { EMAIL_RE, PHONE_RE, URL_RE } from './regexes.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
+import { getJudgeNameMatcher } from './judge-name-matcher.js';
 
 export class CauselistHeader1Parser extends ParserBase {
   court = new ExtractStringListField(0, getCourtNameMatcher());
   title = new ExtractStringListField(0, [/cause\s+list/i]);
-  judge = new ExtractMultiStringField(-10, [
-    ...JUDGE_RE,
-    /BEFORE: (?<judge>.*)/,
-  ]);
-  url = new ExtractStringField(-1, [URL_RE]);
+  judge = new ExtractMultiStringField(-10, getJudgeNameMatcher());
+  url = new ExtractStringField(-1, URL_RE);
 
   constructor(file: FileLines) {
     super(file);
@@ -54,11 +52,8 @@ export class CauselistHeader2Parser extends ParserBase {
   title = new ExtractStringListField(10, [/cause\s+list/i]);
 
   date = new ExtractDateField(10);
-  judge = new ExtractMultiStringField(-10, [
-    ...JUDGE_RE,
-    /BEFORE: (?<judge>.*)/,
-  ]);
-  url = new ExtractStringField(-1, [URL_RE]);
+  judge = new ExtractMultiStringField(-10, getJudgeNameMatcher());
+  url = new ExtractStringField(-1, URL_RE);
   email = new ExtractStringField(-1, [EMAIL_RE]);
   phone = new ExtractStringField(-1, [PHONE_RE]);
 

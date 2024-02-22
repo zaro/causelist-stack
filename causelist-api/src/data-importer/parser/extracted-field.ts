@@ -11,6 +11,7 @@ export abstract class ExtractedField<T> {
   protected v: T;
   public readonly score: number;
   public readonly optional: boolean;
+  protected unrecognizedMatches: Record<string, string>;
 
   public matchStartLine: number;
   public matchEndLine: number;
@@ -55,6 +56,10 @@ export abstract class ExtractedField<T> {
     return this.v;
   }
 
+  getUnrecognizedMatches() {
+    return this.unrecognizedMatches;
+  }
+
   cloneValueFrom(o: ExtractedField<T>) {
     if (o.valid()) {
       this.set(o.get());
@@ -91,13 +96,17 @@ export class ExtractDateField extends ExtractedField<Date> {
   }
 }
 
-const HOUR_FORMATS = ['hh:mm aa', 'hh.mm aa', 'hh:mmaa', 'h.mmaa', 'hh:mm'];
+const HOUR_FORMATS = ['hh:mm aa'];
 export class ExtractTimeField extends ExtractedField<Date> {
+  protected timeMatcher: Matcher;
   constructor(
     score: number,
     protected date: ExtractDateField,
   ) {
     super(score);
+    this.timeMatcher = new MatchRegExAny([
+      /^(?<pre>[a-z\s]+)?(?:AT\s+)?(?<hours>\d{1,2})[\:\.](?<minutes>\d\d)\s*(?<noon>(?:[AP]M)|NOON)(?<post>.*)?$/i,
+    ]);
   }
 
   setFrom(timeString: string) {
@@ -113,8 +122,17 @@ export class ExtractTimeField extends ExtractedField<Date> {
   }
 
   matchTime(timeString: string, referenceDate: number | Date) {
-    timeString = normalizeWhitespace(timeString);
-    timeString = timeString.replace(/^TIME\s+/i, '');
+    const mr = this.timeMatcher.match(new FileLines(timeString));
+    if (!mr.ok()) {
+      return;
+    }
+    let { hours, minutes, noon, ...unrecognized } = mr.getAsObject();
+    if (noon.toLowerCase() === 'noon') {
+      noon = 'PM';
+    }
+
+    timeString = `${hours}:${minutes} ${noon}`;
+    this.unrecognizedMatches = unrecognized;
 
     for (const timeFormat of HOUR_FORMATS) {
       try {

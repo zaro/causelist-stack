@@ -281,6 +281,9 @@ export class CauseListSectionParser extends ParserBase {
   }
 
   tryParse() {
+    this.skipLinesContainingPhrase(
+      /MIGWANI\s+MOBILE\s+(?:COURT\s*)?UNDER\s+MWINGI\s+(?:LAW\s+)?COURTS?/,
+    );
     this.dateTime.tryParse(this.file);
     this.causelistType.tryParse(this.file);
 

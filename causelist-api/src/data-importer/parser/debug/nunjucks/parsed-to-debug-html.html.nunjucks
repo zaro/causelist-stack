@@ -103,6 +103,7 @@
       h1 { text-align: center }
       h2 { text-align: center }
       h3 { text-align: center }
+      h4 { text-align: center }
       table.with-border {
         border: 1px solid grey;
       }
@@ -159,6 +160,7 @@
       }
     </script>
     <h2 class="{% if parserReachedEnd %}green{% else %}red{% endif %}">{{ fileName }}</h2>
+    <h4>parentPath = {{ parentPath }}</h4>
     <h3>Parsed content follows</h3>
     <h3>matchScore={{ matchScore }}, minValidScore={{minValidScore}}</h3>
     {% if not parserReachedEnd %}

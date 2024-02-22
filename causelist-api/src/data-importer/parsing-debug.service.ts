@@ -101,6 +101,7 @@ export class ParsingDebugService {
     const parserReachedEnd = parsed.parser.file.end();
     const html = env.render('parsed-to-debug-html.html.nunjucks', {
       documents: parsed.parser.getParsed()?.documents,
+      parentPath: parsed.doc.parentPath,
       matchScore,
       matchScoreTree: parsed.parser.dumpDebugTree(),
       minValidScore,

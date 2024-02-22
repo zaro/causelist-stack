@@ -10,8 +10,9 @@ import { MultiParser, ParserBase } from './parser-base.js';
 import { CauselistHeaderParsed } from '../../interfaces/index.js';
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import { getCourtNameMatcher } from './court-name-matcher.js';
-import { EMAIL_RE, PHONE_RE, URL_RE } from './regexes.js';
+import { EMAIL_RE, PHONE_RE } from './regexes.js';
 import { getJudgeNameMatcher } from './judge-name-matcher.js';
+import { getURLMatcher } from './url-matcher.js';
 
 export abstract class CauselistHeaderParserBase extends ParserBase {
   court = new ExtractStringListField(10, getCourtNameMatcher());
@@ -19,7 +20,7 @@ export abstract class CauselistHeaderParserBase extends ParserBase {
 
   date = new ExtractDateField(10);
   judge = new ExtractMultiStringField(-10, getJudgeNameMatcher());
-  url = new ExtractStringField(-1, URL_RE);
+  url = new ExtractStringField(-1, getURLMatcher());
   email = new ExtractStringField(-1, [EMAIL_RE]);
   phone = new ExtractStringField(-1, [PHONE_RE]);
 

@@ -1,10 +1,5 @@
 import { escapeForRegex } from './util.js';
 
-export const URL_RE = [
-  /(https?:\/\/)[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i,
-  /(?:shorturl.at|bit.ly|cutt.ly|t.ly)\/\w+/i,
-];
-
 export const EMAIL_RE =
   /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
 

@@ -18,10 +18,10 @@ import {
   CAUSE_LIST_NUM_RE,
   CAUSE_LIST_PARTIES_RE,
   SECTION_NAMES_AS_GROUP,
-  URL_RE,
 } from './regexes.js';
 import { FileLines } from './file-lines.js';
 import { getJudgeNameMatcher } from './judge-name-matcher.js';
+import { getURLMatcher } from './url-matcher.js';
 
 export class UnassignedMattersLineParser1 extends ParserBase {
   lines = new ExtractMultiStringListField(
@@ -80,7 +80,7 @@ export class UnassignedMattersLineParser extends MultiParser<
 export class UnassignedMattersParser extends ParserBase {
   date = new ExtractDateField(10);
   judge = new ExtractMultiStringField(-10, getJudgeNameMatcher());
-  url = new ExtractStringField(-1, URL_RE);
+  url = new ExtractStringField(-1, getURLMatcher());
 
   // cases: UnassignedMattersLineParser;
   cases: UnassignedMattersLineParser1;

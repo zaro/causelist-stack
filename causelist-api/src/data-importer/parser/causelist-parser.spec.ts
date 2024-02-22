@@ -11,6 +11,7 @@ import {
 } from './multi-line-matcher.js';
 import { getCourtNameMatcher } from './court-name-matcher.js';
 import { CauselistMultiDocumentParser } from './causelist-parser.js';
+import { CauselistLineParser1 } from './causelist-parser-1.js';
 
 const text1 = `
 ﻿MILIMANI MAGISTRATE COURT
@@ -94,18 +95,41 @@ DIRECTIONS
 2.    MCCR/1183/2019       Rep Vs  Michael Onduru Kula And George Chemaket
 `;
 
+const text2 = `
+4. MCCC/E3574/2022 Anthony Kutima Wanjala Vs Samuel Ogechi And Faith Ndindi
+Mbai
+5. MCCC/E5273/2022 Godfrey Apollo Maina (minor Suing Through Next Friend And
+Father) Joseph Maina Njoroge Vs Directline Assurance Company Limited
+6. MCCC/E3481/2022 Victor Ochieng Otiende Vs David Njenga Njuguna
+RULING
+`;
+
 describe('causelist-parser', () => {
-  let file1: FileLines;
-  beforeEach(() => {
-    file1 = new FileLines(text1);
-  });
   describe('CauselistMultiDocumentParser', () => {
+    let file1: FileLines;
+    beforeEach(() => {
+      file1 = new FileLines(text1);
+    });
     it('should match 1 document', () => {
       const fileLines = new FileLines(text1);
       const parser = new CauselistMultiDocumentParser(fileLines);
       parser.tryParse();
       // We must have consumed all text
       console.log(parser.getParsed().documents[0]);
+      expect(parser.file.end()).toBe(true);
+    });
+  });
+
+  describe('CauselistLineParser1', () => {
+    let file: FileLines;
+    beforeEach(() => {
+      file = new FileLines(text2);
+    });
+    it('should match 1 document', () => {
+      const parser = new CauselistLineParser1(file);
+      parser.tryParse();
+      // We must have consumed all text
+      console.log(parser.getParsed());
       expect(parser.file.end()).toBe(true);
     });
   });

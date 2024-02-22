@@ -97,6 +97,9 @@ export class ExtractDateField extends ExtractedField<Date> {
 }
 
 const HOUR_FORMATS = ['hh:mm aa'];
+export const TIME_MATCHER_RE = [
+  /^(?<pre>[a-z\s]+)?(?:AT\s+)?(?<hours>\d{1,2})[\:\.](?<minutes>\d\d)\s*(?<noon>(?:[AP]M)|NOON)(?<post>.*)?$/i,
+];
 export class ExtractTimeField extends ExtractedField<Date> {
   protected timeMatcher: Matcher;
   constructor(
@@ -104,9 +107,7 @@ export class ExtractTimeField extends ExtractedField<Date> {
     protected date: ExtractDateField,
   ) {
     super(score);
-    this.timeMatcher = new MatchRegExAny([
-      /^(?<pre>[a-z\s]+)?(?:AT\s+)?(?<hours>\d{1,2})[\:\.](?<minutes>\d\d)\s*(?<noon>(?:[AP]M)|NOON)(?<post>.*)?$/i,
-    ]);
+    this.timeMatcher = new MatchRegExAny(TIME_MATCHER_RE);
   }
 
   setFrom(timeString: string) {

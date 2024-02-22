@@ -18,7 +18,7 @@ export function getJudgeNameMatcher() {
       /(?<judge>(?:(?:BEFORE )?HON\.?\s+)?.*)\s+(?<courtRoom>(?:MAGISTRATE\s+COURT)|(?:COURTROOM))/i,
       /(?<judge>(?:HON\.?\s+)?.*)\s*[,-]?\s*\(?(?:SRM|CM|DR|SPM|PM)\)?/i,
       /(?<judge>(?:HON[\.\:]\s*).*)/i,
-      /^(?<judge>(?:[a-z][a-z\.]+\s*)+)\s+(?<courtRoom>COURT\s+\d+)$/i,
+      /^(?<judge>(?:[a-z][a-z\.]+)\s+(?:[a-z][a-z\.]+\s*){1,3})\s+(?<courtRoom>COURT\s+\d+)$/i,
     ]),
     new MatchRegExSequence([
       /(?<judge>(?:HON\.|WAMAE)\s+.*)/i,

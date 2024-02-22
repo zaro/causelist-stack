@@ -14,6 +14,7 @@ import {
   ExtractTimeField,
   ExtractedFieldsContainer,
   ExtractMultiStringListField,
+  TIME_MATCHER_RE,
 } from './extracted-field.js';
 import {
   MultiParser,
@@ -62,7 +63,7 @@ export abstract class CauselistLineParserBase extends ParserBase {
 export class CauselistLineParser1 extends CauselistLineParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
   // newSectionRegex = phrasesToRegex(SECTION_NAMES).concat([JUDGE_HON_RE]);
-  newSectionRegex = [SECTION_NAMES_AS_GROUP, JUDGE_HON_RE];
+  newSectionRegex = [SECTION_NAMES_AS_GROUP, JUDGE_HON_RE, ...TIME_MATCHER_RE];
   courtNameMatcher = getCourtNameMatcher();
   PEEK_FORWARD = 6;
 
@@ -133,12 +134,18 @@ export class CauselistLineParser1 extends CauselistLineParserBase {
           file.move();
           const clonedFile = file.clone();
           for (let i = 1; i < this.PEEK_FORWARD; ++i) {
-            const nextLine = clonedFile.getNext();
+            const nextLine = clonedFile.peekNext();
             // console.log('>>> nl', nextLine);
-            if (
-              nextLine &&
-              (this.lines.match(clonedFile) || this.isSectionEnd(nextLine))
-            ) {
+            if (nextLine && this.isSectionEnd(nextLine)) {
+              joinUntil = i;
+              break;
+            }
+            // if (isWhiteSpaceEquivalent(clonedFile.peekNext())) {
+            //   joinUntil = i + 1;
+            //   break;
+            // }
+            const mr = this.lines.match(clonedFile);
+            if (mr.ok()) {
               joinUntil = i;
               break;
             }
@@ -146,6 +153,7 @@ export class CauselistLineParser1 extends CauselistLineParserBase {
               joinUntil = i + 1;
               break;
             }
+            clonedFile.move();
           }
           if (joinUntil > 0) {
             const toAppend = this.file
@@ -369,7 +377,6 @@ const IGNORE_BETWEEN_DOCUMENTS = [
   'PREPARED BY',
   'CHECKED BY',
   'N/B:',
-  'CIVIL REGISTRY',
   'END',
   /^MALINDI$/,
   /^NAROK$/,
@@ -390,7 +397,11 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /^(HON\.?\s+)?(\w[\w\.]*\s+)+\w+$/i, // name
     /(?:PRINCIPAL|RESIDENT)\s+MAGISTRATE$/,
   ]),
-
+  new MatchRegExSequence([
+    /CIVIL\s+REGISTRY/i,
+    /MAGISTRATE\s+COURT$/i,
+    /LAW\s+COURTS?$/i,
+  ]),
   new MatchRegExSequence([/COURT\s+ADMIN(?:ISTRATOR)?/, /LAW\s+COURTS?$/]),
   new MatchRegExAny([/COURT\s+ADMINISTRATOR/]),
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
@@ -453,6 +464,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     new MatchRegExAny([EMAIL_RE, /COUN(?:CI|SE)L/], { maxTimes: 20 }),
   ]),
   new MatchRegExAny([/^(?:CC|NOTE):/i]),
+  new MatchRegExAny([/CIVIL\s+REGISTRY/i]),
 ];
 
 export class CauselistMultiDocumentParser1 extends ParserBase {

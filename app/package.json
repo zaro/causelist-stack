@@ -25,6 +25,7 @@
     "@sentry/nextjs": "^7.91.0",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
+    "iframe-resizer-react": "^1.1.0",
     "libphonenumber-js": "^1.10.52",
     "next": "14.0.4",
     "posthog-js": "^1.96.1",

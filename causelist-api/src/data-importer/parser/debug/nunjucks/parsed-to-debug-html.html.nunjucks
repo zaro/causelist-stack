@@ -147,11 +147,22 @@
     <style>
         {% include 'render-json.css.nunjucks' %}
     </style>
+    <script>
+      function onAClick(e){
+        const targetUrl = new URL(e.target.href)
+        const elId = targetUrl.hash.replace(/^#/,'');
+        const el = document.getElementById(elId);
+        if(el){
+          el.scrollIntoView();
+          e.preventDefault();
+        }
+      }
+    </script>
     <h2 class="{% if parserReachedEnd %}green{% else %}red{% endif %}">{{ fileName }}</h2>
     <h3>Parsed content follows</h3>
     <h3>matchScore={{ matchScore }}, minValidScore={{minValidScore}}</h3>
     {% if not parserReachedEnd %}
-    <h3><a href="#line-{{ currentLine + 1}}">Stopped at line: {{ currentLine + 1}}</a></h3>
+    <h3><a onClick="onAClick(event)" href="#line-{{ currentLine + 1}}">Stopped at line: {{ currentLine + 1}}</a></h3>
     {% endif %}
     <hr>
     {{ showDocuments(documents) }}
@@ -160,7 +171,7 @@
     <pre>{{ error.stack }}</pre>
     {% for p in parsersTried %}
       <div class="parserDebug">
-        <h3>{{ p.name}} - <a href="#line-{{ p.currentLine + 1}}">Stopped at line: {{ p.currentLine + 1}}</a></h3>
+        <h3>{{ p.name}} - <a onClick="onAClick(event)"  href="#line-{{ p.currentLine + 1}}">Stopped at line: {{ p.currentLine + 1}}</a></h3>
         {{ showDocuments(p.documents) }}
       </div>
     {% endfor %}

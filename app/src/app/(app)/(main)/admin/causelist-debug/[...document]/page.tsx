@@ -3,6 +3,7 @@ import Stack from "@mui/material/Stack";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import IframeResizer from "iframe-resizer-react";
 import { causeListStore } from "../../../../_store/index.ts";
 import { Suspense, useState } from "react";
 import DailyCauseLists from "../../../../_components/daily-causelist.tsx";
@@ -43,7 +44,12 @@ function DisplayDebug({ documentId }: { documentId: string }) {
           label="Use Corrected Version"
         />
       </FormGroup>
-      <iframe height="600px" srcDoc={data.debugHTML}></iframe>
+      <IframeResizer
+        height="600px"
+        srcDoc={data.debugHTML}
+        log={false}
+        scrolling={true}
+      ></IframeResizer>
     </Stack>
   );
 }

@@ -456,6 +456,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /TO\s+CHECK\s+CASE\s+STATUS/,
     /^SUBJECT\s+TO\s+CHANGES/,
   ]),
+  new MatchRegExSequence([/^NOTICE$/, /^Kindly Note/]),
   new MatchRegExSequence([JUDGE_HON_RE]),
   new MatchRegExSequence([/^DEPUTY\s+REGISTRAR$/]),
   new MatchRegExAny([/VISIT:/]),

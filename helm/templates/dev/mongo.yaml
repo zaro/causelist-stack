@@ -19,6 +19,7 @@ spec:
       containers:
         - name: mongo
           image: mongo:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: MONGO_INITDB_DATABASE
               value: causelist

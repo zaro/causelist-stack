@@ -34,7 +34,10 @@ const Footer = () => {
         </Grid>
       </Grid>
       <Typography className={classes.footerText}>
-        Created by CodeSmart Technologies
+        Created by{" "}
+        <AppLink target="_blank" href="https://codesmart.space/">
+          CodeSmart Technologies
+        </AppLink>
       </Typography>
       <Typography className={classes.footerDate}>
         © Copyright {date}. All rights reserved.

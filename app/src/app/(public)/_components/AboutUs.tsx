@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import bestTeams from "../_images/team-vector.png";
 import classes from "./common.module.css";
+import { AppLink } from "../../(app)/_components/app-link.tsx";
 
 export default function AboutUs() {
   return (
@@ -22,7 +23,13 @@ export default function AboutUs() {
 
         <Grid item xs={12} md={9}>
           <Typography variant="h4" fontWeight={700} className={classes.title}>
-            CODESMART TECHNOLOGIES
+            <AppLink
+              target="_blank"
+              href="https://codesmart.space/"
+              sx={{ textDecoration: "none" }}
+            >
+              CODESMART TECHNOLOGIES
+            </AppLink>
           </Typography>
           <Typography variant="h5" fontWeight={700} className={classes.title}>
             We build, We create

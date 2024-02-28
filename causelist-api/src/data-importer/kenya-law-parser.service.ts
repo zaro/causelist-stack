@@ -274,15 +274,21 @@ export class KenyaLawParserService {
           ? req.useCorrection
           : file.hasCorrection;
       const contentFile = useCorrection ? 'textCorrected' : 'text';
-      const downloaded = await this.s3Service.downloadMultipleFiles([
-        {
-          key: fileKey(file.sha1 + '/' + contentFile),
-        },
-        {
-          key: fileKey(file.sha1 + '/meta.json'),
-          parseJson: true,
-        },
-      ]);
+      let downloaded;
+      try {
+        downloaded = await this.s3Service.downloadMultipleFiles([
+          {
+            key: fileKey(file.sha1 + '/' + contentFile),
+          },
+          {
+            key: fileKey(file.sha1 + '/meta.json'),
+            parseJson: true,
+          },
+        ]);
+      } catch (e) {
+        this.log.error(`Failed to load ${file.sha1}`, undefined, e);
+        continue;
+      }
 
       const textContent = downloaded[0].data as string;
       const { textContentType, textContentSha1 } = downloaded[1].dataAsObject;

@@ -153,6 +153,7 @@ export class KenyaLawImporterService {
 
     this.log.log('Loading files...');
     const saves = [];
+    let skipped = 0;
     for (const fileKey of fileKeys) {
       const { dataAsObject: datasetFile } = await this.s3Service.downloadFile({
         key: fileKey,
@@ -184,7 +185,8 @@ export class KenyaLawImporterService {
         })
         .exec();
       if (existingFile) {
-        this.log.debug(`Skip ${fileName}, already imported`);
+        // this.log.debug(`Skip ${fileName}, already imported`);
+        skipped++;
         continue;
       }
       const file: InfoFileDocument = new this.infoFileModel({
@@ -200,6 +202,7 @@ export class KenyaLawImporterService {
       this.log.log(`Importing ${fileName}`);
       saves.push(file.save());
     }
+    this.log.debug(`Skiped ${skipped}, already imported files`);
     this.log.log(`Waiting for ${saves.length}  documents to be saved!`);
     await Promise.all(saves);
     this.log.log(`Done!`);

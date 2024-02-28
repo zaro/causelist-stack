@@ -209,9 +209,10 @@ class SimpleS3 {
   }
 
   async putFileRecord(record: ProcessedFile) {
+    const Key = this.filesPrefix + record.sha1 + "/meta.json";
     const command = new PutObjectCommand({
       Bucket: this.bucket,
-      Key: this.filesPrefix + record.sha1 + "/meta.json",
+      Key,
       Body: JSON.stringify(record, null, 2),
       ContentType: "application/json",
     });
@@ -220,7 +221,7 @@ class SimpleS3 {
       await this.s3.send(command);
       return true;
     } catch (e: any) {
-      this.logError(`putFileRecord(${fileSha1}):`, e);
+      this.logError(`putFileRecord(${Key}):`, e);
       return false;
     }
   }
@@ -244,7 +245,7 @@ class SimpleS3 {
       await this.s3.send(command);
       return true;
     } catch (e: any) {
-      this.logError(`putFileRecord(${fileSha1}):`, e);
+      this.logError(`putFileRecord(${Key}):`, e);
       return false;
     }
   }

@@ -1,5 +1,6 @@
 node_modules/
 mongo/
 proxy/
+tika/
 crawler-bucket/
 causelist_prototype.pdf

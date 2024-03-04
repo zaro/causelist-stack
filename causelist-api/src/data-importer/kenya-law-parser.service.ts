@@ -15,9 +15,11 @@ import { CauselistMultiDocumentParser } from './parser/causelist-parser.js';
 import { MenuEntry } from './kenya-law-importer.service.js';
 import {
   FailedToSelectParserException,
+  NullParser,
   ParserException,
   ParserInterface,
 } from './parser/parser-base.js';
+import { getCourtNameMatcher } from './parser/court-name-matcher.js';
 
 export interface DocumentParseRequest {
   debug?: boolean;
@@ -329,6 +331,11 @@ export class KenyaLawParserService {
           );
         }
       }
+      const peekParser = new NullParser(fileLines.clone());
+      const hasCourt = peekParser.skipLinesUntilMatch(getCourtNameMatcher());
+      const hasCauseList = hasCourt
+        ? peekForRe(peekParser.file, /cause\s+list/i)
+        : false;
 
       parsedList.push({
         doc: dd.doc,
@@ -336,8 +343,8 @@ export class KenyaLawParserService {
         fileLines,
         parser,
         score: parser?.matchScore() ?? 0,
-        hasCourt: peekForWord(f, 'court', 1),
-        hasCauseList: peekForRe(f, /cause\s+list/i),
+        hasCourt,
+        hasCauseList,
         isNotice: peekForWord(f, 'notice'),
         error,
         parsersTried,
@@ -347,9 +354,7 @@ export class KenyaLawParserService {
   }
 
   parsedDataStats(parsedList: DocumentParseResult[]) {
-    const haveCourt = parsedList.filter(
-      (e) => e.hasCourt && !e.isNotice && e.hasCauseList,
-    );
+    const haveCourt = parsedList.filter((e) => e.hasCourt && e.hasCauseList);
     const bins = {
       0: ' 0- 9',
       10: '10-19',

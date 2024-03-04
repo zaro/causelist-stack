@@ -432,3 +432,10 @@ export class MultiParser<ParsedT> extends ParserInterface {
     this._populateFieldsFrom = o;
   }
 }
+
+export class NullParser extends ParserBase {
+  tryParse(): void {}
+  getParsed() {
+    return null;
+  }
+}

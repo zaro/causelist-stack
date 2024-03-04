@@ -205,9 +205,7 @@ export class ParseCommand {
     });
     this.parserService.printParsedDataStats(parsedList);
     const good = parsedList.filter((e) => e.score >= e.parser.minValidScore());
-    const haveCourt = good.filter(
-      (e) => e.hasCourt && !e.isNotice && e.hasCauseList,
-    );
+    const haveCourt = good.filter((e) => e.hasCourt && e.hasCauseList);
     if (debugHtml || partialDebugHtml) {
       let documentsToDebug = good;
       if (debugHtml) {

@@ -21,10 +21,10 @@ export const JUDGE_RE = [
 ];
 export function getJudgeNameMatcher() {
   return new MatchersListAny([
-    new MatchRegExAny(JUDGE_RE),
     new MatchRegExSequence([
-      /(?<judge>(?:HON\.|WAMAE)\s+.*)/i,
-      /(?<courtRoom>COURTROOM\s+\d+)/i,
+      /(?<judge>(?:HON\.?|WAMAE)\s+.*)/i,
+      /(?<courtRoom>(?:COURTROOM|CHAMBER)\s+\d+\s*.*)/i,
     ]),
+    new MatchRegExAny(JUDGE_RE),
   ]);
 }

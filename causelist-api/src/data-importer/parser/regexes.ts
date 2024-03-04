@@ -46,6 +46,7 @@ export const SECTION_NAMES = [
   'REGISTRATION/FILING',
   'SUMMONS',
   'BAIL/BOND',
+  'BOND APPROVAL',
   'TAXATION',
   'MENTION DATE FOR COMPLIANCE',
   'MEDIATION ADOPTION',
@@ -90,6 +91,17 @@ export const SECTION_NAMES_AS_GROUP = new RegExp(
     ).join('|') +
     ')',
 );
+
+export const CAUSELIST_TYPE_RE = [
+  /CIVIL\s*CAUSELIST/,
+  /CRIMINAL\s*CAUSELIST/,
+  /NAIROBI\s+ CAUSELIST/,
+  /CIVIL\s+MATTER/,
+  /MIGWANI MATTERS/,
+  /All matters are handled virtual/,
+  /[ab]\s*\.\s*(?:New|Old)/i,
+  /(?:KIAMBU|LANGATA|NAIROBI)\s+REMAND/,
+];
 
 export const JUDGE_HON_RE = /^\s*HON\.\s*.*/i;
 

@@ -14,94 +14,56 @@ import { CauselistMultiDocumentParser } from './causelist-parser.js';
 import { CauselistLineParser1 } from './causelist-parser-1.js';
 
 const text1 = `
-﻿MILIMANI MAGISTRATE COURT
-MAGISTRATE COURT CRIMINAL
+MILIMANI HIGH COURT
+HIGH COURT CRIMINAL
 CAUSE LIST
-TUESDAY, 16 JANUARY 2024
-HON. L.O.ONYINA (CM)  COURT 1
-http://shorturl.at/pKS25
+MONDAY, 12 FEBRUARY 2024
+HON. LADY JUSTICE LILIAN MUTENDE
+https://cutt.ly/njPf8mP
 
 09:00 AM
 MENTION
-1.    MCCR/708/2018         Rep Vs  Naftary Mwangi Maina
-2.    MCCR/E802/2021       Republic Vs Galot Mohan  And London Distillers Kenya Ltd
-3.    MCCR/E999/2022       Republic Vs Christopher  Muriithi
-4.    MCCR/E1039/2023     Republic Vs Mercy Kirigo Jane
-PART HEARD HEARING
-5.    MCCR/1703/2018       Rep   Vs  Antony Muriithi Njogu
-6.    MCCR/E3914/2020     Republic Vs Ndanu Munyoki And 6 Other(s)
-7.    MCCR/E398/2022       Republic Vs Ouma Barasa Kennedy
-FRESH HEARING
-8.    MCCR/E3416/2020     Republic Vs Gadafi Otieno Calvince
+    1. HCCRMISCAPPL/E156/2021	Joseph Kitija Mbatha   Vs  The Republic
+    2. HCCRREV/E060/2022 		Arsalan Laloui    Vs  Lopez And National
+Police Service Commission (npsc)  & 2
+Others
+    3. HCCRA/E116/2022     		Fredrick Vigedi Kivisi   Vs  Republic
+    4. HCCRA/E083/2022     		Shadrack Mwendwa   Vs  The Republic
+    5. HCCRMISCAPPL/E364/2022	Douglas Ontita Nyakundi   Vs  Phylis
+Barasa And Milimani Childrens Court  And 1 Others
+    6. HCCRREV/E174/2022 		Republic   Vs  Charles Mwangi Thuo
+And Phillip Njuguna Kimani  & 1 Others
+    7.  HCCRREV/E277/2022 		Teddy Karire Odero   Vs  Republic
+    8. HCCRMISCAPPL/E467/2023	Whitepath Company Limited And Zhang
+Shiqi  And 2 Others  Vs  Director Fo Criminal Investigations And Kenya Revenue Authority  And 4 Others
+    9.  HCCRA/E173/2023     		Abraham Aluta Mutsoli   Vs  Republic
+    10. HCCRMISCAPPL/E025/2023	Biotech Organics Limited   Vs  Stanbic
+Bank Kenya Limited And Odpp  And 1
+Others
+    11.  HCCRMISCAPPL/E476/2023	Abdullahi Issack Mohamed   Vs  Director
+Of Criminal Investigations And Director Of Public Prosecutions
+    12.  HCCRREV/E098/2023 		Saidi Jaharan Mohamed   Vs  Republic
+    13. HCCRREV/E098/2022 		The Republic   Vs  Mohammed Kasim
+Salat And Abdirashid Abdullahi Omar
+And 1 Others
+    14. HCCRREV/E848/2023		Erick Osoro Onchombo Vs Republic
+    15. HCCRREV/E846/2023		Mercyline Namachanja Vs Republic
+    16. HCCRREV/E847/2023		Michael Majani Ibado Vs Republic
+    17. HCCRREV/E849/2023		Samuel King’ori Nyakieni Vs Republic
+    18.  HCCRMISCAPPL/E035/2024	Clement Mwangi Njeri Vs Republic
+    19. HCCRMISCAPPL/E037/2024	Racheal Ndinda Vs Republic
+HEARING OF APPLICATIONS
+    20.  HCCRMISCAPPL/E033/2024	Astarico Omariba Omoriasi Vs  Republic
+    21. HCCRMISCAPPL/E044/2024	Abraham Mwangi Nguyo Vs Republic
 
-MILIMANI MAGISTRATE COURT
-MAGISTRATE COURT CRIMINAL
-CAUSE LIST
-TUESDAY, 16 JANUARY 2024
-HON. SUSAN SHITUBI - C.M  COURT 2
-https://bit.ly/3BEDAek
-
-09:00 AM
-MENTION
-1.    MCCR/1163/2017       Rep Vs Mohammed Zafrullah Khan & 7 Others
-2.    MCCR/1891/2018       Rep   Vs  Paminus Kiage Gwaro And Collins Rogers Magak
-3.    MCCR/E620/2023       Republic Vs Dan  Okemwa
-4.    MCCR/E037/2024       Republic Vs Amos  M'anampiu
-5.    MCCR/E002/2024       Republic Vs Hillary  Samoei
-6.    MCCR/E043/2024       Republic Vs Millcent  Rachilo And Sharon  Angara
-PRE-TRIAL CONFERENCE
-7.    MCCR/E007/2024       Republic Vs Robert Kipngetich Alias Raphael Bet
-PART HEARD HEARING
-8.    MCCR/E438/2022       Republic Vs Nduati Kamau Ernest S.
-FRESH HEARING
-9.    MCCR/E1284/2021     Republic Vs Kamau Ephantus
-10.  MCCR/E672/2022       Republic Vs Anthony  Irungu
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-NOTE:  KINDLY TAKE NOTICE THAT COURT NO.2 MATTERS LISTED FOR 25TH AND 26TH JANUARY 2024 WILL BE MENTIONED ON THURSDAY 1ST FEBRUARY 2024 FOR DIRECTIONS.
-
-MILIMANI MAGISTRATE COURT
-MAGISTRATE COURT CRIMINAL
-CAUSE LIST
-TUESDAY, 16 JANUARY 2024
-BERNARD OCHOI  COURT 3
- https://shorturl.at/jlvxS
-
-09:00 AM
-DIRECTIONS
-1.    MCSO/44/2017           Rep Vs George Morara Juma
-2.    MCCR/1183/2019       Rep Vs  Michael Onduru Kula And George Chemaket
 `;
 
 const text2 = `
-4. MCCC/E3574/2022 Anthony Kutima Wanjala Vs Samuel Ogechi And Faith Ndindi
-Mbai
-5. MCCC/E5273/2022 Godfrey Apollo Maina (minor Suing Through Next Friend And
-Father) Joseph Maina Njoroge Vs Directline Assurance Company Limited
-6. MCCC/E3481/2022 Victor Ochieng Otiende Vs David Njenga Njuguna
-RULING
+36. MCCC/E012/2023      Chacha Samson Mwita (minor Suing Through Next Friend And
+  Father Of Gloria Boke Vs Kamongo Waste Paper (k) Ltd
+                        KEHANCHA MAGISTRATE COURT
+                             MAGISTRATE COURT
+                                  CAUSE LIST
 `;
 
 describe('causelist-parser', () => {

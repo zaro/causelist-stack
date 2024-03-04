@@ -44,6 +44,10 @@ export class FailedToSelectParserException extends ParserException {
   }
 }
 
+export interface PopulateFieldsOptions {
+  only?: string;
+}
+
 export abstract class ParserInterface extends ExtractedFieldsContainer {
   constructor(
     public readonly file: FileLines,
@@ -58,7 +62,10 @@ export abstract class ParserInterface extends ExtractedFieldsContainer {
   goodEnough() {
     return this.matchScore() >= this.minValidScore();
   }
-  abstract populateFieldsFrom(o: ExtractedFieldsContainer);
+  abstract populateFieldsFrom(
+    o: ExtractedFieldsContainer,
+    opts?: PopulateFieldsOptions,
+  );
   abstract allFieldsValid(ignoreOptional: boolean): boolean;
   abstract allValid(ignoreOptional: boolean): boolean;
   abstract tryParse(): void;
@@ -70,14 +77,23 @@ export abstract class ParserBase extends ParserInterface {
   abstract tryParse(): void;
   abstract getParsed(): any;
 
-  populateFieldsFrom(o: ExtractedFieldsContainer) {
+  populateFieldsFrom(
+    o: ExtractedFieldsContainer,
+    opts?: PopulateFieldsOptions,
+  ) {
     for (const f of this.getSubParsers()) {
+      if (opts?.only && !opts?.only?.includes(f)) {
+        continue;
+      }
       if (f in o) {
         (this[f] as ParserInterface).populateFieldsFrom(o[f]);
       }
     }
     const v = o.getExtractedFieldsAsMap();
     for (const f of this.getExtractedFields()) {
+      if (opts?.only && !opts?.only?.includes(f)) {
+        continue;
+      }
       if (f in v) {
         (this[f] as ExtractedField<any>).cloneValueFrom(v[f]);
       }
@@ -271,6 +287,7 @@ export class ParserArray<
   implements ParserInterface
 {
   protected _populateFieldsFrom: ExtractedFieldsContainer;
+  protected _populateFieldsFromOpts: PopulateFieldsOptions;
 
   constructor(
     public readonly file: FileLines,
@@ -284,7 +301,10 @@ export class ParserArray<
     const file = opts?.clonedFile ? this.file.clone() : this.file;
     const parser = new this.parserClass(file, this.parent as P);
     if (this._populateFieldsFrom) {
-      parser.populateFieldsFrom(this._populateFieldsFrom);
+      parser.populateFieldsFrom(
+        this._populateFieldsFrom,
+        this._populateFieldsFromOpts,
+      );
     }
     return parser;
   }
@@ -303,8 +323,12 @@ export class ParserArray<
     throw new Error('[ParserArray]getExtractedFields not implemented.');
   }
 
-  populateFieldsFrom(o: ExtractedFieldsContainer) {
+  populateFieldsFrom(
+    o: ExtractedFieldsContainer,
+    opts?: PopulateFieldsOptions,
+  ) {
     this._populateFieldsFrom = o;
+    this._populateFieldsFromOpts = opts;
   }
 
   matchScore() {
@@ -350,6 +374,7 @@ export interface MultiParserOpts {
 }
 export class MultiParser<ParsedT> extends ParserInterface {
   protected _populateFieldsFrom: ExtractedFieldsContainer;
+  protected _populateFieldsFromOpts: PopulateFieldsOptions;
   protected parsed: ParserInterface[] = [];
   selected: ParserInterface;
   protected requireValidSelection: boolean;
@@ -398,7 +423,10 @@ export class MultiParser<ParsedT> extends ParserInterface {
     for (const klass of this.parserClasses) {
       const c = new klass(this.file.clone());
       if (this._populateFieldsFrom) {
-        c.populateFieldsFrom(this._populateFieldsFrom);
+        c.populateFieldsFrom(
+          this._populateFieldsFrom,
+          this._populateFieldsFromOpts,
+        );
       }
       c.tryParse();
       this.parsed.push(c);
@@ -428,8 +456,12 @@ export class MultiParser<ParsedT> extends ParserInterface {
     return this.selected?.getParsed();
   }
 
-  populateFieldsFrom(o: ExtractedFieldsContainer) {
+  populateFieldsFrom(
+    o: ExtractedFieldsContainer,
+    opts?: PopulateFieldsOptions,
+  ) {
     this._populateFieldsFrom = o;
+    this._populateFieldsFromOpts = opts;
   }
 }
 

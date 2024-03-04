@@ -43,6 +43,7 @@ import {
 import { getDateOnlyISOFromDate } from '../../interfaces/util.js';
 import {
   CAUSELIST_ADV_RE,
+  CAUSELIST_TYPE_RE,
   CAUSE_LIST_CASE_NUMBER_RE,
   CAUSE_LIST_DESCRIPTION_RE,
   CAUSE_LIST_NUM_RE,
@@ -56,6 +57,10 @@ import { UnassignedMattersParser } from './unassigned-matters-parser.js';
 import { getCourtNameMatcher } from './court-name-matcher.js';
 import { CauselistMultiDocumentParser2 } from './causelist-parser-2.js';
 
+const IGNORES = [
+  /MIGWANI\s+MOBILE\s+(?:COURT\s*)?UNDER\s+MWINGI\s+(?:LAW\s+)?COURTS?/,
+];
+
 export abstract class CauselistLineParserBase extends ParserBase {
   abstract getParsed(): CauselistLineParsed[];
 }
@@ -63,12 +68,22 @@ export abstract class CauselistLineParserBase extends ParserBase {
 export class CauselistLineParser1 extends CauselistLineParserBase {
   lines = new ExtractMultiStringListField(10, CAUSE_LIST_RE);
   // newSectionRegex = phrasesToRegex(SECTION_NAMES).concat([JUDGE_HON_RE]);
-  newSectionRegex = [SECTION_NAMES_AS_GROUP, JUDGE_HON_RE, ...TIME_MATCHER_RE];
+  newSectionRegex = [
+    SECTION_NAMES_AS_GROUP,
+    JUDGE_HON_RE,
+    ...TIME_MATCHER_RE,
+    ...CAUSELIST_TYPE_RE,
+    ...IGNORES,
+  ];
   courtNameMatcher = getCourtNameMatcher();
   PEEK_FORWARD = 6;
 
   isSectionEnd(nextLine: string) {
-    if (nextLine.match(/\bcourt|UNASSIGNED\s+MATTERS|DEPUTY\s+REGISTRAR\b/i)) {
+    if (
+      nextLine.match(
+        /\bCOURT\s+ADMINISTRATOR|UNASSIGNED\s+MATTERS|DEPUTY\s+REGISTRAR\b/i,
+      )
+    ) {
       // console.log('>>>> new section court');
       return true;
     }
@@ -150,7 +165,7 @@ export class CauselistLineParser1 extends CauselistLineParserBase {
               break;
             }
             if (this.heuristicSectionEnd(clonedFile)) {
-              joinUntil = i + 1;
+              joinUntil = i;
               break;
             }
             clonedFile.move();
@@ -251,16 +266,7 @@ export class CauselistLineParser extends MultiParser<CauselistLineParsed[]> {
 
 export class CauseListSectionParser extends ParserBase {
   dateTime: ExtractTimeField;
-  causelistType = new ExtractStringField(-10, [
-    /CIVIL\s*CAUSELIST/,
-    /CRIMINAL\s*CAUSELIST/,
-    /NAIROBI\s+ CAUSELIST/,
-    /CIVIL\s+MATTER/,
-    /MIGWANI MATTERS/,
-    /All matters are handled virtual/,
-    /[ab]\s*\.\s*(?:New|Old)/i,
-    /(?:KIAMBU|LANGATA|NAIROBI)\s+REMAND/,
-  ]);
+  causelistType = new ExtractStringField(-10, CAUSELIST_TYPE_RE);
   section = new ExtractStringField(-10, [SECTION_NAMES_AS_GROUP]);
   causelistQualifier = new ExtractStringField(-10, [
     /[ab]\s*\.\s*(?:New|Old)/i,
@@ -281,9 +287,7 @@ export class CauseListSectionParser extends ParserBase {
   }
 
   tryParse() {
-    this.skipLinesContainingPhrase(
-      /MIGWANI\s+MOBILE\s+(?:COURT\s*)?UNDER\s+MWINGI\s+(?:LAW\s+)?COURTS?/,
-    );
+    this.skipLinesContainingPhrase(IGNORES);
     this.dateTime.tryParse(this.file);
     this.causelistType.tryParse(this.file);
 
@@ -329,6 +333,9 @@ export abstract class CauseListParseBase extends ParserBase {
       // console.log('section v =', section.allValid(), section.getParsed());
       if (section.allValid()) {
         this.sections.push(section);
+        if (!section.section.valid()) {
+          section.section.cloneValueFrom(this.sections.at(-1).section);
+        }
         this.file.catchUpWithClone(section.file);
       } else {
         break;

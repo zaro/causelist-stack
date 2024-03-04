@@ -49,6 +49,7 @@ export const COURT_ADMIN = ['COURT ADMIN', 'C/A:'];
 const IGNORE_PHRASES = [
   'cause list',
   'ADDENDUM CAUSELIST',
+  'ADDENDUM',
   'CIVIL CASES',
   'CRIMINAL CASES',
   'Virtual Link',

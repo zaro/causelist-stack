@@ -16,7 +16,7 @@ import { getURLMatcher } from './url-matcher.js';
 
 export abstract class CauselistHeaderParserBase extends ParserBase {
   court = new ExtractStringListField(10, getCourtNameMatcher());
-  title = new ExtractStringListField(10, [/cause\s+list/i]);
+  title = new ExtractStringListField(10, [/(?:virtual\s+)?cause\s+list/i]);
 
   date = new ExtractDateField(10);
   judge = new ExtractMultiStringField(-10, getJudgeNameMatcher());

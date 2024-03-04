@@ -14,48 +14,16 @@ import { CauselistMultiDocumentParser } from './causelist-parser.js';
 import { CauselistLineParser1 } from './causelist-parser-1.js';
 
 const text1 = `
-MILIMANI HIGH COURT
-HIGH COURT CRIMINAL
+MURANGA MAGISTRATE COURT
+MAGISTRATE COURT
 CAUSE LIST
-MONDAY, 12 FEBRUARY 2024
-HON. LADY JUSTICE LILIAN MUTENDE
-https://cutt.ly/njPf8mP
+TUESDAY, 30 JANUARY 2024
+HON. SUSAN N. MWANGI COURTROOM NO. 3
+https://bit.ly/3PlPrVv
 
 09:00 AM
-MENTION
-    1. HCCRMISCAPPL/E156/2021	Joseph Kitija Mbatha   Vs  The Republic
-    2. HCCRREV/E060/2022 		Arsalan Laloui    Vs  Lopez And National
-Police Service Commission (npsc)  & 2
-Others
-    3. HCCRA/E116/2022     		Fredrick Vigedi Kivisi   Vs  Republic
-    4. HCCRA/E083/2022     		Shadrack Mwendwa   Vs  The Republic
-    5. HCCRMISCAPPL/E364/2022	Douglas Ontita Nyakundi   Vs  Phylis
-Barasa And Milimani Childrens Court  And 1 Others
-    6. HCCRREV/E174/2022 		Republic   Vs  Charles Mwangi Thuo
-And Phillip Njuguna Kimani  & 1 Others
-    7.  HCCRREV/E277/2022 		Teddy Karire Odero   Vs  Republic
-    8. HCCRMISCAPPL/E467/2023	Whitepath Company Limited And Zhang
-Shiqi  And 2 Others  Vs  Director Fo Criminal Investigations And Kenya Revenue Authority  And 4 Others
-    9.  HCCRA/E173/2023     		Abraham Aluta Mutsoli   Vs  Republic
-    10. HCCRMISCAPPL/E025/2023	Biotech Organics Limited   Vs  Stanbic
-Bank Kenya Limited And Odpp  And 1
-Others
-    11.  HCCRMISCAPPL/E476/2023	Abdullahi Issack Mohamed   Vs  Director
-Of Criminal Investigations And Director Of Public Prosecutions
-    12.  HCCRREV/E098/2023 		Saidi Jaharan Mohamed   Vs  Republic
-    13. HCCRREV/E098/2022 		The Republic   Vs  Mohammed Kasim
-Salat And Abdirashid Abdullahi Omar
-And 1 Others
-    14. HCCRREV/E848/2023		Erick Osoro Onchombo Vs Republic
-    15. HCCRREV/E846/2023		Mercyline Namachanja Vs Republic
-    16. HCCRREV/E847/2023		Michael Majani Ibado Vs Republic
-    17. HCCRREV/E849/2023		Samuel King’ori Nyakieni Vs Republic
-    18.  HCCRMISCAPPL/E035/2024	Clement Mwangi Njeri Vs Republic
-    19. HCCRMISCAPPL/E037/2024	Racheal Ndinda Vs Republic
-HEARING OF APPLICATIONS
-    20.  HCCRMISCAPPL/E033/2024	Astarico Omariba Omoriasi Vs  Republic
-    21. HCCRMISCAPPL/E044/2024	Abraham Mwangi Nguyo Vs Republic
-
+HEARING- APPLICATION
+    1.  MCSUCC/E139/2022   In The Estate Of Stephene Macharia Murai
 `;
 
 const text2 = `

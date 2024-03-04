@@ -413,6 +413,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /LAW\s+COURTS?$/i,
   ]),
   new MatchRegExSequence([/COURT\s+ADMIN(?:ISTRATOR)?/, /LAW\s+COURTS?$/]),
+  new MatchRegExSequence([/COURT\s+ADMIN(?:ISTRATOR)?/i, /Signature/i]),
   new MatchRegExAny([/COURT\s+ADMINISTRATOR/]),
   new MatchRegExSequence([/PRINCIPAL\s+MAGISTRATE/, /LAW\s+COURTS?$/]),
   new MatchRegExSequence([
@@ -483,10 +484,14 @@ export class CauselistMultiDocumentParser1 extends ParserBase {
     this.file,
     DocumentParser,
   );
+  startMatcher = new MatchersListSequence([
+    getCourtNameMatcher(),
+    // new MatchRegExAny([/cause\s+list/i]), // TODO: make this work
+  ]);
 
   tryParse(): void {
     // Skip up to 50 lines until a court name is found
-    if (!this.skipLinesUntilMatch(getCourtNameMatcher(), { maxLines: 100 })) {
+    if (!this.skipLinesUntilMatch(this.startMatcher, { maxLines: 500 })) {
       return;
     }
 

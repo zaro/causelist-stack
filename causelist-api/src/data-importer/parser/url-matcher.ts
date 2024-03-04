@@ -21,7 +21,7 @@ export class UrlMatcher extends MatchersListAny {
     super([
       new MatchersListSequence([
         new MatchRegExAny([/^https:\/\/teams.microsoft.com\S+/]),
-        new MatchRegExAny([/.*[?\/%].*/], { maxTimes: 4 }),
+        new MatchRegExAny([/.*[?\/%"}{].*/], { maxTimes: 4 }),
       ]),
       new MatchRegExAny(URL_RE),
     ]);

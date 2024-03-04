@@ -18,7 +18,9 @@ export const JUDGE_RE = [
   /(?<judge>(?:HON[\.\:]\s*).*)/i,
   /(?<judge>(?:HON\.?\s+JUSTICE\s+).*)/i,
   /^(?<judge>(?:[a-z][a-z\.]+)\s+(?:[a-z][a-z\.]+\s*){1,3})\s+(?<courtRoom>COURT\s+\d+)$/i,
+  /(?<judge>.*(?:MEOLI|MAJANJA|MULWA|ONGERI|ONGERI|NYAGAH)\s+J)\b/i,
 ];
+
 export function getJudgeNameMatcher() {
   return new MatchersListAny([
     new MatchRegExSequence([

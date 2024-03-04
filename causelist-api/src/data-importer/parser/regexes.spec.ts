@@ -10,7 +10,8 @@ import {
   MatchersList,
 } from './multi-line-matcher.js';
 import { getCourtNameMatcher } from './court-name-matcher.js';
-import { CAUSE_LIST_RE, JUDGE_RE } from './regexes.js';
+import { CAUSE_LIST_RE } from './regexes.js';
+import { JUDGE_RE } from './judge-name-matcher.js';
 
 const fixturesDir = 'src/commands/parser/__fixtures__/data';
 

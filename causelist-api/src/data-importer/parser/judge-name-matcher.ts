@@ -8,18 +8,20 @@ import {
   MatchersListAny,
 } from './multi-line-matcher.js';
 
+export const JUDGE_RE = [
+  /^BEFORE: (?<judge>.*)/,
+  /^(?<judge>DR\..*)/,
+  /(?<judge>(?:HON\.?\s+)?.*)\s+(:?\(?(?:SRM|CM|DR|SPM|PM)\)?\s+)?(?<courtRoom>COURT\s+(?:ROOM\s+)?(?:NO\.?\s+)?(?:ONE\s*|TWO\s*|THREE\s*)?\[?\d+\]?)/i,
+  /(?<judge>(?:HON\.?\s+)?.*)\s+(?<courtRoom>\d+)/i,
+  /(?<judge>(?:(?:BEFORE )?HON\.?\s+)?.*)\s+(?<courtRoom>(?:MAGISTRATE\s+COURT)|(?:COURTROOM))/i,
+  /(?<judge>(?:HON\.?\s+)?.*)\s*[,-]?\s*\(?(?:SRM|CM|DR|SPM|PM)\)?/i,
+  /(?<judge>(?:HON[\.\:]\s*).*)/i,
+  /(?<judge>(?:HON\.?\s+JUSTICE\s+).*)/i,
+  /^(?<judge>(?:[a-z][a-z\.]+)\s+(?:[a-z][a-z\.]+\s*){1,3})\s+(?<courtRoom>COURT\s+\d+)$/i,
+];
 export function getJudgeNameMatcher() {
   return new MatchersListAny([
-    new MatchRegExAny([
-      /^BEFORE: (?<judge>.*)/,
-      /^(?<judge>DR\..*)/,
-      /(?<judge>(?:HON\.?\s+)?.*)\s+(:?\(?(?:SRM|CM|DR|SPM|PM)\)?\s+)?(?<courtRoom>COURT\s+(?:ROOM\s+)?(?:NO\.?\s+)?(?:ONE\s*|TWO\s*|THREE\s*)?\[?\d+\]?)/i,
-      /(?<judge>(?:HON\.?\s+)?.*)\s+(?<courtRoom>\d+)/i,
-      /(?<judge>(?:(?:BEFORE )?HON\.?\s+)?.*)\s+(?<courtRoom>(?:MAGISTRATE\s+COURT)|(?:COURTROOM))/i,
-      /(?<judge>(?:HON\.?\s+)?.*)\s*[,-]?\s*\(?(?:SRM|CM|DR|SPM|PM)\)?/i,
-      /(?<judge>(?:HON[\.\:]\s*).*)/i,
-      /^(?<judge>(?:[a-z][a-z\.]+)\s+(?:[a-z][a-z\.]+\s*){1,3})\s+(?<courtRoom>COURT\s+\d+)$/i,
-    ]),
+    new MatchRegExAny(JUDGE_RE),
     new MatchRegExSequence([
       /(?<judge>(?:HON\.|WAMAE)\s+.*)/i,
       /(?<courtRoom>COURTROOM\s+\d+)/i,

@@ -93,15 +93,6 @@ export const SECTION_NAMES_AS_GROUP = new RegExp(
 
 export const JUDGE_HON_RE = /^\s*HON\.\s*.*/i;
 
-export const JUDGE_RE = [
-  /(?<judge>(?:HON\.?\s+)?.*)\s+(:?\(?(?:SRM|CM|DR|SPM|PM)\)?\s+)?(?<courtRoom>COURT\s+(?:ROOM\s+)?(?:NO\.?\s+)?(?:ONE\s*|TWO\s*|THREE\s*)?\[?\d+\]?)/i,
-  /(?<judge>(?:HON\.?\s+)?.*)\s+(?<courtRoom>\d+)/i,
-  /(?<judge>(?:(?:BEFORE )?HON\.?\s+)?.*)\s+(?<courtRoom>(?:MAGISTRATE\s+COURT)|(?:COURTROOM))/i,
-  /(?<judge>(?:HON\.?\s+)?.*)\s*[,-]?\s*\(?(?:SRM|CM|DR|SPM|PM)\)?/i,
-  /(?<judge>(?:HON\.\s+).*)/i,
-  /(?<judge>WAMAE.*)/i,
-];
-
 export const CAUSE_LIST_NUM_RE = /(?<num>[1-9]\d*)\s*\.?\s*(?:\.\s*)?/;
 export const CAUSE_LIST_ADDITIONAL_NUMBER_RE =
   /(?:(?<additionalNumber>(?!ac|hc|mc|el)\w+)\s+)/;

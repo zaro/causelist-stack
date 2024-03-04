@@ -199,7 +199,7 @@ export abstract class ParserBase extends ParserInterface {
       }
       workFile.move(1);
       skipped++;
-    } while (skipped < maxLines);
+    } while (skipped < maxLines && !workFile.end());
     if (matchOnEnd && workFile.end()) {
       this.file.catchUpWithClone(workFile);
       return true;

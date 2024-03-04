@@ -220,9 +220,9 @@ export class KenyaLawParserService {
 
     const r = await Promise.all(
       toSave.map((e) => {
-        const { url, documentsCount, ...rest } = e;
+        const { path, documentsCount, ...rest } = e;
         return this.courtModel
-          .findOneAndUpdate({ url }, rest, {
+          .findOneAndUpdate({ path }, rest, {
             upsert: true,
             new: true,
             includeResultMetadata: true,

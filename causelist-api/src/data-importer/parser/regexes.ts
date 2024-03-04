@@ -31,6 +31,7 @@ export const SECTION_NAMES = [
   /PART HEARD HEARINGS?/,
   'DEFENSE HEARING',
   'HEARING DATE',
+  /FOR\s+HEARING.*/,
   /HEARING(?:\s+OF\s+|\s*-\s*)(?:\w+\s*)+/i,
   /HEARINGS?/,
   'JUDGMENT AND RULINGS VIA EMAIL',

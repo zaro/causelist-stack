@@ -14,9 +14,15 @@ yaml = helm(
   )
 k8s_yaml(yaml)
 
+common_build_args = {
+  # "https_proxy": "http://192.168.49.2:31280/",
+  # "http_proxy": "http://192.168.49.2:31280/"
+}
+
 docker_build('causelist-app', 'app',
   target='development',
   entrypoint='yarn dev',
+  build_args = common_build_args,
   live_update=[
       sync('app/', '/app/'),
       run('cd /app && yarn install', trigger=['app//package.json', 'app//yarn.lock']),
@@ -25,6 +31,7 @@ docker_build('causelist-app', 'app',
 docker_build('causelist-api', 'causelist-api',
   target='development',
   entrypoint='yarn start:dev',
+  build_args = common_build_args,
   live_update=[
       sync('causelist-api/', '/api/'),
       run('cd /api && yarn install --no-progress', trigger=['causelist-api/package.json', 'causelist-api/yarn.lock']),
@@ -34,6 +41,7 @@ docker_build('kenyalaw-crawler', 'kenyalaw-crawler',
   target='development',
   entrypoint='sleep 365d',
   extra_tag='crawler-test',
+  build_args = common_build_args,
   live_update=[
       sync('kenyalaw-crawler/', '/crawler-dev/'),
       run('cd /crawler-dev && yarn install --no-progress', trigger=['kenyalaw-crawler/package.json', 'kenyalaw-crawler/yarn.lock']),

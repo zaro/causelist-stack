@@ -11,6 +11,7 @@ export interface CreateTransactionParameters {
 }
 
 export interface Transaction {
+  id: string;
   sid: string;
   orderId: string;
   amount: number;
@@ -19,8 +20,13 @@ export interface Transaction {
 }
 
 export interface StkPushResult {
+  orderId: string;
   status: number;
   text: string;
+}
+
+export interface checkTransactionResult {
+  status: PaymentStatus;
 }
 
 export abstract class PaymentApiService {

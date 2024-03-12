@@ -28,14 +28,18 @@ import Stack from "@mui/material/Stack";
 export default function Page() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("oid");
+  const stkPush = searchParams.get("stkPush");
+  const [pending, setPending] = React.useState(true);
 
   const { data, error, isLoading, isValidating } = useSWR<IOrderStatus>(
     orderId ? `/api/payments/check-order-status/${orderId}` : null,
-    fetcher
+    fetcher,
+    {
+      refreshInterval: pending ? 2000 : undefined,
+    }
   );
 
   let msg = "Validating Payment";
-  let msg2;
   switch (data?.status) {
     case PaymentStatus.CANCELED:
       msg = "Payment was cancelled";
@@ -51,8 +55,10 @@ export default function Page() {
       break;
     case PaymentStatus.PAID:
       msg = "Successful payment";
-      msg2 = "You can safely close this page";
       break;
+  }
+  if (pending && data?.status && data?.status !== PaymentStatus.PENDING) {
+    setPending(false);
   }
 
   if (!orderId) {
@@ -79,11 +85,21 @@ export default function Page() {
         <Typography component="h1" variant="h5">
           Payment Status
         </Typography>
-        <Stack>
-          <Box sx={{ marginY: "1em" }}>
-            {data ? msg : <CircularProgress color="inherit" />}
-          </Box>
-          <Box sx={{ marginY: "1em" }}>
+        <Stack spacing="2em" padding="1em">
+          <Box textAlign="center">{msg}</Box>
+          {stkPush && pending && (
+            <Box textAlign="center">
+              <Typography variant="h6">
+                Check your phone for payment prompt and confirm the payment!
+              </Typography>
+            </Box>
+          )}
+          {pending && (
+            <Box textAlign="center">
+              <CircularProgress color="inherit" />
+            </Box>
+          )}
+          <Box textAlign="center">
             <AppButtonLink href="/home" variant="outlined">
               Go to Home Page
             </AppButtonLink>

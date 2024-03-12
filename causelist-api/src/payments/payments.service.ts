@@ -54,6 +54,7 @@ export class PaymentsService {
           '[updatePaymentStatus] Invalid package id:' + tx.packageId,
         );
       }
+      this.logger.log(`Creating subscription for Order ${orderId}`);
       await this.subscriptionService.newForUser(
         tx.user.id,
         packageDesc.period,

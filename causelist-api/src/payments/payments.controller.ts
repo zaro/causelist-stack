@@ -196,18 +196,42 @@ export class PaymentsController {
     };
   }
 
+  @Public()
+  @Post('kopo-kopo-callback')
+  async kopokopoCallback(@Body() body: any) {
+    const { type, id, attributes } = body?.data;
+    this.logger.debug(`kopo-kopo-callback: received ${type} with id: ${id}`);
+    const { orderId } = attributes?.metadata;
+    if (!orderId) {
+      this.logger.error('Unknown payment message:');
+      this.logger.error(body);
+      return {
+        unknownPayment: true,
+      };
+    }
+    const status = await this.paymentApiService.validateTransaction({
+      orderId,
+    });
+
+    const tx = await this.service.updatePaymentStatus(orderId, status);
+    return {
+      ok: true,
+    };
+  }
+
   @Get('check-order-status/:orderId')
   async checkOrderStatus(
     @Req() req: RequestWithUser,
     @Param() params: CheckOrderParams,
   ): Promise<IOrderStatus> {
-    if (!(this.paymentApiService instanceof IPayAfricaPaymentApiService)) {
-      throw new BadRequestException();
-    }
-    const tx = await this.service.getPayment(params.orderId);
+    let tx = await this.service.getPayment(params.orderId);
 
     if (tx.status === PaymentStatus.PENDING) {
-      // TODO: recheck the TX status
+      const status = await this.paymentApiService.validateTransaction({
+        orderId: params.orderId,
+      });
+
+      tx = await this.service.updatePaymentStatus(params.orderId, status);
     }
 
     return {

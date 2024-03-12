@@ -56,7 +56,11 @@ function EditPlainText({ documentId }: { documentId: string }) {
     <Stack>
       <Grid container spacing="0.5em" marginBottom="1em">
         <Grid item xs={8}>
-          {isMutating && <LinearProgress color="success" />}
+          {isMutating ? (
+            <LinearProgress color="success" />
+          ) : (
+            <b>{data.infoFile.fileName}</b>
+          )}
         </Grid>
         <Grid item xs={1}>
           <Button

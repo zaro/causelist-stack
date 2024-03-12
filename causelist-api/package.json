@@ -53,6 +53,7 @@
     "date-fns-tz": "^2.0.0",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.3",
+    "k2-connect-node": "^1.2.1",
     "libphonenumber-js": "^1.10.52",
     "mongoose": "^7.6.5",
     "nestjs-command": "^3.1.4",

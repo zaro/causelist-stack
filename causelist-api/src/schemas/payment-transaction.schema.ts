@@ -9,6 +9,8 @@ export type PaymentTransactionDocument = HydratedDocument<PaymentTransaction>;
   timestamps: true,
 })
 export class PaymentTransaction {
+  id: string;
+
   @Prop()
   sid: string;
 

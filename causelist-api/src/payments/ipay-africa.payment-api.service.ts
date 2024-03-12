@@ -11,6 +11,7 @@ import {
   CreateTransactionParameters,
   StkPushResult,
   Transaction,
+  checkTransactionResult,
 } from './base.payment-api.service.js';
 import { createHmac } from 'node:crypto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -286,6 +287,7 @@ export class IPayAfricaPaymentApiService extends PaymentApiService {
     return {
       status: ipayResponse.status,
       text: ipayResponse.text,
+      orderId: tx.orderId,
     };
   }
 

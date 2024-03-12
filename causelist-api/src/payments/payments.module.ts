@@ -16,6 +16,7 @@ import { HttpModule } from '@nestjs/axios';
 import { UsersModule } from '../users/users.module.js';
 import { Counter, CounterSchema } from '../schemas/counter.schema.js';
 import { SubscriptionModule } from '../subscription/subscription.module.js';
+import { KopoKopoPaymentApiService } from './kopokopo.payment-api.service.js';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { SubscriptionModule } from '../subscription/subscription.module.js';
     PaymentsService,
     {
       provide: PaymentApiService,
-      useClass: IPayAfricaPaymentApiService,
+      useClass: KopoKopoPaymentApiService,
     },
   ],
   exports: [PaymentApiService, PaymentsService],

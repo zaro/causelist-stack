@@ -17,11 +17,87 @@ import Alert from "@mui/material/Alert";
 import { PACKAGES } from "../../../../../api/packages.ts";
 import Stack from "@mui/material/Stack";
 import { userStore } from "../../../_store/index.ts";
+import { useRouter } from "next/navigation";
+
+interface PaymentButtonProps {
+  selectedPackage?: (typeof PACKAGES)[0];
+  accessToken: string | null;
+  onClick: () => void;
+}
+
+function IPayForm({ selectedPackage, accessToken }: PaymentButtonProps) {
+  return (
+    <form
+      action={`/api/payments/ipay-africa-pay-for/${selectedPackage?.id}`}
+      target="_blank"
+    >
+      <input type="hidden" name="jwt" value={accessToken ?? ""} />
+      <LoadingButton
+        type="submit"
+        disabled={!selectedPackage}
+        size="large"
+        variant="contained"
+      >
+        Pay with iPay
+      </LoadingButton>
+    </form>
+  );
+}
+
+function KopoKopoStkPush({ selectedPackage, onClick }: PaymentButtonProps) {
+  const router = useRouter();
+  const [error, setError] = React.useState<string[]>([]);
+  const [sent, setSent] = React.useState(false);
+  const handleClick = () => {
+    setSent(true);
+    onClick();
+    fetch(
+      `/api/payments/stk-push-payment/${selectedPackage?.id}`,
+      addAuthHeader({
+        method: "POST",
+      })
+    )
+      .then(async (r) => {
+        if (!r.ok) {
+          setError([await r.text()]);
+          return;
+        }
+        const response = await r.json();
+        console.log(response);
+        const { orderId } = response;
+        router.push(`/payment-status?oid=${orderId}&stkPush=true`);
+      })
+      .catch((e) => {
+        setError([e.toString()]);
+      });
+  };
+  return (
+    <Stack sx={{ marginBottom: "1em" }}>
+      <LoadingButton
+        type="submit"
+        disabled={!selectedPackage || sent}
+        size="large"
+        variant="contained"
+        loading={sent}
+        onClick={handleClick}
+      >
+        Pay with M-Pesa
+      </LoadingButton>
+      {sent && (
+        <Typography>
+          Check your phone for payment prompt and confirm the payment!
+        </Typography>
+      )}
+      <ErrorBox error={error} />
+    </Stack>
+  );
+}
 
 export default function Page() {
   const accessToken = userStore.use.accessToken();
   const [selectedPackage, setSelectedPackage] =
     React.useState<(typeof PACKAGES)[0]>();
+  const [selectionEnabled, setSelectionEnabled] = React.useState(true);
 
   return (
     <Suspense fallback={<h3>Loading data</h3>}>
@@ -59,6 +135,7 @@ export default function Page() {
                   <Button
                     variant="outlined"
                     onClick={() => setSelectedPackage(p)}
+                    disabled={!selectionEnabled}
                   >
                     Select
                   </Button>
@@ -87,20 +164,13 @@ export default function Page() {
               </Typography>
             )}
           </Box>
-          <form
-            action={`/api/payments/ipay-africa-pay-for/${selectedPackage?.id}`}
-            target="_blank"
-          >
-            <input type="hidden" name="jwt" value={accessToken ?? ""} />
-            <LoadingButton
-              type="submit"
-              disabled={!selectedPackage}
-              size="large"
-              variant="contained"
-            >
-              Pay with iPay
-            </LoadingButton>
-          </form>
+          <KopoKopoStkPush
+            selectedPackage={selectedPackage}
+            accessToken={accessToken}
+            onClick={() => {
+              setSelectionEnabled(false);
+            }}
+          />
         </Box>
       </Stack>
     </Suspense>

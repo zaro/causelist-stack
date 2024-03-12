@@ -24,7 +24,7 @@ export const addAuthHeader = (init: RequestInit | undefined) => {
   return init;
 };
 
-export const fetcher = async (
+export const fetcherRaw = async (
   input: Parameters<typeof fetch>[0],
   init?: Parameters<typeof fetch>[1]
 ) => {
@@ -38,7 +38,28 @@ export const fetcher = async (
       res.status
     );
   }
+  // console.log("Fetched ", res.status, result);
+  return res;
+};
+
+export const fetcher = async (
+  input: Parameters<typeof fetch>[0],
+  init?: Parameters<typeof fetch>[1]
+) => {
+  // console.log("Fetching ", input, "with headers: ", init?.headers);
+  const res = await fetcherRaw(input, init);
   const result = await res.json();
+  // console.log("Fetched ", res.status, result);
+  return result;
+};
+
+export const fetcherPlainText = async (
+  input: Parameters<typeof fetch>[0],
+  init?: Parameters<typeof fetch>[1]
+) => {
+  // console.log("Fetching ", input, "with headers: ", init?.headers);
+  const res = await fetcherRaw(input, init);
+  const result = await res.text();
   // console.log("Fetched ", res.status, result);
   return result;
 };

@@ -6,6 +6,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import AdbIcon from "@mui/icons-material/Adb";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 import DoNotTouchIcon from "@mui/icons-material/DoNotTouch";
+import EditIcon from "@mui/icons-material/Edit";
 import PermDeviceInformationIcon from "@mui/icons-material/PermDeviceInformation";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -157,6 +158,15 @@ export default function UnprocessedFiles() {
             label="Debug"
             onClick={() =>
               window.open(`/admin/causelist-debug/${params.row.id}`, "_blank")
+            }
+          />,
+          <GridActionsCellItem
+            showInMenu={true}
+            key="2e"
+            icon={<EditIcon />}
+            label="Edit Plain Text"
+            onClick={() =>
+              window.open(`/admin/causelist-edit/${params.row.id}`, "_blank")
             }
           />,
           <GridActionsCellItem

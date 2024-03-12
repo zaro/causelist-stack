@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Param,
   Patch,
   Post,
+  Put,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -119,6 +121,44 @@ export class InfoFilesController {
     );
 
     (s3r.data as Readable).pipe(res);
+  }
+
+  @Get('plain-text/:infoFileId')
+  async getPlainTextDocument(@Param() params: UpdateDocumentTypeParams) {
+    const infoFile = await this.infoFilesService.get(params.infoFileId);
+    const s3r = await this.s3Service.downloadFile({
+      key: `files/${infoFile.sha1}/text${
+        infoFile.hasCorrection ? 'Corrected' : ''
+      }`,
+    });
+    return {
+      infoFile: infoFile.toJSON(),
+      content: s3r.data.toString(),
+    };
+  }
+
+  @Put('plain-text/:infoFileId')
+  async savePlainTextDocument(
+    @Param() params: UpdateDocumentTypeParams,
+    @Body() body: any,
+  ) {
+    console.log('BBB', body);
+    if (!body.content) {
+      throw new BadRequestException('No Content to save');
+    }
+    const infoFile = await this.infoFilesService.get(params.infoFileId);
+    const s3r = await this.s3Service.uploadFile({
+      key: `files/${infoFile.sha1}/textCorrected`,
+      content: body.content,
+      mimeType: 'text/plain',
+    });
+    if (!infoFile.hasCorrection) {
+      infoFile.hasCorrection = true;
+      await infoFile.save();
+    }
+    return {
+      ok: true,
+    };
   }
 
   @Post('upload-correction/:infoFileId')

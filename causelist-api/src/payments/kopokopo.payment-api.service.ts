@@ -41,10 +41,7 @@ interface CheckStkStatus {
 }
 
 @Injectable()
-export class KopoKopoPaymentApiService
-  extends PaymentApiService
-  implements OnModuleInit
-{
+export class KopoKopoPaymentApiService extends PaymentApiService {
   protected logger = new Logger(KopoKopoPaymentApiService.name);
   protected liveMode: boolean;
   protected k2ClientId: string;
@@ -69,8 +66,8 @@ export class KopoKopoPaymentApiService
     this.liveMode = !!parseInt(configService.get('K2_LIVE_MODE', '0'));
 
     this.k2BaseUrl = this.liveMode
-      ? 'https://app.kopokopo.com/'
-      : 'https://sandbox.kopokopo.com/';
+      ? 'https://app.kopokopo.com'
+      : 'https://sandbox.kopokopo.com';
     this.k2ApiKey = configService.get('K2_API_KEY');
     this.tillNumber = configService.get('MPESA_TILL_NUMBER');
 
@@ -108,8 +105,24 @@ export class KopoKopoPaymentApiService
     return this.liveMode;
   }
 
-  async onModuleInit() {
-    this.token = await this.k2.TokenService.getToken();
+  getTokenExpiration() {
+    if (this.token) {
+      const exp = new Date(this.token.created_at);
+      exp.setSeconds(exp.getSeconds() + this.token.expires_in);
+      return exp;
+    }
+    return new Date(0);
+  }
+
+  async refreshAccessToken() {
+    if (this.getTokenExpiration() < new Date()) {
+      this.token = await this.k2.TokenService.getToken();
+      this.logger.log(
+        `Got new token: ${
+          this.token.access_token
+        } expires at : ${this.getTokenExpiration()}`,
+      );
+    }
   }
 
   async createTransaction(
@@ -122,6 +135,7 @@ export class KopoKopoPaymentApiService
       orderId: txParams.orderId,
       phone: txParams.phone,
       email: txParams.email,
+      status: PaymentStatus.PENDING,
       user: new Types.ObjectId(forUserId),
     });
     await tx.save();
@@ -129,12 +143,18 @@ export class KopoKopoPaymentApiService
   }
 
   async triggerStkPush(tx: Transaction): Promise<StkPushResult> {
-    const txDocument = await this.paymentTransactionModel.findById(tx.id);
+    const txDocument = await this.paymentTransactionModel
+      .findById(tx.id)
+      .populate('user')
+      .exec();
+    await this.refreshAccessToken();
     const body: StkOptions = {
       paymentChannel: 'M-PESA STK Push',
       tillNumber: this.tillNumber,
       amount: tx.amount,
       currency: 'KES',
+      firstName: txDocument.user.firstName,
+      lastName: txDocument.user.lastName,
       phoneNumber: tx.phone,
       email: tx.email,
       metadata: {
@@ -164,9 +184,12 @@ export class KopoKopoPaymentApiService
   }
 
   async checkTransaction(orderId: string): Promise<any> {
-    const txDocument = await this.paymentTransactionModel.findOne({
-      orderId,
-    });
+    const txDocument = await this.paymentTransactionModel
+      .findOne({
+        orderId,
+      })
+      .exec();
+    await this.refreshAccessToken();
     const body: CheckStkStatus = {
       location: txDocument.sid,
       accessToken: this.token.access_token,

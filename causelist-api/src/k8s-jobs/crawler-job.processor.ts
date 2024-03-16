@@ -13,7 +13,7 @@ import {
 
 export const CRAWLER_JOB_QUEUE_NAME = 'crawler-job';
 export const CRAWLER_JOB_DEFAULT_OPTIONS: JobOptions = {
-  timeout: 60 * 60 * 1000,
+  timeout: 2 * 60 * 60 * 1000,
   attempts: 1,
 };
 

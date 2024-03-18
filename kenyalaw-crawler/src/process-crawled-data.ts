@@ -12,9 +12,10 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { ConfiguredRetryStrategy } from "@aws-sdk/util-retry";
-import { ProcessedFile } from "./interfaces/crawler.js";
+import { ProcessedFile, ProcessedFilesStats } from "./interfaces/crawler.js";
 
 const exec = util.promisify(child_process.exec);
+const STATS_FILE = "process-files-stats.json";
 
 async function convertFileToTxt(fileName: string, convertedDir: string) {
   let { stderr: mimeTypeError, stdout: mimeType } = await exec(
@@ -318,6 +319,15 @@ async function processFiles(
   convertedDir: string
 ) {
   const filesDir = path.join(storageDir, "key_value_stores", "default");
+  const stats: ProcessedFilesStats = {
+    totalFilesCount: 0,
+    non200: 0,
+    alreadyProcessed: 0,
+    failedToConvert: 0,
+    processed: 0,
+    processedSha1: [],
+    countByHttpStatus: {},
+  };
 
   const datasetFiles = fs
     .readdirSync(path.join(storageDir, "datasets", "files"))
@@ -330,8 +340,12 @@ async function processFiles(
     );
 
   for (const datasetFile of datasetFiles) {
+    stats.totalFilesCount++;
     const { parent, fileName, statusCode, url } = datasetFile;
+    stats.countByHttpStatus[statusCode] =
+      (stats.countByHttpStatus[statusCode] ?? 0) + 1;
     if (statusCode !== 200) {
+      stats.non200++;
       log.warning(`Ignoring ${fileName}, status code ${statusCode}`);
       continue;
     }
@@ -347,6 +361,7 @@ async function processFiles(
     const parentPath = parent.pathArray.join(":");
     const existingFile: ProcessedFile | null = await s3.getFileRecord(sha1);
     if (existingFile && !existingFile.error) {
+      stats.alreadyProcessed++;
       log.debug(`Skip ${fileName}, already parsed w/o errors`);
       continue;
     }
@@ -358,6 +373,7 @@ async function processFiles(
     }
 
     if (!textContent || !textContent.trim().length) {
+      stats.failedToConvert++;
       log.warning(`Empty content for ${filePath} skipping`);
       continue;
     }
@@ -388,7 +404,14 @@ async function processFiles(
       s3.putFileContent(file, "text", textContent, "text/plain"),
     ]);
     await s3.putFileRecord(file);
+    stats.processed++;
+    stats.processedSha1.push(file.sha1);
   }
+
+  fs.writeFileSync(
+    path.join(storageDir, STATS_FILE),
+    JSON.stringify(stats, null, 2)
+  );
 }
 
 async function processMenuEntries(
@@ -439,6 +462,11 @@ async function uploadLogs(
   const logsFiles = fs
     .readdirSync(storageDir)
     .filter((e) => e.endsWith(".txt"));
+
+  if (fs.existsSync(path.join(storageDir, STATS_FILE))) {
+    logsFiles.push(STATS_FILE);
+  }
+
   let allFileUploaded = true;
   for (const logFile of logsFiles) {
     allFileUploaded &&= await s3.uploadLogFile(

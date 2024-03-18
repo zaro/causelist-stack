@@ -16,3 +16,15 @@ export interface ProcessedFile {
   parentName: string;
   datasetFile: any;
 }
+
+export interface ProcessedFilesStats {
+  totalFilesCount: number;
+  non200: number;
+  alreadyProcessed: number;
+  failedToConvert: number;
+  processed: number;
+  processedSha1: string[];
+  countByHttpStatus: {
+    [key: string]: number;
+  };
+}

@@ -95,7 +95,7 @@ export class K8sJobsModule {
       );
       return;
     }
-    const cron = '1 1 * * *'; // each work day at 01:01
+    const cron = '1 17 * * *'; // each work day at 17:30 UTC , 20:30 Nairobi
     const jobId = 'crawler-cron-job';
 
     const existingJob = await this.findRepeatableJob(jobId);

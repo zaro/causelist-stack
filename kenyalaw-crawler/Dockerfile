@@ -3,7 +3,7 @@
 # You can also use any other image from Docker Hub.
 FROM apify/actor-node:20 as runner-base
 
-RUN apk add curl file openjdk21-jre-headless libreoffice  poppler-utils tesseract-ocr tesseract-ocr-data-eng --no-cache
+RUN apk add bash curl file openjdk21-jre-headless libreoffice  poppler-utils tesseract-ocr tesseract-ocr-data-eng --no-cache
 
 FROM runner-base AS builder
 

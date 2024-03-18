@@ -6,3 +6,11 @@ export interface ICorrectionJob {
   fileName: string;
   finishedOn: number;
 }
+
+export interface IAutomatedJob {
+  type: string;
+  id: string;
+  status: string;
+  crawlTime: string;
+  finishedOn: number;
+}

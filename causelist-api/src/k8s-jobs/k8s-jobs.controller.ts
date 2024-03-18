@@ -11,11 +11,11 @@ import {
   ProcessCorrectionJobParams,
 } from './process-correction.processor.js';
 import { InjectQueue } from '@nestjs/bull';
-import type { Job, Queue } from 'bull';
+import type { Job, JobStatus, Queue } from 'bull';
 import { InjectModel } from '@nestjs/mongoose';
 import { InfoFile } from '../schemas/info-file.schema.js';
 import { Model } from 'mongoose';
-import { ICorrectionJob } from '../interfaces/jobs.js';
+import { IAutomatedJob, ICorrectionJob } from '../interfaces/jobs.js';
 import {
   PARSE_CORRECTED_JOB_QUEUE_NAME,
   ParseCorrectedJobParams,
@@ -23,6 +23,23 @@ import {
 import { CacheTTL } from '@nestjs/cache-manager';
 import { S3Service } from '../s3/s3.service.js';
 import { AnsiUp } from 'ansi_up';
+import {
+  PARSE_CRAWLED_JOB_QUEUE_NAME,
+  ParseJobParams,
+} from './parse-crawled-job.processor.js';
+import {
+  CRAWLER_JOB_QUEUE_NAME,
+  CrawlJobParams,
+} from './crawler-job.processor.js';
+
+const GET_JOB_TYPES: JobStatus[] = [
+  'completed',
+  'waiting',
+  'active',
+  'delayed',
+  'failed',
+  'paused',
+];
 
 @Controller('k8s-jobs')
 export class K8sJobsController {
@@ -32,29 +49,19 @@ export class K8sJobsController {
     private processCorrectionQueue: Queue<ProcessCorrectionJobParams>,
     @InjectQueue(PARSE_CORRECTED_JOB_QUEUE_NAME)
     private parseCorrectedQueue: Queue<ParseCorrectedJobParams>,
+    @InjectQueue(PARSE_CRAWLED_JOB_QUEUE_NAME)
+    private parseCrawledQueue: Queue<ParseJobParams>,
+    @InjectQueue(CRAWLER_JOB_QUEUE_NAME)
+    private crawlerQueue: Queue<CrawlJobParams>,
     protected s3Service: S3Service,
   ) {}
 
   @CacheTTL(1)
   @Get('corrections')
   async listCorrectionJobs(): Promise<ICorrectionJob[]> {
-    const jobs = await this.processCorrectionQueue.getJobs([
-      'completed',
-      'waiting',
-      'active',
-      'delayed',
-      'failed',
-      'paused',
-    ]);
+    const jobs = await this.processCorrectionQueue.getJobs(GET_JOB_TYPES);
 
-    const parseJobs = await this.parseCorrectedQueue.getJobs([
-      'completed',
-      'waiting',
-      'active',
-      'delayed',
-      'failed',
-      'paused',
-    ]);
+    const parseJobs = await this.parseCorrectedQueue.getJobs(GET_JOB_TYPES);
 
     const jobsWithStatus = await Promise.all(
       jobs.map(async (job) => ({ state: await job.getState(), job: job })),
@@ -95,6 +102,42 @@ export class K8sJobsController {
   }
 
   @CacheTTL(1)
+  @Get('automated')
+  async listAutomated(): Promise<IAutomatedJob[]> {
+    const jobs = await this.crawlerQueue.getJobs(GET_JOB_TYPES);
+
+    const parseJobs = await this.parseCrawledQueue.getJobs(GET_JOB_TYPES);
+
+    const jobsWithStatus = await Promise.all(
+      jobs.map(async (job) => ({ state: await job.getState(), job: job })),
+    );
+
+    const parseJobsWithStatus = await Promise.all(
+      parseJobs.map(async (job) => ({ state: await job.getState(), job: job })),
+    );
+
+    const result = jobsWithStatus
+      .map((c) => ({
+        type: 'autoCrawler',
+        id: c.job.id.toString(),
+        status: c.state,
+        crawlTime: c.job.data.crawlTime,
+        finishedOn: c.job.finishedOn,
+      }))
+      .concat(
+        parseJobsWithStatus.map((c) => ({
+          type: 'autoParser',
+          id: c.job.id.toString(),
+          status: c.state,
+          crawlTime: c.job.data.crawlTime,
+          finishedOn: c.job.finishedOn,
+        })),
+      );
+
+    return result;
+  }
+
+  @CacheTTL(1)
   @Get('job-log/:type/:id')
   async jobPodLog(
     @Param('type') type: string,
@@ -103,21 +146,32 @@ export class K8sJobsController {
     // let q: Queue<ParseCorrectedJobParams | ProcessCorrectionJobParams>;
     let p: string;
     let l: string;
+    let prefix: string = '';
     switch (type) {
       case 'parse':
         // q = this.parseCorrectedQueue;
         p = `parse-corrected-job-`;
         l = 'parse-corrected-pod.log.txt';
+        prefix = 'corrections/';
         break;
       case 'correction':
         // q = this.processCorrectionQueue;
         p = `correction-job-`;
         l = 'correction-pod.log.txt';
+        prefix = 'corrections/';
+        break;
+      case 'autoParser':
+        p = '';
+        l = 'parser-pod.log.txt';
+        break;
+      case 'autoCrawler':
+        p = '';
+        l = 'crawler-pod.log.txt';
         break;
       default:
         throw new BadRequestException(`Invalid type : '${type}'`);
     }
-    const logKey = `corrections/logs/${p}${id}/${l}`;
+    const logKey = `${prefix}logs/${p}${id}/${l}`;
     let logHtml: string;
     try {
       const s3r = await this.s3Service.downloadFile({

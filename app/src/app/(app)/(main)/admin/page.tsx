@@ -13,6 +13,7 @@ import DisplayStats from "./display-stats.tsx";
 import UnprocessedFiles from "./unprocessed-files.tsx";
 import useSearchParamState from "./use-search-param-state.hook.ts";
 import DisplayJobs from "./display-jobs.tsx";
+import DisplayAutomatedJobs from "./display-automated-jobs.tsx";
 
 export default function Page() {
   const { searchParams, setParam } = useSearchParamState();
@@ -33,6 +34,7 @@ export default function Page() {
               <Tab label="Courts" value="courts" />
               <Tab label="Unprocessed" value="unprocessed" />
               <Tab label="Jobs" value="jobs" />
+              <Tab label="Automated Jobs" value="automatedJobs" />
             </TabList>
           </Box>
           <TabPanel value="stats">
@@ -46,6 +48,9 @@ export default function Page() {
           </TabPanel>
           <TabPanel value="jobs">
             <DisplayJobs />
+          </TabPanel>
+          <TabPanel value="automatedJobs">
+            <DisplayAutomatedJobs />
           </TabPanel>
         </TabContext>
       </Box>

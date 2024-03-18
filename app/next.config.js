@@ -21,9 +21,9 @@ const nextConfig = {
 const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
   dynamicStartUrl: true,
-  fallbacks: {
-    document: "/no-connection",
-  },
+  // fallbacks: {
+  //   document: "/no-connection",
+  // },
 });
 
 module.exports = withPWA(nextConfig);

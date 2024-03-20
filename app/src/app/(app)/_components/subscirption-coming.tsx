@@ -72,7 +72,11 @@ function SubsctionComingReadMore() {
           </Typography>
           <Typography m="1em" fontSize="large">
             Starting with April, hit the SUBSCRIBE link and choose a payment
-            model that best suits you.
+            model that best suits you. <br></br>
+            <i>
+              If you signed up between 15-31 March, you will get 2 additional
+              weeks of free trial!
+            </i>
           </Typography>
           <Typography m="1em" textAlign="center" fontSize="x-large">
             Thank you.

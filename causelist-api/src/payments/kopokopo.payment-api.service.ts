@@ -66,7 +66,7 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
     this.liveMode = !!parseInt(configService.get('K2_LIVE_MODE', '0'));
 
     this.k2BaseUrl = this.liveMode
-      ? 'https://app.kopokopo.com'
+      ? 'https://api.kopokopo.com'
       : 'https://sandbox.kopokopo.com';
     this.k2ApiKey = configService.get('K2_API_KEY');
     this.tillNumber = configService.get('MPESA_TILL_NUMBER');
@@ -206,14 +206,17 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
     if (result?.data?.attributes?.status === 'Success') {
       return PaymentStatus.PAID;
     }
-    if (result?.data?.attributes?.status === 'Pending') {
-      return PaymentStatus.PAID;
+    // if (result?.data?.attributes?.status === 'Pending') {
+    //   return PaymentStatus.PAID;
+    // }
+    const nonReadyStatus = ['Received'];
+    if (!nonReadyStatus.includes(result?.data?.attributes?.status)) {
+      this.logger.log(
+        `Unknown tx status received for ${params.orderId}: ${JSON.stringify(
+          result,
+        )}`,
+      );
     }
-    this.logger.log(
-      `Unknown tx status received for ${params.orderId}: ${JSON.stringify(
-        result,
-      )}`,
-    );
     return PaymentStatus.PENDING;
   }
 }

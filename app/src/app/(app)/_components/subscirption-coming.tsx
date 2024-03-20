@@ -92,7 +92,7 @@ export default function SubscriptionComing() {
       icon={<NotificationImportantIcon fontSize="inherit" />}
       severity="info"
     >
-      WE'LL BE CHARGING A FEE OF KSH 350/- STARTING APRIL 2024
+      WE&apos;LL BE CHARGING A FEE OF KSH 350/- STARTING APRIL 2024
       <br />
       <SubsctionComingReadMore />
     </Alert>

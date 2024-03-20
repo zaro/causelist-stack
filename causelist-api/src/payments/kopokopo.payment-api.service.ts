@@ -166,18 +166,31 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
     };
     try {
       const response = await this.stkService.initiateIncomingPayment(body);
-
+      if (!response) {
+        return {
+          status: 0,
+          success: false,
+          text: 'Failed to trigger STK Push',
+          orderId: tx.orderId,
+        };
+      }
       this.logger.debug('KopoKopo STK Push response', response);
       txDocument.sid = response;
       await txDocument.save();
     } catch (error: any) {
       this.logger.error(`KopoKopo API returned error `, error.stack, error);
       this.logger.error(`Request was > ${JSON.stringify(body)}`);
-      throw new InternalServerErrorException();
+      return {
+        status: 0,
+        success: false,
+        text: 'Failed to trigger STK Push',
+        orderId: tx.orderId,
+      };
     }
 
     return {
       status: 1,
+      success: true,
       text: 'Request sent',
       orderId: tx.orderId,
     };

@@ -54,6 +54,7 @@ api:
     K2_API_KEY: e5a7e5324bb4fcdbba4dacaa905a328ed3cda8a1
     K2_OVERRIDE_CALLBACK_URL: https://ninety-bees-dress.loca.lt/api/payments/kopo-kopo-callback
     MPESA_TILL_NUMBER: "K375278"
+    NODE_DEBUG: request
 
     # ZETTATEL_API_KEY: c2395debd6724a0bf871de8d904861e10bf304f4
     # ZETTATEL_USER: zaro

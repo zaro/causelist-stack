@@ -22,6 +22,7 @@ export interface Transaction {
 export interface StkPushResult {
   orderId: string;
   status: number;
+  success: boolean;
   text: string;
 }
 

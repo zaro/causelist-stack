@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
 
 import { Suspense } from "react";
 import Container from "@mui/material/Container";
@@ -50,6 +51,7 @@ function KopoKopoStkPush({ selectedPackage, onClick }: PaymentButtonProps) {
   const [sent, setSent] = React.useState(false);
   const handleClick = () => {
     setSent(true);
+    setError([]);
     onClick();
     fetch(
       `/api/payments/stk-push-payment/${selectedPackage?.id}`,
@@ -64,15 +66,21 @@ function KopoKopoStkPush({ selectedPackage, onClick }: PaymentButtonProps) {
         }
         const response = await r.json();
         console.log(response);
-        const { orderId } = response;
-        router.push(`/payment-status?oid=${orderId}&stkPush=true`);
+        const { orderId, success, text } = response;
+        if (success) {
+          router.push(`/payment-status?oid=${orderId}&stkPush=true`);
+        } else {
+          setError([text, "Please Try again later"]);
+          setSent(false);
+        }
       })
       .catch((e) => {
         setError([e.toString()]);
+        setSent(false);
       });
   };
   return (
-    <Stack sx={{ marginBottom: "1em" }}>
+    <Stack sx={{ marginBottom: "1em", width: "300px" }}>
       <LoadingButton
         type="submit"
         disabled={!selectedPackage || sent}
@@ -84,7 +92,7 @@ function KopoKopoStkPush({ selectedPackage, onClick }: PaymentButtonProps) {
         Pay with M-Pesa
       </LoadingButton>
       {sent && (
-        <Typography>
+        <Typography mt="2em">
           Check your phone for payment prompt and confirm the payment!
         </Typography>
       )}
@@ -101,49 +109,39 @@ export default function Page() {
 
   return (
     <Suspense fallback={<h3>Loading data</h3>}>
-      <Stack maxWidth="md">
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: {
-              xs: "column",
-              md: "row",
-            },
-            alignItems: "center",
-            justifyContent: "space-evenly",
-          }}
-        >
+      <Stack>
+        <Grid container width="100%">
           {PACKAGES.map((p) => (
-            <Card
-              variant="elevation"
-              key={p.id}
-              sx={{ minWidth: "12em", margin: "1em" }}
-            >
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {p.title}
-                </Typography>
-                <Typography variant="h4" component="div">
-                  {p.price} Ksh
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ justifyContent: "center" }}>
-                {selectedPackage?.id === p.id ? (
-                  <Button variant="contained">Selected</Button>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    onClick={() => setSelectedPackage(p)}
-                    disabled={!selectionEnabled}
-                  >
-                    Select
-                  </Button>
-                )}
-              </CardActions>
-            </Card>
+            <Grid key={p.id} item xs={12} sm={6} md={4} xl={3}>
+              <Card
+                variant="elevation"
+                sx={{ minWidth: "12em", margin: "1em" }}
+              >
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {p.title}
+                  </Typography>
+                  <Typography variant="h4" component="div">
+                    {p.price} Ksh
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: "center" }}>
+                  {selectedPackage?.id === p.id ? (
+                    <Button variant="contained">Selected</Button>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      onClick={() => setSelectedPackage(p)}
+                      disabled={!selectionEnabled}
+                    >
+                      Select
+                    </Button>
+                  )}
+                </CardActions>
+              </Card>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
         <Box
           sx={{
             marginTop: 8,

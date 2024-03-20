@@ -286,6 +286,7 @@ export class IPayAfricaPaymentApiService extends PaymentApiService {
 
     return {
       status: ipayResponse.status,
+      success: ipayResponse.status == 1,
       text: ipayResponse.text,
       orderId: tx.orderId,
     };

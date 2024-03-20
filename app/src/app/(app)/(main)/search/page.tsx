@@ -27,6 +27,7 @@ import format from "date-fns-tz/format";
 import IconButton from "@mui/material/IconButton";
 import { AppButtonLink } from "../../_components/app-link.tsx";
 import Centered from "../../_components/centered.tsx";
+import SubscriptionComing from "../../_components/subscirption-coming.tsx";
 
 const CaseListItem = styled(ListItem)(({ theme }) => ({
   borderWidth: "1px",
@@ -88,9 +89,12 @@ export default function Page() {
       )}
 
       {!searchText && (
-        <Centered sx={{ marginBottom: "10em" }}>
-          Use the search field to search for parties and case numbers
-        </Centered>
+        <Box>
+          <Centered sx={{ marginBottom: "10em" }}>
+            Use the search field to search for parties and case numbers
+          </Centered>
+          <SubscriptionComing />
+        </Box>
       )}
       {searchText && (!data || data?.length == 0) && (
         <Centered sx={{ marginBottom: "10em" }}>No results found</Centered>

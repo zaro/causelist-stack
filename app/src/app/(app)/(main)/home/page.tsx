@@ -8,6 +8,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import NextLink from "next/link";
+import SubscriptionComing from "../../_components/subscirption-coming.tsx";
 
 export default function Page() {
   return (
@@ -53,6 +54,8 @@ export default function Page() {
           </CardContent>
         </CardActionArea>
       </Card>
+
+      <SubscriptionComing />
     </Stack>
   );
 }

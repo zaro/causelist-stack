@@ -1,5 +1,6 @@
 "use client";
 import { Stack } from "@mui/material";
+import Box from "@mui/material/Box";
 import CourtSelector from "../../_components/court-selector.tsx";
 import { causeListStore } from "../../_store/index.ts";
 import { Suspense } from "react";
@@ -7,6 +8,7 @@ import DailyCauseLists from "../../_components/daily-causelist.tsx";
 import Calendar from "../../_components/calendar.tsx";
 import JudgeSelector from "../../_components/judge-selector.tsx";
 import Centered from "../../_components/centered.tsx";
+import SubscriptionComing from "../../_components/subscirption-coming.tsx";
 
 export default function Page() {
   const selectedCourt = causeListStore.use.selectedCourt();
@@ -31,9 +33,13 @@ export default function Page() {
           </Centered>
         )
       ) : (
-        <Centered sx={{ marginBottom: "10em" }}>
-          Select court to view data
-        </Centered>
+        <Box>
+          <Centered sx={{ marginBottom: "10em" }}>
+            Select court to view data
+          </Centered>
+
+          <SubscriptionComing />
+        </Box>
       )}
     </Stack>
   );

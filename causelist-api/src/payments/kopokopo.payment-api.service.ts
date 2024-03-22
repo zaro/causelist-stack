@@ -50,6 +50,7 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
   protected tillNumber: string;
   protected stkPushTillNumber: string;
   protected callbackURL: string;
+  protected buyGoodsCallbackURL: string;
   protected token: any;
 
   constructor(
@@ -80,6 +81,18 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
     }
 
     this.logger.log('Using callback url: ' + this.callbackURL);
+
+    this.buyGoodsCallbackURL = `https://${configService.getOrThrow(
+      'APP_MAIN_DOMAIN',
+    )}/api/payments/kopo-kopo-buy-goods-callback`;
+
+    if (configService.get('K2_OVERRIDE_BUY_GOODS_CALLBACK_URL')?.length) {
+      this.callbackURL = configService.get(
+        'K2_OVERRIDE_BUY_GOODS_CALLBACK_URL',
+      );
+    }
+
+    this.logger.log('Using BuyGoods callback url: ' + this.callbackURL);
 
     // this.httpService.axiosRef.interceptors.request.use((request) => {
     //   console.log('Starting Request:', request.url);
@@ -133,15 +146,16 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
   }
 
   async kopokopoRegisterWebhook(webhookUrl?: string) {
+    const url = webhookUrl ?? this.buyGoodsCallbackURL;
     try {
       this.logger.log(
-        `Registering webhook ${this.callbackURL} for scope till with TillNumber: ${this.tillNumber}`,
+        `Registering webhook ${url} for scope till with TillNumber: ${this.tillNumber}`,
       );
       const { status, statusText } = await this.kopokopoRequest(
         '/api/v1/webhook_subscriptions',
         {
           event_type: 'buygoods_transaction_received',
-          url: webhookUrl ?? this.callbackURL,
+          url,
           scope: 'till',
           scope_reference: this.tillNumber,
         },
@@ -149,11 +163,7 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
       this.logger.log('Register webhook status', status, statusText);
       //
     } catch (e) {
-      this.logger.error(
-        `Failed subscription of ${this.callbackURL}: `,
-        null,
-        e,
-      );
+      this.logger.error(`Failed subscription of ${url}: `, null, e);
     }
   }
 

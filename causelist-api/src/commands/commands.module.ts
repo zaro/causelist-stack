@@ -37,6 +37,7 @@ import {
   PaymentTransaction,
   PaymentTransactionSchema,
 } from '../schemas/payment-transaction.schema.js';
+import { PaymentsCommand } from './payments.command.js';
 
 @Module({
   imports: [
@@ -113,6 +114,7 @@ import {
     CrawlerCommand,
     FixCommand,
     IpayCommand,
+    PaymentsCommand,
   ],
 })
 export class CommandsModule {}

@@ -3,8 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PaymentTransaction } from '../schemas/payment-transaction.schema.js';
 import { PaymentStatus } from '../interfaces/payments.js';
-import { PACKAGES } from '../interfaces/packages.js';
+import { PACKAGES, SubscriptionPackage } from '../interfaces/packages.js';
 import { SubscriptionService } from '../subscription/subscription.service.js';
+import { Counter } from '../schemas/counter.schema.js';
+import type { CounterWithStatics } from '../schemas/counter.schema.js';
 
 @Injectable()
 export class PaymentsService {
@@ -13,7 +15,14 @@ export class PaymentsService {
     protected subscriptionService: SubscriptionService,
     @InjectModel(PaymentTransaction.name)
     protected paymentTransactionModel: Model<PaymentTransaction>,
+    @InjectModel(Counter.name)
+    protected counterModel: CounterWithStatics,
   ) {}
+
+  async newOrderId(): Promise<string> {
+    const orderId = await this.counterModel.next('orderId');
+    return `CLO-${orderId}`;
+  }
 
   async listForUser(userId: string) {
     return this.paymentTransactionModel
@@ -64,5 +73,22 @@ export class PaymentsService {
     }
 
     return tx;
+  }
+
+  selectPackageForAmount(amount: string | number) {
+    if (typeof amount === 'string') {
+      amount = parseInt(amount, 10);
+    }
+    if (!amount) {
+      return null;
+    }
+    let selected: SubscriptionPackage | null = null;
+    for (const p of PACKAGES.toSorted((a, b) => a.price - b.price)) {
+      if (p.price < amount) {
+        selected = p;
+      }
+    }
+
+    return selected;
   }
 }

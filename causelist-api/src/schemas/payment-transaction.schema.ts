@@ -33,7 +33,7 @@ export class PaymentTransaction {
   status: PaymentStatus;
 
   @Prop({ type: Object })
-  confirmation: any;
+  receivedEvent: any;
 
   @Prop({ required: true, type: 'ObjectId', ref: 'User', index: 1 })
   user: User;

@@ -18,8 +18,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PaymentTransaction } from '../schemas/payment-transaction.schema.js';
 import { Model, Types } from 'mongoose';
 import { PaymentStatus } from '../interfaces/payments.js';
-
-import * as K2ConnectNode from 'k2-connect-node';
+import crypto from 'node:crypto';
 
 interface StkOptions {
   tillNumber: string;
@@ -49,10 +48,9 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
   protected k2BaseUrl: string;
   protected k2ApiKey: string;
   protected tillNumber: string;
+  protected stkPushTillNumber: string;
   protected callbackURL: string;
   protected token: any;
-  protected k2: any;
-  protected stkService: any;
 
   constructor(
     configService: ConfigService,
@@ -69,7 +67,9 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
       ? 'https://api.kopokopo.com'
       : 'https://sandbox.kopokopo.com';
     this.k2ApiKey = configService.get('K2_API_KEY');
+
     this.tillNumber = configService.get('MPESA_TILL_NUMBER');
+    this.stkPushTillNumber = configService.get('MPESA_STK_PUSH_NUMBER');
 
     this.callbackURL = `https://${configService.getOrThrow(
       'APP_MAIN_DOMAIN',
@@ -80,25 +80,81 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
     }
 
     this.logger.log('Using callback url: ' + this.callbackURL);
-    this.k2 = K2ConnectNode.default({
-      clientId: this.k2ClientId,
-      clientSecret: this.k2ClientSecret,
-      baseUrl: this.k2BaseUrl,
-      apiKey: this.k2ApiKey,
-    });
-    this.stkService = this.k2.StkService;
 
     // this.httpService.axiosRef.interceptors.request.use((request) => {
-    //   console.log('Starting Request:');
-    //   console.dir(request, { depth: null });
+    //   console.log('Starting Request:', request.url);
+    //   console.log('Headers:', request.headers);
+    //   console.log('Data:', request.data);
+    //   // console.dir(request, { depth: null });
     //   return request;
     // });
 
     // this.httpService.axiosRef.interceptors.response.use((response) => {
-    //   console.log('Response:');
-    //   console.dir(response, { depth: null });
+    //   console.log('Response:', response.status, response.data);
+    //   // console.dir(response, { depth: null });
     //   return response;
     // });
+  }
+
+  async kopokopoGetAccessToken() {
+    var body = new FormData();
+    body.append('client_id', this.k2ClientId);
+    body.append('client_secret', this.k2ClientSecret);
+    body.append('grant_type', 'client_credentials');
+    const { data } = await firstValueFrom(
+      this.httpService.post(`${this.k2BaseUrl}/oauth/token`, body, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }),
+    );
+
+    return {
+      data,
+    };
+  }
+
+  async kopokopoRequest(endpoint: string, body: any) {
+    await this.refreshAccessToken();
+
+    return firstValueFrom(
+      this.httpService.post(`${this.k2BaseUrl}${endpoint}`, body, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.token.access_token,
+        },
+        validateStatus(status) {
+          return true;
+        },
+      }),
+    );
+  }
+
+  async kopokopoRegisterWebhook(webhookUrl?: string) {
+    try {
+      this.logger.log(
+        `Registering webhook ${this.callbackURL} for scope till with TillNumber: ${this.tillNumber}`,
+      );
+      const { status, statusText } = await this.kopokopoRequest(
+        '/api/v1/webhook_subscriptions',
+        {
+          event_type: 'buygoods_transaction_received',
+          url: webhookUrl ?? this.callbackURL,
+          scope: 'till',
+          scope_reference: this.tillNumber,
+        },
+      );
+      this.logger.log('Register webhook status', status, statusText);
+      //
+    } catch (e) {
+      this.logger.error(
+        `Failed subscription of ${this.callbackURL}: `,
+        null,
+        e,
+      );
+    }
   }
 
   isLiveMode() {
@@ -116,7 +172,8 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
 
   async refreshAccessToken() {
     if (this.getTokenExpiration() < new Date()) {
-      this.token = await this.k2.TokenService.getToken();
+      const { data } = await this.kopokopoGetAccessToken();
+      this.token = data;
       this.logger.log(
         `Got new token: ${
           this.token.access_token
@@ -147,26 +204,40 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
       .findById(tx.id)
       .populate('user')
       .exec();
-    await this.refreshAccessToken();
-    const body: StkOptions = {
-      paymentChannel: 'M-PESA STK Push',
-      tillNumber: this.tillNumber,
-      amount: tx.amount,
-      currency: 'KES',
-      firstName: txDocument.user.firstName,
-      lastName: txDocument.user.lastName,
-      phoneNumber: tx.phone,
-      email: tx.email,
+    const body = {
+      payment_channel: 'M-PESA STK Push',
+      till_number: this.stkPushTillNumber,
+      subscriber: {
+        first_name: txDocument.user.firstName,
+        last_name: txDocument.user.lastName,
+        phone_number: tx.phone,
+        email: tx.email,
+      },
+      amount: {
+        currency: 'KES',
+        value: tx.amount,
+      },
       metadata: {
         orderId: tx.orderId,
         txId: tx.id,
       },
-      callbackUrl: this.callbackURL,
-      accessToken: this.token.access_token,
+      _links: {
+        callback_url: this.callbackURL,
+      },
     };
     try {
-      const response = await this.stkService.initiateIncomingPayment(body);
-      if (!response) {
+      const { data, status, statusText, headers } = await this.kopokopoRequest(
+        '/api/v1/incoming_payments',
+        body,
+      );
+
+      this.logger.debug(`KopoKopo STK Push response: ${status} ${statusText}`);
+      if (headers['location']) {
+        txDocument.sid = headers['location'];
+        await txDocument.save();
+      } else {
+        this.logger.error(`KopoKopo API did not return transaction id `);
+        this.logger.error(`Request was > ${JSON.stringify(body)}`);
         return {
           status: 0,
           success: false,
@@ -174,9 +245,6 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
           orderId: tx.orderId,
         };
       }
-      this.logger.debug('KopoKopo STK Push response', response);
-      txDocument.sid = response;
-      await txDocument.save();
     } catch (error: any) {
       this.logger.error(`KopoKopo API returned error `, error.stack, error);
       this.logger.error(`Request was > ${JSON.stringify(body)}`);
@@ -202,20 +270,28 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
         orderId,
       })
       .exec();
+    if (!txDocument) {
+      return;
+    }
     await this.refreshAccessToken();
-    const body: CheckStkStatus = {
-      location: txDocument.sid,
-      accessToken: this.token.access_token,
-    };
-    const response = await this.stkService.getStatus(body);
 
-    return response;
+    return firstValueFrom(
+      this.httpService.get(txDocument.sid, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + this.token.access_token,
+        },
+        validateStatus(status) {
+          return true;
+        },
+      }),
+    );
   }
 
   async validateTransaction(
     params: Record<string, string>,
   ): Promise<PaymentStatus> {
-    const result = await this.checkTransaction(params.orderId);
+    const { data: result } = await this.checkTransaction(params.orderId);
     if (result?.data?.attributes?.status === 'Success') {
       return PaymentStatus.PAID;
     }
@@ -231,5 +307,35 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
       );
     }
     return PaymentStatus.PENDING;
+  }
+
+  validateEvent(body: string, signature: string) {
+    const hash = crypto
+      .createHmac('sha256', this.k2ApiKey)
+      .update(body)
+
+      .digest('hex');
+
+    return hash === signature;
+  }
+
+  async createTransactionForEvent(
+    txParams: CreateTransactionParameters,
+    forUserId: string,
+    eventData: any,
+  ): Promise<Transaction> {
+    const tx = new this.paymentTransactionModel({
+      amount: txParams.amount,
+      packageId: txParams.packageId,
+      orderId: txParams.orderId,
+      phone: txParams.phone,
+      email: txParams.email,
+      status: PaymentStatus.PENDING,
+      user: new Types.ObjectId(forUserId),
+      receivedEvent: eventData,
+      sid: eventData?._links?.self,
+    });
+    await tx.save();
+    return tx;
   }
 }

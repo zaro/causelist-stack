@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  Headers,
   Controller,
   Get,
   Logger,
@@ -16,13 +17,12 @@ import { IsNumber, IsString, Min, MinLength } from 'class-validator';
 import { PaymentApiService } from './base.payment-api.service.js';
 import { UsersService } from '../users/users.service.js';
 import { InjectModel } from '@nestjs/mongoose';
-import { Counter } from '../schemas/counter.schema.js';
-import type { CounterWithStatics } from '../schemas/counter.schema.js';
 import { PACKAGES } from '../interfaces/packages.js';
 import { IPayAfricaPaymentApiService } from './ipay-africa.payment-api.service.js';
 import { Public } from '../auth/public.decorator.js';
 import { ConfigService } from '@nestjs/config';
 import { IOrderStatus, PaymentStatus } from '../interfaces/payments.js';
+import { KopoKopoPaymentApiService } from './kopokopo.payment-api.service.js';
 
 export class NewPaymentParams {
   @IsString()
@@ -53,8 +53,6 @@ export class PaymentsController {
     protected service: PaymentsService,
     protected paymentApiService: PaymentApiService,
     protected userService: UsersService,
-    @InjectModel(Counter.name)
-    protected counterModel: CounterWithStatics,
   ) {
     this.appMainDomain = configService.getOrThrow('APP_MAIN_DOMAIN');
     this.isDevEnvironment =
@@ -79,14 +77,14 @@ export class PaymentsController {
       });
     }
     const user = await this.userService.findById(req.user.id);
-    const orderId = await this.counterModel.next('orderId');
+    const orderId = await this.service.newOrderId();
     const tx = await this.paymentApiService.createTransaction(
       {
         packageId: packageDesc.id,
         amount: packageDesc.price,
         email: user.email,
         phone: user.phone,
-        orderId: `CLO-${orderId}`,
+        orderId,
       },
       req.user.id,
     );
@@ -112,9 +110,9 @@ export class PaymentsController {
       });
     }
     const user = await this.userService.findById(req.user.id);
-    const orderId = await this.counterModel.next('orderId');
+    const orderId = await this.service.newOrderId();
     const tx = await this.paymentApiService.paymentFormParamsHash({
-      oid: `CLO-${orderId}`,
+      oid: orderId,
       ttl: packageDesc.price,
       eml: user.email,
       tel: user.phone,
@@ -143,14 +141,14 @@ export class PaymentsController {
     }
 
     const user = await this.userService.findById(req.user.id);
-    const orderId = await this.counterModel.next('orderId');
+    const orderId = await this.service.newOrderId();
     const tx = await this.paymentApiService.createTransaction(
       {
         packageId: packageDesc.id,
         amount: packageDesc.price,
         email: user.email,
         phone: user.phone,
-        orderId: `CLO-${orderId}`,
+        orderId,
       },
       req.user.id,
     );
@@ -217,6 +215,72 @@ export class PaymentsController {
     return {
       ok: true,
     };
+  }
+
+  @Public()
+  @Post('kopo-kopo-buy-goods-callback')
+  async kopokopoBuyGoodsCallback(
+    @Body() body: any,
+    @Headers('x-kopokopo-signature') signature: string,
+  ) {
+    if (!(this.paymentApiService instanceof KopoKopoPaymentApiService)) {
+      throw new BadRequestException();
+    }
+    const { topic, id, event } = body;
+    this.logger.debug(
+      `kopo-kopo-buy-goods-callback: received ${topic} with id: ${id}`,
+    );
+
+    if (
+      !this.paymentApiService.validateEvent(JSON.stringify(body), signature)
+    ) {
+      this.logger.error(
+        `kopo-kopo-buy-goods-callback: Failed to validate body`,
+      );
+      return true;
+    }
+
+    const { amount, sender_phone_number, status } = event?.resource;
+    const selectedUser =
+      await this.userService.findOneByPhone(sender_phone_number);
+    if (!selectedUser) {
+      this.logger.error(
+        `kopo-kopo-buy-goods-callback: Failed to select package for amount: ${amount}`,
+      );
+      return true;
+    }
+
+    const selectedPackage = this.service.selectPackageForAmount(amount);
+    if (!selectedPackage) {
+      this.logger.error(
+        `kopo-kopo-buy-goods-callback: Failed to select package for amount: ${amount}`,
+      );
+      return true;
+    }
+
+    this.logger.log(
+      `kopo-kopo-buy-goods-callback: Selected package ${selectedPackage.id} for amount: ${amount}`,
+    );
+    const orderId = await this.service.newOrderId();
+
+    const tx = await this.paymentApiService.createTransactionForEvent(
+      {
+        orderId,
+        packageId: selectedPackage.id,
+        amount,
+        phone: selectedUser.phone,
+        email: selectedUser.email,
+      },
+      selectedUser.id,
+      body,
+    );
+
+    await this.service.updatePaymentStatus(
+      orderId,
+      status === 'Received' ? PaymentStatus.PAID : PaymentStatus.PENDING,
+    );
+
+    return true;
   }
 
   @Get('check-order-status/:orderId')

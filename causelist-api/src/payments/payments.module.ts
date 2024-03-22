@@ -36,7 +36,8 @@ import { KopoKopoPaymentApiService } from './kopokopo.payment-api.service.js';
       provide: PaymentApiService,
       useClass: KopoKopoPaymentApiService,
     },
+    KopoKopoPaymentApiService,
   ],
-  exports: [PaymentApiService, PaymentsService],
+  exports: [PaymentApiService, PaymentsService, KopoKopoPaymentApiService],
 })
 export class PaymentsModule {}

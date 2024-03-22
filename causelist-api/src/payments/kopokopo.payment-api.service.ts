@@ -295,6 +295,9 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
     if (result?.data?.attributes?.status === 'Success') {
       return PaymentStatus.PAID;
     }
+    if (result?.data?.attributes?.status === 'Failed') {
+      return PaymentStatus.FAILED;
+    }
     // if (result?.data?.attributes?.status === 'Pending') {
     //   return PaymentStatus.PAID;
     // }

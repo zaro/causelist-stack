@@ -19,9 +19,20 @@ import { PACKAGES } from "../../../../../api/packages.ts";
 import Stack from "@mui/material/Stack";
 import { userStore } from "../../../_store/index.ts";
 import { useRouter } from "next/navigation";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import Tab from "@mui/material/Tab";
+
+import LipaNaMpesa from "./lipa-na-mpesa.png";
+import StkPushImg from "./stk-push.png";
+import Image from "next/image";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 interface PaymentButtonProps {
-  selectedPackage?: (typeof PACKAGES)[0];
+  disabled?: boolean;
+  selectedPackage: (typeof PACKAGES)[0];
   accessToken: string | null;
   onClick: () => void;
 }
@@ -45,7 +56,11 @@ function IPayForm({ selectedPackage, accessToken }: PaymentButtonProps) {
   );
 }
 
-function KopoKopoStkPush({ selectedPackage, onClick }: PaymentButtonProps) {
+function KopoKopoStkPush({
+  selectedPackage,
+  onClick,
+  disabled,
+}: PaymentButtonProps) {
   const router = useRouter();
   const [error, setError] = React.useState<string[]>([]);
   const [sent, setSent] = React.useState(false);
@@ -80,16 +95,16 @@ function KopoKopoStkPush({ selectedPackage, onClick }: PaymentButtonProps) {
       });
   };
   return (
-    <Stack sx={{ marginBottom: "1em", width: "300px" }}>
+    <Stack sx={{ marginBottom: "1em", minWidth: "200px", marginX: "auto" }}>
       <LoadingButton
         type="submit"
-        disabled={!selectedPackage || sent}
+        disabled={!selectedPackage || sent || disabled}
         size="large"
         variant="contained"
         loading={sent}
         onClick={handleClick}
       >
-        Pay with M-Pesa
+        Pay
       </LoadingButton>
       {sent && (
         <Typography mt="2em">
@@ -98,6 +113,89 @@ function KopoKopoStkPush({ selectedPackage, onClick }: PaymentButtonProps) {
       )}
       <ErrorBox error={error} />
     </Stack>
+  );
+}
+
+function PaymentMethod({
+  selectedPackage,
+  accessToken,
+  onClick,
+}: PaymentButtonProps) {
+  const [value, setValue] = React.useState("1");
+  const [phoneUnlocked, setPhoneUnlocked] = React.useState(false);
+  React.useEffect(() => {
+    setPhoneUnlocked(false);
+  }, [value]);
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
+  return (
+    <TabContext value={value}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider", width: "100%" }}>
+        <TabList onChange={handleChange} variant="fullWidth">
+          <Tab label="Payment Prompt" value="1" />
+          <Tab label="Lipa na MPESA" value="2" />
+        </TabList>
+      </Box>
+      <TabPanel value="1">
+        <Grid container>
+          <Grid item xs={12} md={6}>
+            <Stack>
+              <Typography variant="h5" textAlign="center" marginBottom="2em">
+                Buy <b>{selectedPackage.title}</b> subscription for{" "}
+                <b>{selectedPackage.price} Ksh</b>
+              </Typography>
+
+              <Typography>
+                Clicking Pay button will send a payment prompt to your phone.
+                Please make sure your phone is unlocked before clicking Pay.
+              </Typography>
+
+              <FormControlLabel
+                control={<Checkbox onChange={(e, v) => setPhoneUnlocked(v)} />}
+                label="My phone is unlocked"
+                sx={{ marginX: "auto", marginBottom: "1em" }}
+              />
+
+              <KopoKopoStkPush
+                disabled={!phoneUnlocked}
+                selectedPackage={selectedPackage}
+                accessToken={accessToken}
+                onClick={onClick}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={6} textAlign="center">
+            <Image src={StkPushImg} alt="Stk push prompt" height={250} />
+          </Grid>
+        </Grid>
+      </TabPanel>
+      <TabPanel value="2">
+        <Grid container justifyContent="center" spacing={1} fontSize="large">
+          <Grid item xs={12} textAlign="center">
+            <Image src={LipaNaMpesa} alt="Lipa na MPESA" />
+          </Grid>
+          <Grid item xs={6} textAlign="end">
+            Till Number:
+          </Grid>
+          <Grid item xs={6}>
+            <b>4247308</b>
+          </Grid>
+          <Grid item xs={6} textAlign="end">
+            Business Name:
+          </Grid>
+          <Grid item xs={6}>
+            <b>CODESMART TECHNOLOGIES</b>
+          </Grid>
+          <Grid item xs={6} textAlign="end">
+            Amount:
+          </Grid>
+          <Grid item xs={6}>
+            <b>{selectedPackage.price}</b> Ksh
+          </Grid>
+        </Grid>
+      </TabPanel>
+    </TabContext>
   );
 }
 
@@ -142,34 +240,19 @@ export default function Page() {
             </Grid>
           ))}
         </Grid>
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ marginBottom: "1em" }}>
-            {selectedPackage ? (
-              <Typography variant="h5" textAlign="center">
-                Buy {selectedPackage.title} subscription for{" "}
-                {selectedPackage.price} Ksh
-              </Typography>
-            ) : (
-              <Typography variant="h5" textAlign="center">
-                Select a package
-              </Typography>
-            )}
-          </Box>
-          <KopoKopoStkPush
+        {selectedPackage ? (
+          <PaymentMethod
             selectedPackage={selectedPackage}
             accessToken={accessToken}
             onClick={() => {
               setSelectionEnabled(false);
             }}
           />
-        </Box>
+        ) : (
+          <Typography variant="h5" textAlign="center">
+            Select a package to see payment details
+          </Typography>
+        )}
       </Stack>
     </Suspense>
   );

@@ -243,7 +243,8 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
 
       this.logger.debug(`KopoKopo STK Push response: ${status} ${statusText}`);
       if (status >= 400) {
-        this.logger.debug(`KopoKopo STK Push response body: ${data}`);
+        const body = typeof data === 'string' ? data : JSON.stringify(data);
+        this.logger.debug(`KopoKopo STK Push response body: ${body}`);
       }
       if (headers['location']) {
         txDocument.sid = headers['location'];

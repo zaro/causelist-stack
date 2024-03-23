@@ -24,6 +24,7 @@ export interface StkPushResult {
   status: number;
   success: boolean;
   text: string;
+  errorCode?: number;
 }
 
 export interface checkTransactionResult {

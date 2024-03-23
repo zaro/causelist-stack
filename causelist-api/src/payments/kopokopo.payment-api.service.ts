@@ -252,11 +252,13 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
       } else {
         this.logger.error(`KopoKopo API did not return transaction id `);
         this.logger.error(`Request was > ${JSON.stringify(body)}`);
+        const text = data?.error_message ?? 'Failed to trigger STK Push';
         return {
           status: 0,
           success: false,
-          text: 'Failed to trigger STK Push',
+          text,
           orderId: tx.orderId,
+          errorCode: status,
         };
       }
     } catch (error: any) {

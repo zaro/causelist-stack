@@ -80,7 +80,7 @@ export class PaymentsService {
 
   selectPackageForAmount(amount: string | number) {
     if (typeof amount === 'string') {
-      amount = parseInt(amount, 10);
+      amount = parseFloat(amount);
     }
     if (!amount) {
       return null;

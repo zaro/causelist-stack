@@ -317,7 +317,7 @@ export class KopoKopoPaymentApiService extends PaymentApiService {
     // if (result?.data?.attributes?.status === 'Pending') {
     //   return PaymentStatus.PAID;
     // }
-    const nonReadyStatus = ['Received'];
+    const nonReadyStatus = ['Received', 'Pending'];
     if (!nonReadyStatus.includes(result?.data?.attributes?.status)) {
       this.logger.log(
         `Unknown tx status received for ${params.orderId}: ${JSON.stringify(

@@ -245,7 +245,7 @@ export class PaymentsController {
       await this.userService.findOneByPhone(sender_phone_number);
     if (!selectedUser) {
       this.logger.error(
-        `kopo-kopo-buy-goods-callback: Failed to select package for amount: ${amount}`,
+        `kopo-kopo-buy-goods-callback: Failed to select user for phone: ${sender_phone_number}`,
       );
       return true;
     }

@@ -44,7 +44,10 @@ export class PaymentsService {
   }
 
   async updatePaymentStatus(orderId: string, newStatus: PaymentStatus) {
-    const tx = await this.paymentTransactionModel.findOne({ orderId });
+    const tx = await this.paymentTransactionModel
+      .findOne({ orderId })
+      .populate('user')
+      .exec();
     if (!tx) {
       throw new NotFoundException();
     }

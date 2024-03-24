@@ -149,11 +149,11 @@
 
       .btn .login-code {
         letter-spacing: .2rem;
-        background-color: #ffffff;
-        border: solid 2px #932c2b;
+        background-color: #932c2b;
+        border: solid 2px #ffffff;
         border-radius: 4px;
         box-sizing: border-box;
-        color: #932c2b;
+        color: #ffffff;
         display: inline-block;
         font-size: 32px;
         font-weight: bold;

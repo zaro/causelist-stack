@@ -37,6 +37,12 @@ api:
     SMTP_HOST: mailhog
     SMTP_PORT: 1025
     SMTP_SSL: false
+    # #### MAILTRAP
+    # SMTP_HOST: sandbox.smtp.mailtrap.io
+    # SMTP_PORT: 2525
+    # SMTP_SSL: false
+    # SMTP_USER: de286fddc2dae1
+    # SMTP_PASS: 2059994f9610ce
     # IPAY_AFRICA_LIVE_MODE: 1
     # IPAY_AFRICA_VENDOR_ID: "bookstore"
     # IPAY_AFRICA_SECRET: "9srp*cJ6&FJ%Y4S&zX23X74RchhKVBbv"

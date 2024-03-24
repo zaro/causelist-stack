@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { NodemailerService } from './nodemailer.service.js';
-import * as nunjucks from 'nunjucks';
-import { makeNunjucksEnv, moduleRelativePath } from './nunjucks-environment.js';
 import { User } from '../schemas/user.schema.js';
+import { ISubscription } from '../interfaces/users.js';
+import { InjectQueue } from '@nestjs/bull';
+import { EMAIL_QUEUE_NAME } from './email.processor.js';
+import type { Queue } from 'bull';
 
 export type Recipient =
   | string
@@ -22,50 +24,78 @@ export interface EmailLoginCodeContext extends EmailCommonContext {
   expiresAt: Date;
 }
 
+export interface EmailSubscribedContext extends EmailCommonContext {
+  subscription: ISubscription;
+}
+
+export interface EmailLoginCodeParams {
+  templateName: 'login-code';
+  recipient: Recipient;
+  context: EmailLoginCodeContext;
+}
+
+export interface EmailSignedUpParams {
+  templateName: 'signed-up';
+  recipient: Recipient;
+  context: EmailLoginCodeContext;
+}
+
+export interface EmailSubscribedParams {
+  templateName: 'subscribed';
+  recipient: Recipient;
+  context: EmailSubscribedContext;
+}
+
+export type EmailParams =
+  | EmailLoginCodeParams
+  | EmailSignedUpParams
+  | EmailSubscribedParams;
+
 @Injectable()
 export class EmailService {
-  protected env: nunjucks.Environment;
+  protected log = new Logger(EmailService.name);
 
-  constructor(protected nodemailerService: NodemailerService) {
-    this.env = makeNunjucksEnv(moduleRelativePath(import.meta, 'templates'));
+  constructor(
+    protected nodemailerService: NodemailerService,
+    @InjectQueue(EMAIL_QUEUE_NAME) protected emailQueue: Queue<EmailParams>,
+  ) {}
+
+  async renderAndSendEmail(params: EmailParams) {
+    this.log.log(`Sending ${params.templateName} to ${params.recipient}`);
+    return this.nodemailerService.renderAndSendMessage(params);
   }
 
-  protected sendMessage(recipient: Recipient, subject: string, html: string) {
-    if (typeof recipient === 'string') {
-      recipient = {
-        to: recipient,
-      };
-    }
-    return this.nodemailerService.sendMessage({
-      ...recipient,
-      subject,
-      html,
+  async renderAndSendEmailAsync(params: EmailParams, delay?: number) {
+    this.log.log(`Queueing ${params.templateName} to ${params.recipient}`);
+    return this.emailQueue.add(params, {
+      delay,
     });
   }
 
-  protected renderEmail(templateName: string, context: any) {
-    const contextWithDefaults = {
-      currentYear: new Date().getFullYear(),
-      ...context,
-    };
-    const html = this.env.render(
-      `${templateName}.body.html.nunjucks`,
-      contextWithDefaults,
-    );
-    const subject = this.env.render(
-      `${templateName}.subject.nunjucks`,
-      contextWithDefaults,
-    );
-    return { html, subject };
-  }
-
   async sendSignedUp(recipient: Recipient, context: EmailLoginCodeContext) {
-    const { html, subject } = this.renderEmail('signed-up', context);
-    return this.sendMessage(recipient, subject, html);
+    return this.renderAndSendEmailAsync({
+      templateName: 'signed-up',
+      recipient,
+      context,
+    });
   }
 
   async sendLoginCode(recipient: Recipient, context: EmailLoginCodeContext) {
-    const { html, subject } = this.renderEmail('login-code', context);
-    return this.sendMessage(recipient, subject, html);
+    return this.renderAndSendEmailAsync({
+      templateName: 'login-code',
+      recipient,
+      context,
+    });
+  }
+
+  async sendSubscribed(recipient: Recipient, context: EmailSubscribedContext) {
+    return this.renderAndSendEmailAsync(
+      {
+        templateName: 'subscribed',
+        recipient,
+        context,
+      },
+      10000, // Delay it 10s so it is sent after the login code
+    );
   }
 }

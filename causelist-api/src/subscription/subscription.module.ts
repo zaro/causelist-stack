@@ -6,12 +6,16 @@ import {
   Subscription,
   SubscriptionSchema,
 } from '../schemas/subscription.schema.js';
+import { EmailModule } from '../email/email.module.js';
+import { User, UserSchema } from '../schemas/user.schema.js';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Subscription.name, schema: SubscriptionSchema },
+      { name: User.name, schema: UserSchema },
     ]),
+    EmailModule,
   ],
 
   providers: [SubscriptionService],

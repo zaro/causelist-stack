@@ -68,7 +68,7 @@ export default function CheckOtp() {
   const checkOtp = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const otp = data.get("otp");
+    const otp = data.get("otp")?.toString().trim();
     setError(null);
     setWorking(true);
     fetch("/api/auth/login-otp", {

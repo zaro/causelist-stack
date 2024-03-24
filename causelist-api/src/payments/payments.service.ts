@@ -87,7 +87,7 @@ export class PaymentsService {
     }
     let selected: SubscriptionPackage | null = null;
     for (const p of PACKAGES.toSorted((a, b) => a.price - b.price)) {
-      if (p.price < amount) {
+      if (p.price <= amount) {
         selected = p;
       }
     }

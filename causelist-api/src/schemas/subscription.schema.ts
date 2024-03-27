@@ -24,6 +24,9 @@ export class Subscription implements ISubscription {
   @Prop()
   paid: number;
 
+  @Prop()
+  note?: string;
+
   @Prop({ required: true, type: 'ObjectId', ref: 'User', index: 1 })
   user: User;
 

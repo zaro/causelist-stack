@@ -28,6 +28,7 @@ export class SubscriptionService {
     unitType: 'day' | 'week' | 'month' | 'year',
     paid?: number,
     from?: Date,
+    note?: string,
   ) {
     if (!from) {
       from = new Date();
@@ -52,6 +53,7 @@ export class SubscriptionService {
       to,
       tier: SubscriptionTier.STANDARD,
       paid,
+      note,
       user: new Types.ObjectId(userId),
     });
     await r.save();

@@ -44,6 +44,7 @@ export interface ISubscription {
   to: Date;
   tier: SubscriptionTier;
   paid: number;
+  note?: string;
   user: IUser;
   createdAt?: Date;
   updatedAt?: Date;

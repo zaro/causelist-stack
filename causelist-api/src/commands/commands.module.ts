@@ -38,6 +38,7 @@ import {
   PaymentTransactionSchema,
 } from '../schemas/payment-transaction.schema.js';
 import { PaymentsCommand } from './payments.command.js';
+import { SubscriptionModule } from '../subscription/subscription.module.js';
 
 @Module({
   imports: [
@@ -102,6 +103,7 @@ import { PaymentsCommand } from './payments.command.js';
     ),
     DataImporterModule,
     PaymentsModule,
+    SubscriptionModule,
     CommandModule,
   ],
   controllers: [],

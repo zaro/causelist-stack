@@ -61,6 +61,8 @@ export class CreateUserDataParams
   phone: string;
 }
 
+export const trialSubscriptionNote = 'Trial for new users';
+
 @Injectable()
 export class UsersService {
   private readonly log = new Logger(UsersService.name);
@@ -172,6 +174,7 @@ export class UsersService {
       TRIAL_PACKAGE.unit,
       0,
       new Date(),
+      trialSubscriptionNote,
     );
     return newUser;
   }

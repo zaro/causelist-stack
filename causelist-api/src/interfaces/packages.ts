@@ -18,8 +18,7 @@ export const PACKAGES: SubscriptionPackage[] = [
     id: 'week1',
     period: 1,
     unit: 'week',
-    // price: 100,
-    price: 1,
+    price: 150,
     title: '1 Week',
   },
   {

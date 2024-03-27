@@ -146,7 +146,7 @@ function PaymentMethod({
                 <b>{selectedPackage.price} Ksh</b>
               </Typography>
 
-              <Typography>
+              <Typography marginBottom="5em">
                 Clicking Pay button will send a payment prompt to your phone.
                 Please make sure your phone is unlocked before clicking Pay.
               </Typography>
@@ -166,7 +166,7 @@ function PaymentMethod({
             </Stack>
           </Grid>
           <Grid item xs={12} md={6} textAlign="center">
-            <Image src={StkPushImg} alt="Stk push prompt" height={250} />
+            <Image src={StkPushImg} alt="Stk push prompt" height={450} />
           </Grid>
         </Grid>
       </TabPanel>

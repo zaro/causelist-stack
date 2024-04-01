@@ -12,6 +12,12 @@ import { SmsApiModule } from '../sms-api/sms-api.module.js';
 import { ConfigService } from '@nestjs/config';
 import { RolesGuard } from './roles.guard.js';
 import { EmailModule } from '../email/email.module.js';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  Subscription,
+  SubscriptionSchema,
+} from '../schemas/subscription.schema.js';
+import { SubscriptionsGuard } from './subscriptions.guard.js';
 
 @Module({
   imports: [
@@ -26,6 +32,9 @@ import { EmailModule } from '../email/email.module.js';
         signOptions: { expiresIn: '90d' },
       }),
     }),
+    MongooseModule.forFeature([
+      { name: Subscription.name, schema: SubscriptionSchema },
+    ]),
   ],
   providers: [
     AuthService,
@@ -40,6 +49,11 @@ import { EmailModule } from '../email/email.module.js';
       // Make Roles guard global
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      // Make Subscription guard global
+      provide: APP_GUARD,
+      useClass: SubscriptionsGuard,
     },
   ],
   controllers: [AuthController],

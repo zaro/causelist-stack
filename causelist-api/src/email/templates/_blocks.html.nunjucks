@@ -40,7 +40,7 @@
           <tbody>
             <tr>
               <td>
-                <span class="login-code">{{ code }}</a>
+                <div class="login-code">{{ code }}</div>
               </td>
             </tr>
           </tbody>

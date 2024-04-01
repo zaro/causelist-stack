@@ -24,7 +24,7 @@ export class Otp {
   @Prop()
   updatedAt?: Date;
 
-  @Prop({ required: true, type: 'ObjectId', ref: 'User' })
+  @Prop({ required: true, type: 'ObjectId', ref: 'User', index: 1 })
   user: User;
 }
 

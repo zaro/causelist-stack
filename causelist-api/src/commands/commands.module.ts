@@ -31,6 +31,14 @@ import {
   UnassignedMattersSchema,
 } from '../schemas/unassigned-matters.schema.js';
 import { FixCommand } from './fix.command.js';
+import { IpayCommand } from './ipay.command.js';
+import { PaymentsModule } from '../payments/payments.module.js';
+import {
+  PaymentTransaction,
+  PaymentTransactionSchema,
+} from '../schemas/payment-transaction.schema.js';
+import { PaymentsCommand } from './payments.command.js';
+import { SubscriptionModule } from '../subscription/subscription.module.js';
 
 @Module({
   imports: [
@@ -68,6 +76,7 @@ import { FixCommand } from './fix.command.js';
       { name: UnassignedMatters.name, schema: UnassignedMattersSchema },
       { name: User.name, schema: UserSchema },
       { name: Court.name, schema: CourtSchema },
+      { name: PaymentTransaction.name, schema: PaymentTransactionSchema },
     ]),
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -93,6 +102,8 @@ import { FixCommand } from './fix.command.js';
       },
     ),
     DataImporterModule,
+    PaymentsModule,
+    SubscriptionModule,
     CommandModule,
   ],
   controllers: [],
@@ -104,6 +115,8 @@ import { FixCommand } from './fix.command.js';
     UpdateCommand,
     CrawlerCommand,
     FixCommand,
+    IpayCommand,
+    PaymentsCommand,
   ],
 })
 export class CommandsModule {}

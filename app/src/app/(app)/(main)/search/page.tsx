@@ -28,6 +28,7 @@ import IconButton from "@mui/material/IconButton";
 import { AppButtonLink } from "../../_components/app-link.tsx";
 import Centered from "../../_components/centered.tsx";
 import SubscriptionComing from "../../_components/subscirption-coming.tsx";
+import SubscriptionRequired from "../../_components/subscription-required.tsx";
 
 const CaseListItem = styled(ListItem)(({ theme }) => ({
   borderWidth: "1px",
@@ -44,6 +45,7 @@ export default function Page() {
   const apiURL = searchFor ? `/api/courts/search/${searchFor}` : null;
   const { data, isLoading, error } = useSWR<ISearchResult[]>(apiURL, fetcher);
   const hasResults = !error && data && !isLoading;
+  const subscriptionRequired = error && error.status === 402;
 
   return (
     <Stack alignContent={"center"}>
@@ -77,7 +79,7 @@ export default function Page() {
         </Button>
       </Box>
 
-      {hasResults && (
+      {hasResults && !subscriptionRequired && (
         <Box
           display="flex"
           alignItems={"center"}
@@ -149,6 +151,8 @@ export default function Page() {
           </List>
         </>
       )}
+
+      {subscriptionRequired && <SubscriptionRequired />}
     </Stack>
   );
 }

@@ -1,7 +1,10 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
+import { FetcherError } from "./fetcher-error.ts";
+
 interface Props {
   children: ReactNode;
   fallback: ReactNode;
+  subscriptionRequired?: ReactNode;
 }
 
 interface State {
@@ -22,7 +25,12 @@ export default class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
-      return this.props.fallback;
+      let subscriptionRequired =
+        this.state.error instanceof FetcherError &&
+        this.state.error.status === 402;
+      return subscriptionRequired && this.props.subscriptionRequired
+        ? this.props.subscriptionRequired
+        : this.props.fallback;
     }
 
     return this.props.children;

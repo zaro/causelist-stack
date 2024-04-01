@@ -37,6 +37,31 @@ api:
     SMTP_HOST: mailhog
     SMTP_PORT: 1025
     SMTP_SSL: false
+    # #### MAILTRAP
+    # SMTP_HOST: sandbox.smtp.mailtrap.io
+    # SMTP_PORT: 2525
+    # SMTP_SSL: false
+    # SMTP_USER: de286fddc2dae1
+    # SMTP_PASS: 2059994f9610ce
+    # IPAY_AFRICA_LIVE_MODE: 1
+    # IPAY_AFRICA_VENDOR_ID: "bookstore"
+    # IPAY_AFRICA_SECRET: "9srp*cJ6&FJ%Y4S&zX23X74RchhKVBbv"
+    IPAY_AFRICA_LIVE_MODE: 0
+    IPAY_AFRICA_VENDOR_ID: "demo"
+    IPAY_AFRICA_SECRET: demoCHANGED
+    IPAY_AFRICA_OVERRIDE_CALLBACK_URL: https://ninety-bees-dress.loca.lt/api/payments/ipay-africa-callback
+    K2_LIVE_MODE: 0
+    K2_CLIENT_ID: ZI9FApVMtnX78i9QaUkP3nH5Fq9tQYKoYrJjI2GrRQE
+    K2_CLIENT_SECRET: fIXypLgHohwCzRSbx5rBupMILq3sibd0bfH6L07oiiE
+    K2_API_KEY: 6PcfAjDL42Wu4TW2bam92j2eC4JbTJd3i9LV1l7abL4
+    # K2_LIVE_MODE: 1
+    # K2_CLIENT_ID: kRhppKJ6XKlqSFsisLZMFpAF1LicFvKAVgntNFIwung
+    # K2_CLIENT_SECRET: GfGVV7EF8qiAc_tCZcYfXEDg1YXm_kLQwsSEIamW4TY
+    # K2_API_KEY: e5a7e5324bb4fcdbba4dacaa905a328ed3cda8a1
+    K2_OVERRIDE_CALLBACK_URL: https://webhook.site/58f28c06-ffa1-41da-a9f5-1a463f12cab9
+    MPESA_TILL_NUMBER: "4247308"
+    MPESA_STK_PUSH_NUMBER: "K375278"
+    # NODE_DEBUG: request
 
     # ZETTATEL_API_KEY: c2395debd6724a0bf871de8d904861e10bf304f4
     # ZETTATEL_USER: zaro
@@ -68,4 +93,4 @@ service:
 ingress:
   enabled: true
   className: "nginx"
-  appsMainDomain: tilt
+  appsMainDomain: causelist.tilt

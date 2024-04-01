@@ -158,6 +158,12 @@ export default function AppPreview() {
                 </ListItemIcon>
                 <ListItemText primary="Search parties and case numbers" />
               </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <CheckIcon color="success" />
+                </ListItemIcon>
+                <ListItemText primary="SIGN UP AND START YOUR ONE MONTH FREE TRIAL" />
+              </ListItem>
             </List>
             <Typography textAlign="center">
               <AppButtonLink size="large" variant="contained" href="/sign-up">

@@ -1,0 +1,21 @@
+{% import "_blocks.html.nunjucks" as blocks %}
+{% extends "email-base.html.nunjucks" %}
+
+{% block main_content %}
+<p>Hello {{ user.firstName }} {{ user.lastName }},<p>
+
+<p>
+  You have just been subscribed to our service for the peroid <b>{{ subscription.from | dateTime  }}<b> - <b>{{ subscription.to | dateTime  }}</b>.
+</p>
+
+{% if subscription.price %}
+<p>
+  Thank you for your contribution, you are helping us to provide even better service to you!
+</p>
+{% else %}
+<p>
+  We hope you will find our service usefull!
+</p>
+{% endif %}
+
+{% endblock %}

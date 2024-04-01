@@ -34,3 +34,18 @@ export interface IUserStats {
     };
   };
 }
+
+export enum SubscriptionTier {
+  STANDARD = 'STANDARD',
+}
+
+export interface ISubscription {
+  from: Date;
+  to: Date;
+  tier: SubscriptionTier;
+  paid: number;
+  note?: string;
+  user: IUser;
+  createdAt?: Date;
+  updatedAt?: Date;
+}

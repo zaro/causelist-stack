@@ -164,6 +164,8 @@ export default function App({ children }: { children: React.ReactNode }) {
     pageTitle = "Search Result Details";
   } else if (pathname.startsWith("/admin")) {
     pageTitle = "Admin";
+  } else if (pathname.startsWith("/account/subscribe")) {
+    pageTitle = "New Subscription";
   }
 
   const drawer = (

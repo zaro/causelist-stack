@@ -1,0 +1,69 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Subscription } from '../schemas/subscription.schema.js';
+import { Model, Types } from 'mongoose';
+import { SubscriptionTier } from '../interfaces/users.js';
+import { EmailService } from '../email/email.service.js';
+import { User } from '../schemas/user.schema.js';
+
+@Injectable()
+export class SubscriptionService {
+  constructor(
+    @InjectModel(Subscription.name)
+    protected subscriptionModel: Model<Subscription>,
+    @InjectModel(User.name)
+    protected userModel: Model<User>,
+    protected emailService: EmailService,
+  ) {}
+
+  async listForUser(userId: string) {
+    return this.subscriptionModel.find({
+      user: new Types.ObjectId(userId),
+    });
+  }
+
+  async newForUser(
+    userId: string,
+    numUnits: number,
+    unitType: 'day' | 'week' | 'month' | 'year',
+    paid?: number,
+    from?: Date,
+    note?: string,
+  ) {
+    if (!from) {
+      from = new Date();
+    }
+    const to = new Date(from);
+    switch (unitType) {
+      case 'day':
+        to.setDate(to.getDate() + numUnits);
+        break;
+      case 'week':
+        to.setDate(to.getDate() + numUnits * 7);
+        break;
+      case 'month':
+        to.setMonth(to.getMonth() + numUnits);
+        break;
+      case 'year':
+        to.setFullYear(to.getFullYear() + numUnits);
+        break;
+    }
+    const r = new this.subscriptionModel({
+      from,
+      to,
+      tier: SubscriptionTier.STANDARD,
+      paid,
+      note,
+      user: new Types.ObjectId(userId),
+    });
+    await r.save();
+
+    const user = await this.userModel.findById(userId).exec();
+
+    this.emailService.sendSubscribed(user.email, {
+      user,
+      subscription: r,
+    });
+    return r;
+  }
+}

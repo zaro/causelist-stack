@@ -8,7 +8,7 @@ import DailyCauseLists from "../../_components/daily-causelist.tsx";
 import Calendar from "../../_components/calendar.tsx";
 import JudgeSelector from "../../_components/judge-selector.tsx";
 import Centered from "../../_components/centered.tsx";
-import SubscriptionComing from "../../_components/subscirption-coming.tsx";
+import InAppNotice from "../../_components/in-app-notice.tsx";
 import ErrorBoundary from "../../../_common/error-boundary.tsx";
 import SubscriptionRequired from "../../_components/subscription-required.tsx";
 
@@ -45,7 +45,7 @@ export default function Page() {
             Select court to view data
           </Centered>
 
-          <SubscriptionComing />
+          <InAppNotice />
         </Box>
       )}
     </Stack>

@@ -8,7 +8,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import NextLink from "next/link";
-import SubscriptionComing from "../../_components/subscirption-coming.tsx";
+import InAppNotice from "../../_components/in-app-notice.tsx";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { appStore } from "../../_store/index.ts";
@@ -63,7 +63,7 @@ export default function Page() {
         </CardActionArea>
       </Card>
 
-      <SubscriptionComing />
+      <InAppNotice />
     </Stack>
   );
 }

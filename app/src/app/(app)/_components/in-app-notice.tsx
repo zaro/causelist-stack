@@ -90,15 +90,16 @@ function SubsctionComingReadMore() {
   );
 }
 
-export default function SubscriptionComing() {
-  return (
-    <Alert
-      icon={<NotificationImportantIcon fontSize="inherit" />}
-      severity="info"
-    >
-      WE&apos;LL BE CHARGING A FEE OF KSH 350/- STARTING APRIL 2024
-      <br />
-      <SubsctionComingReadMore />
-    </Alert>
-  );
+export default function InAppNotice() {
+  return <></>;
+  // return (
+  //   <Alert
+  //     icon={<NotificationImportantIcon fontSize="inherit" />}
+  //     severity="info"
+  //   >
+  //     WE&apos;LL BE CHARGING A FEE OF KSH 350/- STARTING APRIL 2024
+  //     <br />
+  //     <SubsctionComingReadMore />
+  //   </Alert>
+  // );
 }

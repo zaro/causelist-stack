@@ -3,7 +3,11 @@
 # You can also use any other image from Docker Hub.
 FROM apify/actor-node:20 as runner-base
 
-RUN apk add bash curl file openjdk21-jre-headless libreoffice  poppler-utils tesseract-ocr tesseract-ocr-data-eng --no-cache
+RUN apk add bash curl file openjdk21-jre-headless libreoffice  poppler-utils tesseract-ocr tesseract-ocr-data-eng py3-img2pdf --no-cache
+# Install fonts
+RUN apk add --no-cache font-terminus font-inconsolata font-dejavu font-noto font-noto-cjk font-awesome font-noto-extra msttcorefonts-installer fontconfig
+
+RUN  update-ms-fonts && fc-cache -f
 
 FROM runner-base AS builder
 

@@ -10,6 +10,7 @@ import {
   PutObjectCommand,
   ListObjectsV2Command,
   DeleteObjectCommand,
+  _Object,
 } from '@aws-sdk/client-s3';
 import { ConfiguredRetryStrategy } from '@aws-sdk/util-retry';
 
@@ -25,6 +26,7 @@ interface S3Key {
 export interface S3ListRequest {
   maxKeys?: number;
   prefix?: string;
+  continuationToken?: string;
 }
 
 interface S3DownloadOptions {
@@ -119,6 +121,7 @@ export class S3Service {
       Bucket: this.bucket,
       MaxKeys: req.maxKeys,
       Prefix: req.prefix,
+      ContinuationToken: req.continuationToken,
     });
     return this.s3.send(command).then((result) => ({
       entries: result.Contents,
@@ -128,14 +131,19 @@ export class S3Service {
     }));
   }
 
-  async listFilesAll(req: S3ListRequest): Promise<S3ListResult> {
+  async listFilesAll(
+    req: S3ListRequest,
+    contentFilter?: (o: _Object, index: number) => boolean,
+  ): Promise<S3ListResult> {
     const command = new ListObjectsV2Command({
       Bucket: this.bucket,
       MaxKeys: req.maxKeys,
       Prefix: req.prefix,
     });
     let result = await this.s3.send(command).then((result) => ({
-      entries: result.Contents,
+      entries: contentFilter
+        ? result.Contents.filter(contentFilter)
+        : result.Contents,
       isTruncated: result.IsTruncated,
       NextContinuationToken: result.NextContinuationToken,
       prefix: result.Prefix,
@@ -148,7 +156,9 @@ export class S3Service {
         ContinuationToken: result.NextContinuationToken,
       });
       const next = await this.s3.send(nextCommand).then((result) => ({
-        entries: result.Contents,
+        entries: contentFilter
+          ? result.Contents.filter(contentFilter)
+          : result.Contents,
         isTruncated: result.IsTruncated,
         NextContinuationToken: result.NextContinuationToken,
         prefix: result.Prefix,

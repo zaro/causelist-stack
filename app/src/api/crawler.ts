@@ -4,12 +4,14 @@ export interface ProcessedFile {
   fileName: string;
   sha1: string;
   mimeType: string | undefined;
-  textContentType: string;
-  textContentSha1: string;
-  textContentMd5: string;
+  textContentType: string | undefined;
+  textContentSha1: string | undefined;
+  textContentMd5: string | undefined;
   hasCorrection?: boolean;
   correctedTextContentType?: string;
   correctedTextContentSha1?: string;
+  hasPdf?: boolean;
+  hasPages?: boolean;
   error: any;
   parentUrl: string;
   parentPath: string;

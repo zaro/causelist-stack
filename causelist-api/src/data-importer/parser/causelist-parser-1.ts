@@ -429,6 +429,7 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /(?:LAND|HIGH)\s+COURTS?$/,
   ]),
   new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /(?:LAND|HIGH)\s+COURTS?$/]),
+  new MatchRegExSequence([/DEPUTY\s+REGISTRAR/, /CIVIL DIVISION/]),
   new MatchRegExSequence([
     /DEPUTY\s+REGISTRAR/,
     /^(?:CONSTITUTIONAL|HIGH\s+COURT.*(?:AT|-))/,
@@ -467,6 +468,8 @@ export const MATCHERS_IGNORE_BETWEEN_DOCUMENTS = [
     /TO\s+CHECK\s+CASE\s+STATUS/,
     /^SUBJECT\s+TO\s+CHANGES/,
   ]),
+  new MatchRegExAny([/^DATED\s+AND\s+PUBLISHED\s+AT/i]),
+  new MatchRegExAny([/^DATED\s+(?:AT|IN)/i]),
   new MatchRegExSequence([/^NOTICE$/, /^Kindly Note/]),
   new MatchRegExSequence([JUDGE_HON_RE]),
   new MatchRegExSequence([/^DEPUTY\s+REGISTRAR$/]),

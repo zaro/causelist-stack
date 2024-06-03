@@ -30,3 +30,13 @@ export interface ProcessedFilesStats {
     [key: string]: number;
   };
 }
+
+export interface CaseMetadata {
+  title: string;
+  caseId: string;
+  url: string;
+  metadata: Record<string, String>;
+  hasPdf?: boolean;
+  hasOriginal?: boolean;
+  error?: any;
+}

@@ -3,4 +3,5 @@ mongo/
 proxy/
 tika/
 crawler-bucket/
+ai-*/
 causelist_prototype.pdf

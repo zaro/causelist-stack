@@ -20,18 +20,27 @@ import {
   CRAWLER_CRON_QUEUE_NAME,
   CrawlerCronParams,
 } from '../k8s-jobs/crawler-cron.processor.js';
+import { S3Service } from '../s3/s3.service.js';
+import { fileKey } from '../data-importer/const.js';
+import {
+  REPROCESS_FILES_JOB_QUEUE_NAME,
+  ReprocessFilesJobParams,
+} from '../k8s-jobs/reprocess-files.processor.js';
 
 @Injectable()
 export class CrawlerCommand {
   private readonly log = new Logger(CrawlerCommand.name);
 
   constructor(
+    protected s3Service: S3Service,
     @InjectQueue(CRAWLER_JOB_QUEUE_NAME)
     private crawlerQueue: Queue<CrawlJobParams>,
     @InjectQueue(CRAWLER_CRON_QUEUE_NAME)
     private crawlerCronQueue: Queue<CrawlerCronParams>,
     @InjectQueue(PARSE_CRAWLED_JOB_QUEUE_NAME)
     private parserQueue: Queue<ParseJobParams>,
+    @InjectQueue(REPROCESS_FILES_JOB_QUEUE_NAME)
+    private reprocessQueue: Queue<ReprocessFilesJobParams>,
   ) {}
 
   logK8sResult(r: any) {
@@ -91,6 +100,62 @@ export class CrawlerCommand {
     this.logK8sResult(r);
   }
 
+  @Command({
+    command: 'crawler:reprocess [maxJobs] [filesInAJob]',
+    describe: 'Parse reprocess files with latest crawler data processing',
+  })
+  async crawlerReprocess(
+    @Positional({
+      name: 'maxJobs',
+      describe: 'maxJobs to queue',
+      type: 'number',
+      default: 1,
+    })
+    maxJobs: number,
+    @Positional({
+      name: 'filesInAJob',
+      describe: 'number of files to process in single job',
+      type: 'number',
+      default: 20,
+    })
+    filesInAJob: number,
+  ) {
+    const allFiles = (
+      await this.s3Service.listFilesAll(
+        {
+          prefix: fileKey(''),
+        },
+        (o) => o.Key.endsWith('/meta.json'),
+      )
+    ).entries.map((e) => e.Key);
+    console.log(`Reprocessing ${allFiles.length} entries total`);
+    let list = [];
+    for (const fileKey of allFiles) {
+      const { dataAsObject: datasetFile } = await this.s3Service.downloadFile({
+        key: fileKey,
+        parseJson: true,
+      });
+      const { fileName, sha1, hasPdf, hasPages } = datasetFile;
+
+      if (hasPdf !== undefined || hasPages !== undefined) {
+        this.log.debug(`Ignoring ${fileName}, already reprocessed`);
+        continue;
+      }
+      list.push(sha1);
+      if (list.length >= filesInAJob) {
+        maxJobs--;
+        await this.reprocessQueue.add({
+          sha1: list,
+        });
+        this.log.log(`Queued ${list.length} files...`);
+        list = [];
+      }
+      if (maxJobs <= 0) {
+        break;
+      }
+    }
+  }
+
   async logJobsInQueue(queue: Queue<any>) {
     const jobs = await queue.getJobs([
       'completed',
@@ -133,5 +198,7 @@ export class CrawlerCommand {
     await this.logJobsInQueue(this.crawlerCronQueue);
     this.log.log('CRAWLER JOB QUEUE');
     await this.logJobsInQueue(this.crawlerQueue);
+    this.log.log('CRAWLER REPROCESS QUEUE');
+    await this.logJobsInQueue(this.reprocessQueue);
   }
 }

@@ -32,6 +32,11 @@ import {
   PARSE_CORRECTED_JOB_QUEUE_NAME,
   ParseCorrectedJobProcessor,
 } from './parse-corrected.processor.js';
+import {
+  REPROCESS_FILES_JOB_DEFAULT_OPTIONS,
+  REPROCESS_FILES_JOB_QUEUE_NAME,
+  ReprocessFilesJobProcessor,
+} from './reprocess-files.processor.js';
 
 @Module({
   imports: [
@@ -60,6 +65,10 @@ import {
         name: CRAWLER_CRON_QUEUE_NAME,
         defaultJobOptions: CRAWLER_CRON_DEFAULT_OPTIONS,
       },
+      {
+        name: REPROCESS_FILES_JOB_QUEUE_NAME,
+        defaultJobOptions: REPROCESS_FILES_JOB_DEFAULT_OPTIONS,
+      },
     ),
   ],
   providers: [
@@ -68,6 +77,7 @@ import {
     CrawlerCronProcessor,
     ProcessCorrectionJobProcessor,
     ParseCorrectedJobProcessor,
+    ReprocessFilesJobProcessor,
   ],
   exports: [BullModule],
   controllers: [K8sJobsController],

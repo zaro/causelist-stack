@@ -8,6 +8,8 @@
     "crawler:shell": "kubectl exec -n causelist-dev -it $(kubectl get po -n causelist-dev -l app.kubernetes.io/name=kenyalaw-crawler -o Name) -- /bin/sh"
   },
   "dependencies": {
+    "axios": "^1.7.2",
+    "crawlee": "^3.10.2",
     "scripty": "^2.1.1"
   }
 }

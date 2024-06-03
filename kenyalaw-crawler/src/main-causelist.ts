@@ -1,7 +1,7 @@
 // For more information, see https://crawlee.dev/
 import { CheerioCrawler, ProxyConfiguration } from "crawlee";
 
-import { router } from "./routes.js";
+import { router } from "./routes-causelist.js";
 import { DOWNLOAD_MIME_TYPES } from "./file-types.js";
 
 const startUrls = [

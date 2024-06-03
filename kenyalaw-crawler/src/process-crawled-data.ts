@@ -17,7 +17,7 @@ import { ProcessedFile, ProcessedFilesStats } from "./interfaces/crawler.js";
 const exec = util.promisify(child_process.exec);
 const STATS_FILE = "process-files-stats.json";
 
-async function convertFileToTxt(fileName: string, convertedDir: string) {
+async function convertFileToFormats(fileName: string, convertedDir: string) {
   let { stderr: mimeTypeError, stdout: mimeType } = await exec(
     `file --brief --mime-type ${fileName}`
   );
@@ -28,38 +28,99 @@ async function convertFileToTxt(fileName: string, convertedDir: string) {
       error: mimeTypeError,
     };
   }
-  let outFileName = path.join(
+  let txtOutFileName = path.join(
     convertedDir,
     path.basename(fileName).replace(/\.\w+$/, ".txt")
   );
-  let cmd,
+  let pdfOutFileName = path.join(
+    convertedDir,
+    path.basename(fileName).replace(/\.\w+$/, ".pdf")
+  );
+  let pngOutFileNamePrefix = path.join(
+    convertedDir,
+    path.basename(fileName).replace(/\.\w+$/, "-page")
+  );
+  let toTxtCmd,
+    toPdfCmd,
     textContentType = "text";
   switch (true) {
     case mimeType === "application/pdf":
-      cmd = `pdftotext -layout ${fileName} ${outFileName}`;
+      toTxtCmd = `pdftotext -layout ${fileName} ${txtOutFileName}`;
+      toPdfCmd = `cp ${fileName} ${pdfOutFileName}`;
       break;
     case mimeType === "image/png" || mimeType === "image/jpeg":
-      cmd = `tesseract ${fileName} ${outFileName.replace(/\.txt$/, "")}`;
+      toTxtCmd = `tesseract ${fileName} ${txtOutFileName.replace(
+        /\.txt$/,
+        ""
+      )}`;
+      toPdfCmd = `img2pdf -o ${pdfOutFileName} ${fileName} `;
       break;
     case mimeType ===
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-      cmd = `libreoffice --convert-to csv --outdir ${convertedDir} ${fileName}`;
-      outFileName = outFileName.replace(/\.txt$/, ".csv");
+      toTxtCmd = `libreoffice --convert-to csv --outdir ${convertedDir} ${fileName}`;
+      txtOutFileName = txtOutFileName.replace(/\.txt$/, ".csv");
       textContentType = "csv";
+      toPdfCmd = `libreoffice --convert-to pdf --outdir ${convertedDir} ${fileName}`;
       break;
     default:
-      cmd = `libreoffice --convert-to "txt:Text (encoded):UTF8" --outdir ${convertedDir} ${fileName}`;
+      toTxtCmd = `libreoffice --convert-to "txt:Text (encoded):UTF8" --outdir ${convertedDir} ${fileName}`;
+      toPdfCmd = `libreoffice --convert-to pdf --outdir ${convertedDir} ${fileName}`;
   }
-  const { stderr } = await exec(cmd);
+  let stderr;
+  ({ stderr } = await exec(toTxtCmd));
   if (stderr) {
     return {
       error: stderr,
     };
   }
+  // Convert to PDF
+  ({ stderr } = await exec(toPdfCmd));
+  if (stderr) {
+    return {
+      error: stderr,
+    };
+  }
+  // Convert to PNG pages
+  ({ stderr } = await exec(
+    `pdftoppm -png ${pdfOutFileName} ${pngOutFileNamePrefix}`
+  ));
+  if (stderr) {
+    return {
+      error: stderr,
+    };
+  }
+  let textContent = fs.readFileSync(txtOutFileName).toString();
+  let pngPagesFiles: string[] = [];
+  let page = 1;
+  let f;
+  while (fs.existsSync((f = `${pngOutFileNamePrefix}-${page}.png`))) {
+    pngPagesFiles.push(f);
+    page++;
+  }
+  if (textContent.trim().length < 3) {
+    // Most probably the document is only a picture, try to OCR
+    let pagesText = [];
+    for (const f of pngPagesFiles) {
+      log.info(`OCRing ${f}...`);
+      const { stdout, stderr } = await exec(
+        `tesseract  ${f}  stdout --oem 1 --psm 4`
+      );
+      if (stderr) {
+        console.error(`Failed OCR of ${f} with:`);
+        console.error(stderr);
+        continue;
+      }
+      pagesText.push(stdout);
+    }
+    textContent = pagesText.join("".padStart(80, "*"));
+  }
+
   try {
     return {
-      textContent: fs.readFileSync(outFileName).toString(),
+      textContent,
       textContentType,
+      pdfContentFile: pdfOutFileName,
+      pngPagesFiles,
       mimeType,
     };
   } catch (e: any) {
@@ -81,7 +142,7 @@ function textMd5(text: string) {
   return createHash("MD5").update(text).digest("hex");
 }
 
-function getCrawlTime(storageDir: string) {
+function getCrawlTime(storageDir: string): Date {
   if (process.env.FORCE_CRAWL_TIME) {
     const forced = new Date(process.env.FORCE_CRAWL_TIME);
     if (isNaN(forced.getTime())) {
@@ -94,7 +155,13 @@ function getCrawlTime(storageDir: string) {
   const fileTimes = fs
     .readdirSync(reqDir)
     .map((e) => fs.statSync(path.join(reqDir, e)).mtime);
-  return fileTimes.toSorted().at(-1);
+  const crawlTime = fileTimes.toSorted().at(-1);
+  if (!crawlTime) {
+    log.error("Invalid or empty crawl directory");
+    process.exit(1);
+  }
+  log.info(`Detected crawTime: ${crawlTime.toISOString()}`);
+  return crawlTime;
 }
 
 class SimpleS3 {
@@ -313,6 +380,68 @@ class SimpleS3 {
   }
 }
 
+async function convertAndUploadFile(
+  s3: SimpleS3,
+  file: ProcessedFile,
+  filePath: string,
+  convertedDir: string,
+  stats: ProcessedFilesStats
+) {
+  log.info(`Converting ${filePath} ...`);
+  const {
+    textContent,
+    textContentType,
+    mimeType,
+    pdfContentFile,
+    pngPagesFiles,
+    error,
+  } = await convertFileToFormats(filePath, convertedDir);
+  if (error) {
+    log.warning(`Failed to parse ${filePath} : ${error}`);
+  }
+
+  if (!textContent || !textContent.trim().length) {
+    stats.failedToConvert++;
+    log.warning(`Empty content for ${filePath} skipping`);
+    return {
+      textContent,
+      textContentType,
+      error: error ?? "Empty content",
+    };
+  }
+
+  log.info(`Uploading ${pngPagesFiles.length} png(s)...`);
+  await Promise.all(
+    [
+      s3.putFileAsFileContent(file, "original", filePath, mimeType),
+      s3.putFileContent(
+        file,
+        file.hasCorrection ? "textCorrected" : "text",
+        textContent,
+        "text/plain"
+      ),
+      s3.putFileAsFileContent(file, "pdf", pdfContentFile, "application/pdf"),
+    ].concat(
+      pngPagesFiles.map((filePath, index) =>
+        s3.putFileAsFileContent(
+          file,
+          `pages/${index + 1}`,
+          filePath,
+          "image/png"
+        )
+      )
+    )
+  );
+  return {
+    textContent,
+    textContentType,
+    mimeType,
+    pdfContentFile,
+    pngPagesFiles,
+    error,
+  };
+}
+
 async function processFiles(
   s3: SimpleS3,
   storageDir: string,
@@ -365,9 +494,30 @@ async function processFiles(
       log.debug(`Skip ${fileName}, already parsed w/o errors`);
       continue;
     }
-    log.info(`Converting ${fileName} ...`);
-    const { textContent, textContentType, mimeType, error } =
-      await convertFileToTxt(filePath, convertedDir);
+    const file: ProcessedFile = {
+      url,
+      statusCode,
+      fileName,
+      sha1,
+      parentUrl: parent.url,
+      parentPath,
+      parentName: parent.text,
+      datasetFile,
+      mimeType: undefined,
+      textContentType: undefined,
+      textContentMd5: undefined,
+      textContentSha1: undefined,
+      error: undefined,
+    };
+
+    const {
+      textContent,
+      textContentType,
+      mimeType,
+      error,
+      pdfContentFile,
+      pngPagesFiles,
+    } = await convertAndUploadFile(s3, file, filePath, convertedDir, stats);
     if (error) {
       log.warning(`Failed to parse ${filePath} : ${error}`);
     }
@@ -378,31 +528,14 @@ async function processFiles(
       continue;
     }
 
-    const file: ProcessedFile = {
-      url,
-      statusCode,
-      fileName,
-      sha1,
-      mimeType,
-      textContentType,
-      textContentSha1: textSha1(textContent),
-      textContentMd5: textMd5(textContent),
-      error,
-      parentUrl: parent.url,
-      parentPath,
-      parentName: parent.text,
-      datasetFile,
-    };
+    file.mimeType = mimeType;
+    file.textContentType = textContentType;
+    file.textContentSha1 = textSha1(textContent);
+    file.textContentMd5 = textMd5(textContent);
+    file.error = error;
+    file.hasPdf = !!pdfContentFile;
+    file.hasPages = !!pngPagesFiles?.length;
 
-    await Promise.all([
-      s3.putFileAsFileContent(
-        file,
-        "original",
-        path.join(filesDir, fileName),
-        mimeType
-      ),
-      s3.putFileContent(file, "text", textContent, "text/plain"),
-    ]);
     await s3.putFileRecord(file);
     stats.processed++;
     stats.processedSha1.push(file.sha1);
@@ -440,11 +573,9 @@ async function processMenuEntries(
   log.info(`Saved menuEntires as ${r}`);
 }
 
-async function processData(
-  storageDir: string,
-  crawlTime: Date,
-  ..._additionalArgs: string[]
-) {
+async function processData(storageDir: string, ..._additionalArgs: string[]) {
+  const crawlTime = getCrawlTime(storageDir);
+
   const s3 = new SimpleS3("files/", "menu-entries/", "logs/");
   const convertedDir = path.join(storageDir, "converted/");
   fs.mkdirSync(convertedDir, { recursive: true });
@@ -453,11 +584,9 @@ async function processData(
   return true;
 }
 
-async function uploadLogs(
-  storageDir: string,
-  crawlTime: Date,
-  ..._additionalArgs: string[]
-) {
+async function uploadLogs(storageDir: string, ..._additionalArgs: string[]) {
+  const crawlTime = getCrawlTime(storageDir);
+
   const s3 = new SimpleS3("files/", "menu-entries/", "logs");
   const logsFiles = fs
     .readdirSync(storageDir)
@@ -485,7 +614,6 @@ async function uploadLogs(
 
 async function processCorrection(
   storageDir: string,
-  _crawlTime: Date,
   ...additionalArgs: string[]
 ) {
   const sha1WithCorrection =
@@ -511,7 +639,7 @@ async function processCorrection(
 
   log.info(`Converting ${localFile} ...`);
   const { textContent, textContentType, mimeType, error } =
-    await convertFileToTxt(localFile, convertedDir);
+    await convertFileToFormats(localFile, convertedDir);
   if (error) {
     log.warning(`Failed to parse ${localFile} : ${error}`);
   }
@@ -534,7 +662,95 @@ async function processCorrection(
   return true;
 }
 
-const allowedCommands = [processData, uploadLogs, processCorrection];
+async function reprocessFiles(storageDir: string, ...additionalArgs: string[]) {
+  const reprocessSha1s = process.env.REPROCESS_SHA1 ?? additionalArgs[0];
+  if (!reprocessSha1s) {
+    log.error(`REPROCESS_SHA1 is missing`);
+    return false;
+  }
+  const stats: ProcessedFilesStats = {
+    totalFilesCount: 0,
+    non200: 0,
+    alreadyProcessed: 0,
+    failedToConvert: 0,
+    processed: 0,
+    processedSha1: [],
+    countByHttpStatus: {},
+  };
+  const dlDir = path.join(storageDir, "downloaded");
+  fs.mkdirSync(dlDir, { recursive: true });
+  const convertedDir = path.join(storageDir, "converted/");
+  fs.mkdirSync(convertedDir, { recursive: true });
+
+  for (const reprocessSha1 of reprocessSha1s.split(",")) {
+    log.info(`Reprocessing SHA1 ${reprocessSha1}`);
+    const s3 = new SimpleS3("files/", "menu-entries/", "logs");
+
+    const existingFile: ProcessedFile | null = await s3.getFileRecord(
+      reprocessSha1
+    );
+    if (!existingFile) {
+      log.error(`${reprocessSha1}, not found`);
+      continue;
+    }
+
+    const localFile = path.join(
+      dlDir,
+      (existingFile.hasCorrection ? "CORRECTED-" : "") + existingFile.fileName
+    );
+    await s3.getFileContent(
+      existingFile,
+      existingFile.hasCorrection ? "corrected" : "original",
+      localFile
+    );
+
+    const file: ProcessedFile = {
+      ...existingFile,
+    };
+
+    const {
+      textContent,
+      textContentType,
+      mimeType,
+      error,
+      pdfContentFile,
+      pngPagesFiles,
+    } = await convertAndUploadFile(s3, file, localFile, convertedDir, stats);
+    if (error) {
+      log.warning(`Failed to parse ${localFile} : ${error}`);
+    }
+
+    if (!textContent || !textContent.trim().length) {
+      stats.failedToConvert++;
+      log.warning(`Empty content for ${localFile} skipping`);
+    } else {
+      file.mimeType = mimeType;
+      file.textContentType = textContentType;
+      file.textContentSha1 = textSha1(textContent);
+      file.textContentMd5 = textMd5(textContent);
+    }
+
+    file.error = error;
+    file.hasPdf = !!pdfContentFile;
+    file.hasPages = !!pngPagesFiles?.length;
+
+    await s3.putFileRecord(file);
+    stats.processed++;
+    stats.processedSha1.push(file.sha1);
+  }
+  fs.writeFileSync(
+    path.join(storageDir, STATS_FILE),
+    JSON.stringify(stats, null, 2)
+  );
+  return true;
+}
+
+const allowedCommands = [
+  processData,
+  uploadLogs,
+  processCorrection,
+  reprocessFiles,
+];
 const command = process.argv[2];
 const storageDir = process.argv[3];
 const cmd = allowedCommands.find((f) => f.name === command);
@@ -551,14 +767,7 @@ if (!storageDir) {
   process.exit(1);
 }
 
-const crawlTime = getCrawlTime(storageDir);
-if (!crawlTime) {
-  log.error("Invalid or empty crawl directory");
-  process.exit(1);
-}
-log.info(`Detected crawTime: ${crawlTime.toISOString()}`);
-
-cmd(storageDir, crawlTime, ...process.argv.slice(4))
+cmd(storageDir, ...process.argv.slice(4))
   .then((r) => {
     if (!r) {
       log.error("Command finished unsuccessfully!");

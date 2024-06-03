@@ -27,6 +27,10 @@ import {
   CRAWLER_CRON_QUEUE_NAME,
 } from '../k8s-jobs/crawler-cron.processor.js';
 import {
+  REPROCESS_FILES_JOB_DEFAULT_OPTIONS,
+  REPROCESS_FILES_JOB_QUEUE_NAME,
+} from '../k8s-jobs/reprocess-files.processor.js';
+import {
   UnassignedMatters,
   UnassignedMattersSchema,
 } from '../schemas/unassigned-matters.schema.js';
@@ -39,6 +43,7 @@ import {
 } from '../schemas/payment-transaction.schema.js';
 import { PaymentsCommand } from './payments.command.js';
 import { SubscriptionModule } from '../subscription/subscription.module.js';
+import { S3Module } from '../s3/s3.module.js';
 
 @Module({
   imports: [
@@ -100,9 +105,14 @@ import { SubscriptionModule } from '../subscription/subscription.module.js';
         name: PARSE_CRAWLED_JOB_QUEUE_NAME,
         defaultJobOptions: PARSE_CRAWLED_JOB_DEFAULT_OPTIONS,
       },
+      {
+        name: REPROCESS_FILES_JOB_QUEUE_NAME,
+        defaultJobOptions: REPROCESS_FILES_JOB_DEFAULT_OPTIONS,
+      },
     ),
     DataImporterModule,
     PaymentsModule,
+    S3Module,
     SubscriptionModule,
     CommandModule,
   ],

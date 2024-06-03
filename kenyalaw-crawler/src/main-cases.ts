@@ -16,9 +16,12 @@ import { url } from "inspector";
 // log.setLevel(LogLevel.DEBUG);
 
 const getStartRequest = async () => {
-  const lastDownloadedCaseId = await caseStore.lastCaseId();
-  console.log(lastDownloadedCaseId);
-  const startId = (lastDownloadedCaseId + 1).toString();
+  let startId = process.env.CRAWL_START_ID;
+  if (!startId) {
+    const lastDownloadedCaseId = await caseStore.lastCaseId();
+    console.log(lastDownloadedCaseId);
+    startId = (lastDownloadedCaseId + 1).toString();
+  }
   log.info(`>>> Starting download at case ${startId}`);
   return [
     {

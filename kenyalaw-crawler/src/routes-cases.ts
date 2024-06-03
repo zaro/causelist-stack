@@ -26,7 +26,7 @@ router.addDefaultHandler<ReqUserData>(async ({ log, request }) => {
 
 router.addHandler<ReqUserData>(
   "case",
-  async ({ request, response, $, log, enqueueLinks, pushData }) => {
+  async ({ request, response, $, log, enqueueLinks }) => {
     const { id, missingSequenceCount = 0 } = request.userData;
 
     const enqueueNext = (id: string, notFound: boolean = false) => {

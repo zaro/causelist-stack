@@ -205,13 +205,12 @@ export class CasesStore {
         Prefix: this.casesPrefix,
         ContinuationToken: result.NextContinuationToken,
       });
-      const next = await this.s3.send(nextCommand).then((result) => ({
+      result = await this.s3.send(nextCommand).then((result) => ({
         entries: result.Contents,
         isTruncated: result.IsTruncated,
         NextContinuationToken: result.NextContinuationToken,
         prefix: result.Prefix,
       }));
-      result.NextContinuationToken = next.NextContinuationToken;
       getMax(result.entries);
     }
     return maxCaseId;

@@ -83,6 +83,7 @@ router.addHandler<ReqUserData>(
     let contentUrl;
     if (!pdfLinksAttrs.href.startsWith("javascript")) {
       contentUrl = pdfLinksAttrs.href;
+      description.hasPdf = true;
     } else {
       if (pdfLinkText.includes("Original Source")) {
         contentUrl =

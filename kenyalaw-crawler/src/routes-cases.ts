@@ -5,7 +5,7 @@ import { createCheerioRouter, Dataset } from "crawlee";
 import { CasesStore } from "./cases-store.js";
 import { CaseMetadata } from "./interfaces/crawler.js";
 
-const MAX_MISSING_TO_STOP = 100;
+const MAX_MISSING_TO_STOP = 500;
 const baseUrl = "https://kenyalaw.org/caselaw/";
 export const caseStore = new CasesStore("cases/files/", "cases/logs/");
 export const router = createCheerioRouter();

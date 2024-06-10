@@ -9,6 +9,8 @@ RUN apk add --no-cache font-terminus font-inconsolata font-dejavu font-noto font
 
 RUN  update-ms-fonts && fc-cache -f
 
+RUN mkdir -p /opt/tika && cd /opt/tika && curl -LO https://dlcdn.apache.org/tika/3.0.0-BETA/tika-server-standard-3.0.0-BETA.jar
+
 FROM runner-base AS builder
 
 WORKDIR /crawler-dev

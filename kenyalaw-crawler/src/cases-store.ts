@@ -216,6 +216,39 @@ export class CasesStore {
     return maxCaseId;
   }
 
+  async eachKey(handler: (o: _Object) => void) {
+    const command = new ListObjectsV2Command({
+      Bucket: this.bucket,
+      Prefix: this.casesPrefix,
+    });
+    let result = await this.s3.send(command).then((r) => ({
+      entries: r.Contents ?? [],
+      isTruncated: r.IsTruncated,
+      NextContinuationToken: r.NextContinuationToken,
+      prefix: r.Prefix,
+    }));
+    for (const e of result.entries) {
+      handler(e);
+    }
+    while (result.NextContinuationToken) {
+      const nextCommand = new ListObjectsV2Command({
+        Bucket: this.bucket,
+        Prefix: this.casesPrefix,
+        ContinuationToken: result.NextContinuationToken,
+      });
+      const next = await this.s3.send(nextCommand).then((r) => ({
+        entries: r.Contents ?? [],
+        isTruncated: r.IsTruncated,
+        NextContinuationToken: r.NextContinuationToken,
+        prefix: r.Prefix,
+      }));
+      for (const e of next.entries) {
+        handler(e);
+      }
+      result.NextContinuationToken = next.NextContinuationToken;
+    }
+  }
+
   async uploadLogFile(fileName: string, key: string, crawlTime: Date) {
     const time = crawlTime.toISOString();
     const command = new PutObjectCommand({

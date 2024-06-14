@@ -26,7 +26,7 @@ export class ParseCrawledJobProcessor extends K8sJobProcessorBase {
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
-    super(new Logger(ParseCrawledJobProcessor.name));
+    super(configService, new Logger(ParseCrawledJobProcessor.name));
     this.nodeEnvProduction = configService.get('NODE_ENV') === 'production';
     this.currentPodName = configService.getOrThrow('CURRENT_POD_NAME');
   }

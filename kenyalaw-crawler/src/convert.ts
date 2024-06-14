@@ -53,7 +53,7 @@ export async function convertFileToFormats(
       toPdfCmd = `cp ${fileName} ${pdfOutFileName}`;
       break;
     case mimeType === "image/png" || mimeType === "image/jpeg":
-      toTxtCmd = `tesseract ${fileName} ${txtOutFileName.replace(
+      toTxtCmd = `nice tesseract ${fileName} ${txtOutFileName.replace(
         /\.txt$/,
         ""
       )}`;
@@ -109,7 +109,7 @@ export async function convertFileToFormats(
     for (const f of pngPagesFiles) {
       log.info(`OCRing ${f}...`);
       const { stdout, stderr } = await exec(
-        `tesseract  ${f}  stdout --oem 1 --psm 4`
+        `nice tesseract  ${f}  stdout --oem 1 --psm 4`
       );
       if (stderr) {
         console.error(`Failed OCR of ${f} with:`);

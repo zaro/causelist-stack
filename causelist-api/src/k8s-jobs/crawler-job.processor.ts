@@ -37,7 +37,7 @@ export class CrawlerJobProcessor extends K8sJobProcessorBase {
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
-    super(new Logger(CrawlerJobProcessor.name));
+    super(configService, new Logger(CrawlerJobProcessor.name));
     this.currentPodName = configService.getOrThrow('CURRENT_POD_NAME');
 
     this.crawlerImage = configService.getOrThrow('CRAWLER_IMAGE');

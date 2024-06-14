@@ -24,7 +24,7 @@ export class ParseCorrectedJobProcessor extends K8sJobProcessorBase {
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
-    super(new Logger(ParseCorrectedJobProcessor.name));
+    super(configService, new Logger(ParseCorrectedJobProcessor.name));
     this.nodeEnvProduction = configService.get('NODE_ENV') === 'production';
     this.currentPodName = configService.getOrThrow('CURRENT_POD_NAME');
   }

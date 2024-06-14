@@ -1,8 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
-import k8s from '@kubernetes/client-node';
+import k8s, { V1PodSpec } from '@kubernetes/client-node';
 import { readFileSync } from 'fs';
 import stream from 'stream';
+import { ConfigService } from '@nestjs/config';
 
 const POD_FINISHED_PHASES = {
   Succeeded: true,
@@ -34,9 +35,14 @@ export abstract class K8sJobProcessorBase {
   protected coreApi: k8s.CoreV1Api;
   protected k8sLog: k8s.Log;
   protected readonly namespace: string;
+  protected readonly nodeSelectorLabel: string;
+  protected readonly nodeSelectorValue: string;
   protected _currentPodCached: k8s.V1Pod;
 
-  constructor(protected log: Logger) {
+  constructor(
+    configService: ConfigService,
+    protected log: Logger,
+  ) {
     const kc = new k8s.KubeConfig();
     kc.loadFromCluster();
 
@@ -45,6 +51,9 @@ export abstract class K8sJobProcessorBase {
     this.namespace = readFileSync(
       '/var/run/secrets/kubernetes.io/serviceaccount/namespace',
     ).toString();
+
+    this.nodeSelectorLabel = configService.get('K8S_JOBS_NODE_SELECTOR_LABEL');
+    this.nodeSelectorValue = configService.get('K8S_JOBS_NODE_SELECTOR_VALUE');
   }
 
   async getCurrentPod() {
@@ -99,6 +108,12 @@ export abstract class K8sJobProcessorBase {
     );
     const containerName = this.buildContainerName(job);
     const command = this.buildContainerCommand(job);
+    const nodeSelector: V1PodSpec['nodeSelector'] =
+      this.nodeSelectorLabel && this.nodeSelectorValue
+        ? {
+            [this.nodeSelectorLabel]: this.nodeSelectorValue,
+          }
+        : undefined;
 
     k8sPod.spec = {
       containers: [
@@ -112,6 +127,7 @@ export abstract class K8sJobProcessorBase {
       ],
       restartPolicy: 'Never',
       imagePullSecrets: currentPod.spec.imagePullSecrets,
+      nodeSelector,
     };
     this.log.log(`Creating k8s pod : ${this.namespace}/${name}`);
     let podRes = await this.coreApi.createNamespacedPod(this.namespace, k8sPod);

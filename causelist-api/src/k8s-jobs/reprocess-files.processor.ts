@@ -29,7 +29,7 @@ export class ReprocessFilesJobProcessor extends K8sJobProcessorBase {
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
-    super(new Logger(ReprocessFilesJobProcessor.name));
+    super(configService, new Logger(ReprocessFilesJobProcessor.name));
     this.nodeEnvProduction = configService.get('NODE_ENV') === 'production';
     this.currentPodName = configService.getOrThrow('CURRENT_POD_NAME');
 

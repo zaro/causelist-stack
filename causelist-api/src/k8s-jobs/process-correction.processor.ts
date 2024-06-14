@@ -28,7 +28,7 @@ export class ProcessCorrectionJobProcessor extends K8sJobProcessorBase {
     protected s3Service: S3Service,
     configService: ConfigService,
   ) {
-    super(new Logger(ProcessCorrectionJobProcessor.name));
+    super(configService, new Logger(ProcessCorrectionJobProcessor.name));
     this.nodeEnvProduction = configService.get('NODE_ENV') === 'production';
     this.currentPodName = configService.getOrThrow('CURRENT_POD_NAME');
     this.crawlerImage = configService.getOrThrow('CRAWLER_IMAGE');

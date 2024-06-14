@@ -162,8 +162,8 @@ export class CourtsService {
       const pre = {
         _id: doc._id.toString(),
         type: doc.type,
-        date: doc.header.date,
-        judge: doc.header.judge,
+        date: doc.header?.date,
+        judge: doc.header?.judge,
       };
       for (
         let sectionIdx = 0;
@@ -195,7 +195,7 @@ export class CourtsService {
       const pre = {
         _id: doc._id.toString(),
         type: doc.type,
-        date: doc.header.date,
+        date: doc.header?.date,
       };
       for (let lineIdx = 0; lineIdx < doc.cases.length; lineIdx++) {
         const line = doc.cases[lineIdx];

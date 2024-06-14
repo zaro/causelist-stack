@@ -137,12 +137,14 @@ export default function Page() {
                   secondary={
                     <>
                       <i>
-                        {format(new Date(c.date), "PPPP", {
-                          timeZone,
-                        })}
+                        {c.date
+                          ? format(new Date(c.date), "PPPP", {
+                              timeZone,
+                            })
+                          : "-"}
                       </i>
                       <br />
-                      <span>{c.judge}</span>
+                      <span>{c.judge ?? "-"}</span>
                     </>
                   }
                 />

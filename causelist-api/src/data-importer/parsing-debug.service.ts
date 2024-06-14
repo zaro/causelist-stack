@@ -57,16 +57,20 @@ export class ParsingDebugService {
     );
 
     env.addFilter('date', function (date: string | Date, formatSpecifier) {
-      if (typeof date === 'string') {
-        date = new Date(date);
+      try {
+        const d = typeof date === 'string' ? new Date(date) : date;
+        return format(d, formatSpecifier ?? 'yyyy-MM-dd');
+      } catch (e) {
+        return `Failed to parse '${date}' as Date`;
       }
-      return format(date, formatSpecifier ?? 'yyyy-MM-dd');
     });
     env.addFilter('dateTime', function (date: string | Date, formatSpecifier) {
-      if (typeof date === 'string') {
-        date = new Date(date);
+      try {
+        const d = typeof date === 'string' ? new Date(date) : date;
+        return format(d, formatSpecifier ?? 'yyyy-MM-dd HH:mm');
+      } catch (e) {
+        return `Failed to parse '${date}' as Date`;
       }
-      return format(date, formatSpecifier ?? 'yyyy-MM-dd HH:mm');
     });
     return env;
   }

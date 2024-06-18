@@ -28,6 +28,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import WebIcon from "@mui/icons-material/Web";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
+import SourceIcon from "@mui/icons-material/Source";
 import InfoIcon from "@mui/icons-material/Info";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useState, FC, MouseEventHandler } from "react";
@@ -62,9 +63,14 @@ const drawerMenu: DrawerMenuItemType[] = [
     icon: CalendarMonthIcon,
   },
   {
-    name: "Search",
+    name: "Causelist Search",
     path: "/search",
     icon: SearchIcon,
+  },
+  {
+    name: "Case Search",
+    path: "/case-search",
+    icon: SourceIcon,
   },
   "-",
   {
@@ -162,6 +168,10 @@ export default function App({ children }: { children: React.ReactNode }) {
     pageTitle = currentMenuItem.name;
   } else if (pathname.startsWith("/search/result/")) {
     pageTitle = "Search Result Details";
+  } else if (pathname.startsWith("/case-search/result/")) {
+    pageTitle = "Case Details";
+  } else if (pathname.startsWith("/case-search/")) {
+    pageTitle = "Case Search Results";
   } else if (pathname.startsWith("/admin")) {
     pageTitle = "Admin";
   } else if (pathname.startsWith("/account/subscribe")) {

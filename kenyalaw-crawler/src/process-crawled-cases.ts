@@ -17,7 +17,7 @@ import { CasesStore } from "./cases-store.js";
 import { caseStore } from "./routes-cases.js";
 import {
   convertFileToFormats,
-  convertFileToHtmlAndPossiblyPdf,
+  convertFileToTextHtmlAndPossiblyPdf,
   tikaServerInfo,
   tikaServerStart,
   tikaServerStop,
@@ -59,7 +59,10 @@ async function convertCasesToText(
 
   log.info(`Processing ${Object.keys(cases).length} cases from S3`);
   for (const [caseId, objects] of Object.entries(cases)) {
-    if (objects.some((o) => o.key === "html")) {
+    if (
+      objects.some((o) => o.key === "text") &&
+      objects.some((o) => o.key === "html")
+    ) {
       continue;
     }
     const caseRecord = await caseStore.getCaseRecord(caseId);
@@ -71,8 +74,8 @@ async function convertCasesToText(
     const sourceFile = path.join(downloadDir, `${sourceKey}.dl`);
     await caseStore.getFileContent(caseRecord, sourceKey, sourceFile);
     log.info(`Converting case ${caseId}`);
-    const { htmlContent, mimeType, pdfFileName, error } =
-      await convertFileToHtmlAndPossiblyPdf(sourceFile, convertedDir);
+    const { htmlContent, textContent, mimeType, pdfFileName, error } =
+      await convertFileToTextHtmlAndPossiblyPdf(sourceFile, convertedDir);
     if (error) {
       log.error(`Failed: convertFileToFormats(${caseId}) error: ${error}`);
       continue;
@@ -81,12 +84,10 @@ async function convertCasesToText(
       log.error(`Failed: convertFileToFormats(${caseId}) textContent is empty`);
       continue;
     }
-    await caseStore.putFileContent(
-      caseRecord,
-      "html",
-      htmlContent,
-      "text/html"
-    );
+    await Promise.all([
+      caseStore.putFileContent(caseRecord, "html", htmlContent, "text/html"),
+      caseStore.putFileContent(caseRecord, "text", textContent, "text/plain"),
+    ]);
     if (mimeType !== "application/pdf") {
       await caseStore.putFileAsFileContent(
         caseRecord,

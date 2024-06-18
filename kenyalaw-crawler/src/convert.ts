@@ -191,7 +191,7 @@ export async function tikaServerInfo(): Promise<void> {
   log.info(r.body);
 }
 
-export async function convertFileToHtmlAndPossiblyPdf(
+export async function convertFileToTextHtmlAndPossiblyPdf(
   fileName: string,
   convertedDir: string
 ) {
@@ -206,20 +206,30 @@ export async function convertFileToHtmlAndPossiblyPdf(
     };
   }
 
-  let response;
+  const body = fs.readFileSync(fileName);
+  let responseHtml, responseText;
   try {
-    response = await got.put(`${TIKA_URL}tika`, {
-      body: fs.readFileSync(fileName),
+    responseHtml = await got.put(`${TIKA_URL}tika`, {
+      body,
       headers: {
         "Content-Type": mimeType,
         Accept: "text/html",
+      },
+    });
+
+    responseText = await got.put(`${TIKA_URL}tika`, {
+      body,
+      headers: {
+        "Content-Type": mimeType,
+        Accept: "text/plain",
       },
     });
   } catch (e: any) {
     log.error(`${TIKA_URL}tika:  ${e.response.body}`);
     throw e;
   }
-  const htmlContent = response.body;
+  const htmlContent = responseHtml.body;
+  const textContent = responseText.body;
 
   let toPdfCmd;
   let pdfOutFileName = path.join(
@@ -252,6 +262,7 @@ export async function convertFileToHtmlAndPossiblyPdf(
   try {
     return {
       htmlContent,
+      textContent,
       pdfFileName: pdfOutFileName,
       mimeType,
     };

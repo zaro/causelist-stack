@@ -155,6 +155,7 @@ export class CourtsService {
         { score: { $meta: 'textScore' } },
       )
       .sort({ score: { $meta: 'textScore' } })
+      .limit(100)
       .exec();
     const partialList: ISearchResult[] = [];
     const textLower = text.toLowerCase();

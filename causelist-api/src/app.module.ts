@@ -27,6 +27,9 @@ import { EmailModule } from './email/email.module.js';
 import { InfoFilesModule } from './info-files/info-files.module.js';
 import { PaymentsModule } from './payments/payments.module.js';
 import { SubscriptionModule } from './subscription/subscription.module.js';
+import { ManticoreModule } from './manticore/manticore.module.js';
+import { CasesModule } from './cases/cases.module.js';
+import { MeiliModule } from './meili/meili.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -134,6 +137,9 @@ AdminJS.registerAdapter({
     InfoFilesModule,
     PaymentsModule,
     SubscriptionModule,
+    ManticoreModule,
+    CasesModule,
+    MeiliModule,
   ],
   controllers: [AppController],
   providers: [AppService],

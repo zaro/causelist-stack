@@ -3271,6 +3271,7 @@ __metadata:
     eslint-config-next: "npm:14.0.4"
     iframe-resizer-react: "npm:^1.1.0"
     libphonenumber-js: "npm:^1.10.52"
+    meilisearch: "npm:^0.40.0"
     monaco-editor: "npm:^0.47.0"
     next: "npm:14.0.4"
     posthog-js: "npm:^1.96.1"
@@ -3819,6 +3820,15 @@ __metadata:
     path-type: "npm:^4.0.0"
     yaml: "npm:^1.10.0"
   checksum: b923ff6af581638128e5f074a5450ba12c0300b71302398ea38dbeabd33bbcaa0245ca9adbedfcf284a07da50f99ede5658c80bb3e39e2ce770a99d28a21ef03
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^3.1.6":
+  version: 3.1.8
+  resolution: "cross-fetch@npm:3.1.8"
+  dependencies:
+    node-fetch: "npm:^2.6.12"
+  checksum: 4c5e022ffe6abdf380faa6e2373c0c4ed7ef75e105c95c972b6f627c3f083170b6886f19fb488a7fa93971f4f69dcc890f122b0d97f0bf5f41ca1d9a8f58c8af
   languageName: node
   linkType: hard
 
@@ -5155,9 +5165,9 @@ __metadata:
   linkType: hard
 
 "iframe-resizer@npm:^4.3.0":
-  version: 4.3.9
-  resolution: "iframe-resizer@npm:4.3.9"
-  checksum: 8599cc820bbf3a921e23cc6a288724d2781deea5c4ba0c2e577e68f533b06099b759e34e2120c365547592db4c762db6a71c287e18252fa5998a19561dcc1b50
+  version: 4.4.2
+  resolution: "iframe-resizer@npm:4.4.2"
+  checksum: 214a6e95c3d58a7956cc3ad468774c24c19a9c52b7a4beabc389748caaea4b7c62b711f67aa4d6de81c0d54017f0f7bbe81cabc8f39e2f79fbef7279822f2b20
   languageName: node
   linkType: hard
 
@@ -6042,6 +6052,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"meilisearch@npm:^0.40.0":
+  version: 0.40.0
+  resolution: "meilisearch@npm:0.40.0"
+  dependencies:
+    cross-fetch: "npm:^3.1.6"
+  checksum: f032dc271ab3d68e7d396aa86cd72a0550f785f971fa8a35f908bad3bfd4b40bdf10ce25be80c7cd921d36b1af85d12e0d6a951c34baadbf6f76e07792b3024b
+  languageName: node
+  linkType: hard
+
 "merge-stream@npm:^2.0.0":
   version: 2.0.0
   resolution: "merge-stream@npm:2.0.0"
@@ -6352,7 +6371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.7":
+"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:

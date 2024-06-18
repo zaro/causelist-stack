@@ -44,6 +44,8 @@ import {
 import { PaymentsCommand } from './payments.command.js';
 import { SubscriptionModule } from '../subscription/subscription.module.js';
 import { S3Module } from '../s3/s3.module.js';
+import { ManticoreModule } from '../manticore/manticore.module.js';
+import { MeiliModule } from '../meili/meili.module.js';
 
 @Module({
   imports: [
@@ -113,6 +115,8 @@ import { S3Module } from '../s3/s3.module.js';
     DataImporterModule,
     PaymentsModule,
     S3Module,
+    ManticoreModule,
+    MeiliModule,
     SubscriptionModule,
     CommandModule,
   ],

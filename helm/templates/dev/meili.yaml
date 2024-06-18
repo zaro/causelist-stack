@@ -1,0 +1,79 @@
+{{ if .Values.useDevMode }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: meilisearch
+  labels:
+{{ include "causelist-stack.labels" (list . "meilisearch" ) | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "causelist-stack.selectorLabels" (list . "meilisearch" ) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      labels:
+        {{- include "causelist-stack.selectorLabels" (list . "meilisearch" ) | nindent 8 }}
+    spec:
+      containers:
+      - name: meilisearch
+        image: getmeili/meilisearch:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: MEILI_MASTER_KEY
+            value: "meili-search-admin"
+        ports:
+        - name: meilisearch
+          containerPort: 9306
+        volumeMounts:
+          - name: meilisearch
+            mountPath: /meili_data
+      volumes:
+        - name: meilisearch
+          persistentVolumeClaim:
+            claimName: meilisearch-data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: meilisearch-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: meilisearch
+  labels:
+{{ include "causelist-stack.labels"  (list . "meilisearch" ) | indent 4 }}
+spec:
+  ports:
+  - port: 7700
+    name: meilisearch
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "meilisearch" ) | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: meilisearch-nodeport
+  labels:
+{{ include "causelist-stack.labels"  (list . "meilisearch" ) | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 7700
+    nodePort: 30770
+    name: meilisearch-nodeport-api
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "meilisearch" ) | nindent 4 }}
+{{ end }}

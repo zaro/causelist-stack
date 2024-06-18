@@ -55,6 +55,8 @@
     "express-session": "^1.17.3",
     "k2-connect-node": "^1.2.1",
     "libphonenumber-js": "^1.10.52",
+    "manticoresearch-ts": "^4.1.0",
+    "meilisearch": "^0.40.0",
     "mongoose": "^7.6.5",
     "nestjs-command": "^3.1.4",
     "nodemailer": "^6.9.8",

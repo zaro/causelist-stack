@@ -131,23 +131,19 @@ export class S3Service {
     }));
   }
 
-  async listFilesAll(
+  async eachFile(
     req: S3ListRequest,
-    contentFilter?: (o: _Object, index: number) => boolean,
-  ): Promise<S3ListResult> {
+    handler?: (o: _Object) => void,
+  ): Promise<void> {
     const command = new ListObjectsV2Command({
       Bucket: this.bucket,
       MaxKeys: req.maxKeys,
       Prefix: req.prefix,
     });
-    let result = await this.s3.send(command).then((result) => ({
-      entries: contentFilter
-        ? result.Contents.filter(contentFilter)
-        : result.Contents,
-      isTruncated: result.IsTruncated,
-      NextContinuationToken: result.NextContinuationToken,
-      prefix: result.Prefix,
-    }));
+    let result = await this.s3.send(command);
+    for (const e of result.Contents) {
+      handler(e);
+    }
     while (result.NextContinuationToken) {
       const nextCommand = new ListObjectsV2Command({
         Bucket: this.bucket,
@@ -155,19 +151,30 @@ export class S3Service {
         Prefix: req.prefix,
         ContinuationToken: result.NextContinuationToken,
       });
-      const next = await this.s3.send(nextCommand).then((result) => ({
-        entries: contentFilter
-          ? result.Contents.filter(contentFilter)
-          : result.Contents,
-        isTruncated: result.IsTruncated,
-        NextContinuationToken: result.NextContinuationToken,
-        prefix: result.Prefix,
-      }));
-      result.entries = result.entries.concat(next.entries);
-      result.NextContinuationToken = next.NextContinuationToken;
-      result.isTruncated = next.isTruncated;
+      result = await this.s3.send(nextCommand);
+      for (const e of result.Contents) {
+        handler(e);
+      }
     }
-    return result;
+  }
+
+  async listFilesAll(
+    req: S3ListRequest,
+    contentFilter?: (o: _Object, index: number) => boolean,
+  ): Promise<S3ListResult> {
+    const result: _Object[] = [];
+    let index = 0;
+    await this.eachFile(req, (o) => {
+      if (contentFilter(o, index++)) {
+        result.push(o);
+      }
+    });
+    return {
+      entries: result,
+      isTruncated: false,
+      NextContinuationToken: null,
+      prefix: req.prefix,
+    };
   }
 
   async uploadFile(req: S3UploadRequest): Promise<S3UploadResult> {

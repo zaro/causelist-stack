@@ -1,0 +1,92 @@
+{{ if 0 }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: manticore
+  labels:
+{{ include "causelist-stack.labels" (list . "manticore" ) | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "causelist-stack.selectorLabels" (list . "manticore" ) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      labels:
+        {{- include "causelist-stack.selectorLabels" (list . "manticore" ) | nindent 8 }}
+    spec:
+      containers:
+      - name: manticore
+        image: manticoresearch/manticore:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ZZZ_QUERY_LOG_TO_STDOUT
+            value: "true"
+        ports:
+        - name: manticore
+          containerPort: 9306
+        volumeMounts:
+          - name: manticore
+            mountPath: /var/lib/manticore/
+      volumes:
+        - name: init-data-volume
+          mountPath: /etc/manticoresearch/manticore.conf
+        - name: manticore
+          persistentVolumeClaim:
+            claimName: manticore-data
+        - name: init-data-volume
+          configMap:
+            name: shared-init-data
+            items:
+            - path: manticore.conf
+              key: manticore.conf
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: manticore-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: manticore
+  labels:
+{{ include "causelist-stack.labels"  (list . "manticore" ) | indent 4 }}
+spec:
+  ports:
+  - port: 9306
+    name: manticore
+  - port: 9308
+    name: manticore-http
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "manticore" ) | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: manticore-nodeport
+  labels:
+{{ include "causelist-stack.labels"  (list . "manticore" ) | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 9306
+    nodePort: 30936
+    name: manticore-nodeport-api
+  - port: 9308
+    nodePort: 30938
+    name: manticore-nodeport-http
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "manticore" ) | nindent 4 }}
+{{ end }}

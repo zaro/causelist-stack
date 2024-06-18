@@ -40,6 +40,8 @@ async function convertCasesToText(
       lastModified?: Date;
     }>;
   } = {};
+  const startCase = parseInt(_additionalArgs[0], 10);
+  log.info(`Start case is ${startCase}`);
   const [tikaProc] = await Promise.all([
     tikaServerStart(),
     caseStore.eachKey((o) => {
@@ -47,6 +49,9 @@ async function convertCasesToText(
       const match = o.Key.match(/\/(\d+)\//);
       if (!match) return;
       const caseId = match[1];
+      if (!isNaN(startCase) && startCase < parseInt(caseId, 10)) {
+        return;
+      }
       if (!cases[caseId]) {
         cases[caseId] = [];
       }

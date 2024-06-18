@@ -1,4 +1,4 @@
-import { Command } from 'nestjs-command/dist/index.js';
+import { Command, Positional } from 'nestjs-command/dist/index.js';
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -45,19 +45,37 @@ export class UpdateCommand {
   }
 
   @Command({
-    command: 'update:cases',
+    command: 'update:cases [startCase]',
     describe: 'Update search Index',
   })
-  async updateCasesSearchIndex() {
+  async updateCasesSearchIndex(
+    @Positional({
+      name: 'startCase',
+      describe: 'start update from case Number',
+      type: 'string',
+    })
+    startCase?: string,
+  ) {
     await this.meiliService.createIndexes();
     const keyPairs: Record<
       string,
       { metaKey?: string; htmlKey?: string; textKey?: string }
     > = {};
     this.log.log('Loading data...');
+    let startCaseN;
+    if (startCase) {
+      this.log.log(`Will start from case : ${startCase}`);
+      startCaseN = parseInt(startCase, 10);
+      if (isNaN(startCaseN)) {
+        throw new Error('Invalid start case ');
+      }
+    }
     await this.s3Service.eachFile({ prefix: 'cases/files/' }, (o) => {
       const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
       if (caseId) {
+        if (startCaseN > parseInt(caseId)) {
+          return;
+        }
         if (!keyPairs[caseId]) {
           keyPairs[caseId] = {};
         }

@@ -41,10 +41,15 @@ async function convertCasesToText(
     }>;
   } = {};
   const startCase = parseInt(_additionalArgs[0], 10);
-  log.info(`Start case is ${startCase}`);
+  log.info(`Start processing from case ${startCase}`);
+  let c = 0;
   const [tikaProc] = await Promise.all([
     tikaServerStart(),
     caseStore.eachKey((o) => {
+      c++;
+      if (c % 1000 == 0) {
+        log.info("1000 keys loaded...");
+      }
       if (!o.Key) return;
       const match = o.Key.match(/\/(\d+)\//);
       if (!match) return;

@@ -22,8 +22,8 @@ import Chip from "@mui/material/Chip";
 export default function Page() {
   const [countyOpen, setCountyOpen] = React.useState(false);
   const [cityOpen, setCityOpen] = React.useState(false);
-  const [county, setCounty] = React.useState("");
-  const [city, setCity] = React.useState("");
+  const [county, setCounty] = React.useState<string | null>(null);
+  const [city, setCity] = React.useState<string | null>(null);
 
   const { data: citiesData, isLoading: citiesLoading } = useSWR(
     `/api/directory/cities`,
@@ -63,7 +63,7 @@ export default function Page() {
         onClose={() => {
           setCountyOpen(false);
         }}
-        onChange={(e, v: string[]) => setCounty(v)}
+        onChange={(e, v: string | null) => setCounty(v)}
         options={Object.keys(cityByCounty)}
         value={county}
         loading={citiesLoading}
@@ -108,7 +108,7 @@ export default function Page() {
         onClose={() => {
           setCityOpen(false);
         }}
-        onChange={(e, v: string[]) => setCity(v)}
+        onChange={(e, v: string | null) => setCity(v)}
         options={county ? cityByCounty[county] : []}
         value={city}
         loading={citiesLoading}
@@ -149,7 +149,7 @@ export default function Page() {
           </Typography>
 
           <List sx={{ bgcolor: "background.paper", marginX: "auto" }}>
-            {data.map((e) => (
+            {data.map((e: any) => (
               <ListItem key={e.name}>
                 <ListItemText primary={e.name} />
               </ListItem>

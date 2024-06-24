@@ -25,6 +25,8 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import PlagiarismIcon from "@mui/icons-material/Plagiarism";
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import WebIcon from "@mui/icons-material/Web";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
@@ -58,6 +60,11 @@ const drawerMenu: DrawerMenuItemType[] = [
     icon: HomeIcon,
   },
   {
+    name: "Case Search",
+    path: "/case-search",
+    icon: PlagiarismIcon,
+  },
+  {
     name: "Calendar",
     path: "/calendar",
     icon: CalendarMonthIcon,
@@ -65,12 +72,7 @@ const drawerMenu: DrawerMenuItemType[] = [
   {
     name: "Causelist Search",
     path: "/search",
-    icon: SearchIcon,
-  },
-  {
-    name: "Case Search",
-    path: "/case-search",
-    icon: SourceIcon,
+    icon: ManageSearchIcon,
   },
   "-",
   {

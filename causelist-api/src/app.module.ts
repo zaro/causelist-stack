@@ -30,6 +30,7 @@ import { SubscriptionModule } from './subscription/subscription.module.js';
 import { ManticoreModule } from './manticore/manticore.module.js';
 import { CasesModule } from './cases/cases.module.js';
 import { MeiliModule } from './meili/meili.module.js';
+import { DirectoryModule } from './directory/directory.module.js';
 
 AdminJS.registerAdapter({
   Resource: AdminJSMongoose.Resource,
@@ -140,6 +141,7 @@ AdminJS.registerAdapter({
     ManticoreModule,
     CasesModule,
     MeiliModule,
+    DirectoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

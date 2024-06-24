@@ -46,6 +46,10 @@ import { SubscriptionModule } from '../subscription/subscription.module.js';
 import { S3Module } from '../s3/s3.module.js';
 import { ManticoreModule } from '../manticore/manticore.module.js';
 import { MeiliModule } from '../meili/meili.module.js';
+import {
+  DirectoryListing,
+  DirectoryListingSchema,
+} from '../schemas/directory-listing.schema.js';
 
 @Module({
   imports: [
@@ -84,6 +88,7 @@ import { MeiliModule } from '../meili/meili.module.js';
       { name: User.name, schema: UserSchema },
       { name: Court.name, schema: CourtSchema },
       { name: PaymentTransaction.name, schema: PaymentTransactionSchema },
+      { name: DirectoryListing.name, schema: DirectoryListingSchema },
     ]),
     BullModule.forRootAsync({
       imports: [ConfigModule],

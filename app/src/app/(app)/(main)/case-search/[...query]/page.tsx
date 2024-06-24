@@ -133,6 +133,7 @@ export default function Page({ params }: { params: { query: string[] } }) {
           row
           aria-labelledby="demo-row-radio-buttons-group-label"
           name="row-radio-buttons-group"
+          defaultValue={sortBy}
           onChange={(event) =>
             setSortBy((event.target as HTMLInputElement).value)
           }

@@ -32,7 +32,10 @@ export default function Page() {
   const cityByCounty = useMemo(() => {
     if (!citiesData) return {};
     return citiesData.reduce(
-      (a, e) => ({ ...a, [e.county]: [...(a[e.county] ?? []), e.city] }),
+      (a: any, e: any) => ({
+        ...a,
+        [e.county]: [...(a[e.county] ?? []), e.city],
+      }),
       {}
     );
   }, [citiesData]);

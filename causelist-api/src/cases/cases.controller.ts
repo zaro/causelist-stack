@@ -71,6 +71,11 @@ export class CasesController {
         key: `cases/files/${caseId}/pdf`,
         asStream: true,
       });
+      for (const [h, v] of Object.entries(r.headers)) {
+        if (typeof v === 'string') {
+          response.setHeader(h, v);
+        }
+      }
       (r.data as Readable).pipe(response);
     } catch (err: any) {
       this.log.error(err);

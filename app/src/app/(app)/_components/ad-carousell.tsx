@@ -1,19 +1,25 @@
 import React from "react";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button } from "@mui/material";
+import Image1 from "../../carousell/carousell1.jpg";
+import Image2 from "../../carousell/carousell2.jpg";
+import Image3 from "../../carousell/carousell3.jpg";
+import Image, { StaticImageData } from "next/image";
 
 interface CarouselItemProps {
-  name: string;
+  img: StaticImageData;
   description: string;
 }
 
 function CarouselItem(props: CarouselItemProps) {
   return (
     <Paper>
-      <h2>{props.name}</h2>
-      <p>{props.description}</p>
-
-      <Button className="CheckButton">Check it out!</Button>
+      <Image
+        // objectFit="contain"
+        // fill={true}
+        src={props.img}
+        alt={props.description}
+      ></Image>
     </Paper>
   );
 }
@@ -21,16 +27,16 @@ function CarouselItem(props: CarouselItemProps) {
 export function AdCarousel() {
   var items = [
     {
-      name: "Random Name #1",
-      description: "Probably the most random thing you have ever seen!",
+      img: Image1,
+      description: "Image 1 description",
     },
     {
-      name: "Random Name #2",
-      description: "Hello World!",
+      img: Image2,
+      description: "Image 2 description",
     },
     {
-      name: "Random Name #3",
-      description: "Hey there!",
+      img: Image3,
+      description: "Image 3 description",
     },
   ];
 

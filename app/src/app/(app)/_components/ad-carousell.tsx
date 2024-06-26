@@ -4,6 +4,10 @@ import { Paper, Button } from "@mui/material";
 import Image1 from "../../carousell/carousell1.jpg";
 import Image2 from "../../carousell/carousell2.jpg";
 import Image3 from "../../carousell/carousell3.jpg";
+import Image4 from "../../carousell/carousell4.jpg";
+import Image5 from "../../carousell/carousell5.jpg";
+import Image6 from "../../carousell/carousell6.jpg";
+import Image7 from "../../carousell/carousell7.jpg";
 import Image, { StaticImageData } from "next/image";
 
 interface CarouselItemProps {
@@ -13,10 +17,10 @@ interface CarouselItemProps {
 
 function CarouselItem(props: CarouselItemProps) {
   return (
-    <Paper>
+    <Paper sx={{ width: "100%", height: "300px" }}>
       <Image
-        // objectFit="contain"
-        // fill={true}
+        objectFit="contain"
+        fill={true}
         src={props.img}
         alt={props.description}
       ></Image>
@@ -36,6 +40,22 @@ export function AdCarousel() {
     },
     {
       img: Image3,
+      description: "Image 3 description",
+    },
+    {
+      img: Image4,
+      description: "Image 3 description",
+    },
+    {
+      img: Image5,
+      description: "Image 3 description",
+    },
+    {
+      img: Image6,
+      description: "Image 3 description",
+    },
+    {
+      img: Image7,
       description: "Image 3 description",
     },
   ];

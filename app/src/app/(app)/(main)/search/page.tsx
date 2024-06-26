@@ -29,6 +29,7 @@ import { AppButtonLink } from "../../_components/app-link.tsx";
 import Centered from "../../_components/centered.tsx";
 import InAppNotice from "../../_components/in-app-notice.tsx";
 import SubscriptionRequired from "../../_components/subscription-required.tsx";
+import { AdCarousel } from "../../_components/ad-carousell.tsx";
 
 const CaseListItem = styled(ListItem)(({ theme }) => ({
   borderWidth: "1px",
@@ -96,6 +97,8 @@ export default function Page() {
             Use the search field to search for parties and case numbers
           </Centered>
           <InAppNotice />
+
+          <AdCarousel />
         </Box>
       )}
       {searchText && (!data || data?.length == 0) && (

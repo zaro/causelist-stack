@@ -11,6 +11,7 @@ import Centered from "../../_components/centered.tsx";
 import InAppNotice from "../../_components/in-app-notice.tsx";
 import ErrorBoundary from "../../../_common/error-boundary.tsx";
 import SubscriptionRequired from "../../_components/subscription-required.tsx";
+import { AdCarousel } from "../../_components/ad-carousell.tsx";
 
 export default function Page() {
   const selectedCourt = causeListStore.use.selectedCourt();
@@ -46,6 +47,8 @@ export default function Page() {
           </Centered>
 
           <InAppNotice />
+
+          <AdCarousel />
         </Box>
       )}
     </Stack>

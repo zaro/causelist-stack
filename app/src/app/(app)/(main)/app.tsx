@@ -309,18 +309,19 @@ export default function App({ children }: { children: React.ReactNode }) {
             height: "100%",
           }}
         >
+          <DrawerHeader />
           <Box
             component="main"
             sx={{
               flexGrow: 1,
               display: "flex",
               flexDirection: "column",
+              minHeight: "80vh",
             }}
           >
-            <DrawerHeader />
             {children}
-            <AppFooter sx={{ marginTop: "3em" }} />
           </Box>
+          <AppFooter />
         </Box>
       </Box>
     </LocalizationProvider>

@@ -89,12 +89,13 @@ export class GetDayParams extends DaysInMonthParam {
 @UseInterceptors(CacheInterceptor)
 export class CourtsController {
   constructor(protected service: CourtsService) {}
+
+  @Public()
   @Get('all')
   findAll() {
     return this.service.findAll();
   }
 
-  @RequiresSubscription()
   @Get('search/:text*')
   search(@Param() params: SearchParams) {
     return this.service.search(params.text);
@@ -178,12 +179,13 @@ export class CourtsController {
     return doc;
   }
 
+  @Public()
   @Get(':courtPath/judges')
   getJudges(@Param() params: GetJudgesParams) {
     return this.service.findAllJudgesForCourt(params.courtPath);
   }
 
-  @RequiresSubscription()
+  @Public()
   @Get(':year/:month/:day/:courtPath/list')
   getDay(@Param() params: GetDayParams) {
     return this.service.getDay(
@@ -194,6 +196,7 @@ export class CourtsController {
     );
   }
 
+  @Public()
   @Get(':year/:month/:courtPath/days')
   findDays(@Param() params: DaysInMonthParam) {
     return this.service.daysInAMonth(

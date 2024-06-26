@@ -55,6 +55,7 @@ const Header = (props: any) => {
     { id: 2, route: "Sign Up", url: "/sign-up" },
     { id: 3, route: "Sign In", url: "/sign-in" },
     { id: 4, route: "Lawyer recommendation", url: "/recommend-lawyer" },
+    { id: 4, route: "Causelist Calendar", url: "/causelist-calendar" },
   ];
 
   const [state, setState] = React.useState({

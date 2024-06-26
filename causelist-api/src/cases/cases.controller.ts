@@ -71,10 +71,12 @@ export class CasesController {
         key: `cases/files/${caseId}/pdf`,
         asStream: true,
       });
-      for (const [h, v] of Object.entries(r.headers)) {
-        if (typeof v === 'string') {
-          response.setHeader(h, v);
-        }
+      if (r.headers.ETag) {
+        response.setHeader('ETag', r.headers.ETag);
+      }
+      const headers = ['ContentType', 'ContentLength', 'LastModified'];
+      for (const h of headers) {
+        response.setHeader(h.replace(/([a-z])([A-Z])/, '$1-$2'), r.headers[h]);
       }
       (r.data as Readable).pipe(response);
     } catch (err: any) {

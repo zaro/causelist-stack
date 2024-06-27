@@ -87,9 +87,6 @@ export default function SignUp() {
         <Typography component="h1" variant="h5" marginBottom="1em">
           Sign up
         </Typography>
-        <Typography component="h4" variant="body1">
-          START YOUR ONE MONTH FREE TRIAL NOW
-        </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>

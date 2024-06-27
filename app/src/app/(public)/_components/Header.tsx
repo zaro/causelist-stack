@@ -49,13 +49,19 @@ const Header = (props: any) => {
   const links = [
     {
       id: 1,
+      route: "Case search",
+      url: "/free-case-search",
+    },
+
+    { id: 10, route: "Sign Up", url: "/sign-up" },
+    { id: 15, route: "Sign In", url: "/sign-in" },
+    { id: 20, route: "Lawyer recommendation", url: "/recommend-lawyer" },
+    { id: 25, route: "Causelist Calendar", url: "/causelist-calendar" },
+    {
+      id: 5,
       route: "About Us",
       url: "/about-us",
     },
-    { id: 2, route: "Sign Up", url: "/sign-up" },
-    { id: 3, route: "Sign In", url: "/sign-in" },
-    { id: 4, route: "Lawyer recommendation", url: "/recommend-lawyer" },
-    { id: 4, route: "Causelist Calendar", url: "/causelist-calendar" },
   ];
 
   const [state, setState] = React.useState({

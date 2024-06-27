@@ -6,6 +6,9 @@ import { UserDataInRequest } from './request.js';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+  static payloadToUser(payload: any): UserDataInRequest {
+    return { id: payload.sub, role: payload.role };
+  }
   constructor(configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -18,6 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any): Promise<UserDataInRequest> {
-    return { id: payload.sub, role: payload.role };
+    return JwtStrategy.payloadToUser(payload);
   }
 }

@@ -9,13 +9,17 @@ import { useRouter } from "next/navigation";
 
 export default function CaseSearchBox({
   initialSearchText,
+  caseSearchPath,
 }: {
   initialSearchText: string;
+  caseSearchPath?: string;
 }) {
   const router = useRouter();
   const [searchText, setSearchText] = useState(initialSearchText);
   const search = () => {
-    router.push(`/case-search/${encodeURIComponent(searchText)}`);
+    router.push(
+      `${caseSearchPath ?? "/case-search"}/${encodeURIComponent(searchText)}`
+    );
   };
 
   return (

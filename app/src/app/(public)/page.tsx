@@ -28,7 +28,7 @@ export default async function Home() {
   const { fallback } = await getFallbackData();
   return (
     <>
-      <Hero fallback={fallback} />
+      <Hero />
       <Section />
       <AboutUs />
       {/* <Testimonial /> */}

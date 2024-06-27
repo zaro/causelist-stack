@@ -1,4 +1,4 @@
-import { Command, Positional } from 'nestjs-command/dist/index.js';
+import { Command, Positional, Option } from 'nestjs-command/dist/index.js';
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -49,6 +49,12 @@ export class UpdateCommand {
     describe: 'Update search Index',
   })
   async updateCasesSearchIndex(
+    @Option({
+      name: 'drop',
+      describe: 'Drop index if it exists',
+      type: 'boolean',
+    })
+    drop: boolean,
     @Positional({
       name: 'startCase',
       describe: 'start update from case Number',
@@ -56,7 +62,7 @@ export class UpdateCommand {
     })
     startCase?: string,
   ) {
-    await this.meiliService.createIndexes();
+    await this.meiliService.createIndexes(drop);
     const keyPairs: Record<
       string,
       { metaKey?: string; htmlKey?: string; textKey?: string }
@@ -97,6 +103,12 @@ export class UpdateCommand {
     for (const [caseId, k] of entries) {
       let metaR, htmlR, textR;
       try {
+        if (!k.metaKey || !k.htmlKey || !k.textKey) {
+          this.log.warn(
+            `at least one missing key for ${caseId} : meta=${k.metaKey} , html=${k.htmlKey} , txt=${k.textKey}`,
+          );
+          continue;
+        }
         [metaR, htmlR, textR] = await this.s3Service.downloadMultipleFiles([
           {
             key: k.metaKey,
@@ -114,6 +126,11 @@ export class UpdateCommand {
         this.log.error(e);
         continue;
       }
+      const date_delivered = parse(
+        metaR.dataAsObject.metadata['Date Delivered'],
+        'dd LLL yyyy',
+        new Date(0),
+      );
       chunk.push({
         meta: metaR.dataAsObject,
         title: metaR.dataAsObject.title,
@@ -122,11 +139,8 @@ export class UpdateCommand {
         case_number: metaR.dataAsObject.metadata['Case Number'],
         parties: metaR.dataAsObject.metadata['Parties'],
         date_delivered_human: metaR.dataAsObject.metadata['Date Delivered'],
-        date_delivered: parse(
-          metaR.dataAsObject.metadata['Date Delivered'],
-          'dd LLL yyyy',
-          new Date(0),
-        ),
+        date_delivered,
+        date_delivered_ms: date_delivered.getTime(),
         case_class: metaR.dataAsObject.metadata['Case Class'],
         court: metaR.dataAsObject.metadata['Court'],
         case_action: metaR.dataAsObject.metadata['Case Action'],

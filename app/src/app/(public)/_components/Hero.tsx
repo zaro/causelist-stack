@@ -5,19 +5,29 @@ import AppPreview from "./AppPreview.tsx";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import classes from "./common.module.css";
+import CaseSearchBox from "../../(app)/(main)/case-search/case-search-box.tsx";
+import Box from "@mui/material/Box";
 
-export default function Hero({ fallback }: { fallback: any }) {
+// export default function Hero({ fallback }: { fallback: any }) {
+export default function Hero() {
   return (
-    <div>
-      <Typography variant="h3" fontWeight={700} className={classes.title}>
-        Causelists made easy
+    <Box paddingTop="3em">
+      <Typography
+        variant="h3"
+        fontWeight={700}
+        className={classes.title}
+        paddingBottom="2em"
+      >
+        Instant search of all court case documents
       </Typography>
 
-      <Suspense fallback={<h3>Loading data</h3>}>
+      <CaseSearchBox initialSearchText="" caseSearchPath="/free-case-search" />
+
+      {/* <Suspense fallback={<h3>Loading data</h3>}>
         <SWRConfig value={{ fallback }}>
           <AppPreview />
         </SWRConfig>
-      </Suspense>
-    </div>
+      </Suspense> */}
+    </Box>
   );
 }

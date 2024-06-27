@@ -7,6 +7,7 @@ export interface CaseIndex {
   parties: string;
   date_delivered_human: string;
   date_delivered: Date;
+  date_delivered_ms: number;
   case_class: string;
   court: string;
   case_action: string;

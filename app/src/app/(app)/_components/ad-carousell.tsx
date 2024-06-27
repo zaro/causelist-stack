@@ -61,11 +61,8 @@ export function AdCarousel() {
   ];
 
   return (
-    <Box>
-      <Carousel
-        sx={{ width: "90%" }}
-        indicatorContainerProps={{ style: { paddingTop: "10px" } }}
-      >
+    <Box sx={{ width: "90%" }}>
+      <Carousel indicatorContainerProps={{ style: { paddingTop: "10px" } }}>
         {items.map((item, i) => (
           <CarouselItem key={i} {...item} />
         ))}

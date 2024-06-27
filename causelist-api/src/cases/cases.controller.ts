@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Query,
+  Request,
   Response,
 } from '@nestjs/common';
 import { ManticoreService } from '../manticore/manticore.service.js';
@@ -12,6 +13,9 @@ import { Public } from '../auth/public.decorator.js';
 import { MeiliService } from '../meili/meili.service.js';
 import { S3Service } from '../s3/s3.service.js';
 import { Readable } from 'stream';
+import { RequestWithUser } from '../auth/request.js';
+import { CaseIndex } from '../interfaces/search-index.js';
+import { SearchResponse } from 'meilisearch';
 
 @Controller('cases')
 export class CasesController {
@@ -24,24 +28,37 @@ export class CasesController {
   @Public()
   @Get('fts/:queryString')
   async search(
+    @Request()
+    req: RequestWithUser,
     @Param('queryString')
     queryString: string,
     @Query('offset')
     offsetParam: string,
     @Query('sort')
     sort: string,
-  ) {
+  ): Promise<SearchResponse<CaseIndex> & { freeResults: boolean }> {
     if (!queryString) {
       return null;
     }
+    let freeResults = !req.user?.id || !req.user?.role;
     const sortByDate = sort === 'time' ? 'desc' : undefined;
     const offset = offsetParam ? parseInt(offsetParam, 10) : undefined;
-    return this.meiliService.searchCases(queryString, { offset, sortByDate });
+    const result = await this.meiliService.searchCases(queryString, {
+      offset,
+      sortByDate,
+      paidResults: !freeResults,
+    });
+    return {
+      ...result,
+      freeResults,
+    };
   }
 
   @Public()
   @Get('load/:caseId/:hl?')
   async load(
+    @Request()
+    req: RequestWithUser,
     @Param('caseId')
     caseId: string,
     @Param('hl')
@@ -56,6 +73,8 @@ export class CasesController {
   @Public()
   @Get('pdf/:caseId/:hl?')
   async getPdf(
+    @Request()
+    req: RequestWithUser,
     @Response()
     response,
     @Param('caseId')

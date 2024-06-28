@@ -1,6 +1,6 @@
 import * as stream from 'stream';
 import * as path from 'path';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Readable } from 'node:stream';
 import {
@@ -81,6 +81,7 @@ const DATA_URL_REGEX = /^data:(?<mimeType>[^;,]+)(?:;(?<encoding>base64))?,/;
 
 @Injectable()
 export class S3Service {
+  protected log = new Logger(S3Service.name);
   public readonly bucket: string;
   public readonly endpoint: string;
   public readonly region: string;
@@ -98,6 +99,7 @@ export class S3Service {
     this.region = configService.getOrThrow('S3_REGION');
     this.accessKey = configService.getOrThrow('S3_ACCESS_KEY');
     this.secretKey = configService.getOrThrow('S3_SECRET');
+    const debugLog = configService.get('S3_DEBUG_LOG');
 
     this.s3 = new S3Client({
       forcePathStyle: true,
@@ -111,6 +113,15 @@ export class S3Service {
         3, // max attempts.
         (attempt: number) => 1000 + attempt * 2000, // backoff function.
       ),
+      logger: debugLog
+        ? {
+            trace: (...content: any[]) => this.log.debug(content.join(' ')),
+            debug: (...content: any[]) => this.log.debug(content.join(' ')),
+            info: (...content: any[]) => this.log.log(content.join(' ')),
+            warn: (...content: any[]) => this.log.warn(content.join(' ')),
+            error: (...content: any[]) => this.log.error(content.join(' ')),
+          }
+        : undefined,
     });
   }
 

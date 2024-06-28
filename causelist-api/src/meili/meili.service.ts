@@ -44,11 +44,18 @@ export class MeiliService {
     });
     await this.client.waitForTask(task.taskUid);
     const index = await this.casesIndex();
-    const filterable = ['case_id', 'date_delivered_ms'];
+    const filterable = [
+      'case_id',
+      'date_delivered_ms',
+      'case_class',
+      'court',
+      'case_action',
+      'judge',
+    ];
     this.log.log(`Updating filterable attributes to ${filterable}`);
     task = await index.updateFilterableAttributes(filterable);
     await this.client.waitForTask(task.taskUid);
-    const sortable = ['date_delivered'];
+    const sortable = ['date_delivered_ms'];
     this.log.log(`Updating sortable attributes to ${sortable}`);
     task = await index.updateSortableAttributes(sortable);
     await this.client.waitForTask(task.taskUid);
@@ -123,7 +130,7 @@ export class MeiliService {
   ) {
     const index = await this.casesIndex();
     const sort = options?.sortByDate
-      ? [`date_delivered:${options?.sortByDate}`]
+      ? [`date_delivered_ms:${options?.sortByDate}`]
       : undefined;
     const filter = options?.paidResults
       ? undefined

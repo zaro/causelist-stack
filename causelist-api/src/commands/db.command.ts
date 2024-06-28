@@ -127,10 +127,16 @@ export class DbCommand {
   }
 
   @Command({
-    command: 'db:fix-pdfs',
+    command: 'db:fix-pdfs [caseId]',
     describe: 'Fix pdf files incorrectly uploaded as original ',
   })
   async fixPdf(
+    @Positional({
+      name: 'caseId',
+      describe: 'Single case id to check/fix',
+      type: 'string',
+    })
+    caseId: string,
     @Option({
       name: 'print-only',
       describe: 'Only print the case ids with missing pdfs',
@@ -149,8 +155,12 @@ export class DbCommand {
       }
     > = {};
     this.log.log('Start loading s3 data...');
+    let prefix = 'cases/files/';
+    if (caseId) {
+      prefix += caseId + '/';
+    }
     await this.s3Service.eachFile(
-      { prefix: 'cases/files/' },
+      { prefix },
       (o) => {
         const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
         if (caseId) {
@@ -188,6 +198,7 @@ export class DbCommand {
       for (const [caseId, keys] of casesWithNoPdf.slice(0, 100)) {
         this.log.log(`  case : ${caseId}, got : ${JSON.stringify(keys)}`);
       }
+      return;
     }
     for (const [caseId, keys] of casesWithNoPdf) {
       const contentType = await this.s3Service.getFileMimeType(keys.original);

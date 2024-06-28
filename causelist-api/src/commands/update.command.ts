@@ -76,26 +76,30 @@ export class UpdateCommand {
         throw new Error('Invalid start case ');
       }
     }
-    await this.s3Service.eachFile({ prefix: 'cases/files/' }, (o) => {
-      const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
-      if (caseId) {
-        if (startCaseN > parseInt(caseId)) {
-          return;
+    await this.s3Service.eachFile(
+      { prefix: 'cases/files/' },
+      (o) => {
+        const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
+        if (caseId) {
+          if (startCaseN > parseInt(caseId)) {
+            return;
+          }
+          if (!keyPairs[caseId]) {
+            keyPairs[caseId] = {};
+          }
+          if (file === 'html') {
+            keyPairs[caseId].htmlKey = o.Key;
+          }
+          if (file === 'text') {
+            keyPairs[caseId].textKey = o.Key;
+          }
+          if (file === 'meta.json') {
+            keyPairs[caseId].metaKey = o.Key;
+          }
         }
-        if (!keyPairs[caseId]) {
-          keyPairs[caseId] = {};
-        }
-        if (file === 'html') {
-          keyPairs[caseId].htmlKey = o.Key;
-        }
-        if (file === 'text') {
-          keyPairs[caseId].textKey = o.Key;
-        }
-        if (file === 'meta.json') {
-          keyPairs[caseId].metaKey = o.Key;
-        }
-      }
-    });
+      },
+      true,
+    );
 
     let chunk: CaseIndex[] = [];
     let c = 0;

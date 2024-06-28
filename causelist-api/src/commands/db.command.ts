@@ -129,4 +129,58 @@ export class DbCommand {
     this.log.log(`Pdf  files: ${stats.pdf}`);
     this.log.log(`Took: ${(end - start) / 1000} s`);
   }
+
+  @Command({
+    command: 'db:fix-pdfs',
+    describe: 'Fix pdf files incorrectly uploaded as original ',
+  })
+  async fixPdf() {
+    const keyPairs: Record<
+      string,
+      {
+        metaKey?: string;
+        htmlKey?: string;
+        textKey?: string;
+        pdf?: string;
+        original?: string;
+      }
+    > = {};
+    this.log.log('Start loading s3 data...');
+    await this.s3Service.eachFile({ prefix: 'cases/files/' }, (o) => {
+      const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
+      if (caseId) {
+        if (!keyPairs[caseId]) {
+          keyPairs[caseId] = {};
+        }
+        if (file === 'html') {
+          keyPairs[caseId].htmlKey = o.Key;
+        }
+        if (file === 'text') {
+          keyPairs[caseId].textKey = o.Key;
+        }
+        if (file === 'meta.json') {
+          keyPairs[caseId].metaKey = o.Key;
+        }
+        if (file === 'pdf') {
+          keyPairs[caseId].pdf = o.Key;
+        }
+        if (file === 'original') {
+          keyPairs[caseId].original = o.Key;
+        }
+      }
+    });
+    this.log.log('Done loading s3 data!');
+    const casesWithNoPdf = Object.entries(keyPairs).filter(([caseId, d]) => {
+      return !d.pdf;
+    });
+    this.log.log(`${casesWithNoPdf.length} cases with no pdf!`);
+    for (const [caseId, keys] of casesWithNoPdf) {
+      const contentType = await this.s3Service.getFileMimeType(keys.original);
+      if (contentType == 'application/pdf') {
+        const newKey = keys.original.replace(/\/original$/, '/pdf');
+        this.log.log(`Rename ${keys.original} -> ${newKey}`);
+        await this.s3Service.renameKey(keys.original, newKey);
+      }
+    }
+  }
 }

@@ -10,6 +10,7 @@ import {
   PutObjectCommand,
   ListObjectsV2Command,
   DeleteObjectCommand,
+  CopyObjectCommand,
   _Object,
 } from '@aws-sdk/client-s3';
 import { ConfiguredRetryStrategy } from '@aws-sdk/util-retry';
@@ -217,7 +218,35 @@ export class S3Service {
     return fileMeta.ContentLength;
   }
 
+  /**
+   * Mime type of a file
+   */
+  async getFileMimeType(key: string) {
+    const command = new HeadObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+    });
+
+    const fileMeta = await await this.s3.send(command);
+    return fileMeta.ContentType;
+  }
+
   async removeKey(key: string): Promise<Boolean> {
+    const deleteCommand = new DeleteObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+    });
+    await this.s3.send(deleteCommand);
+    return true;
+  }
+
+  async renameKey(key: string, newKey: string): Promise<Boolean> {
+    const copyCommand = new CopyObjectCommand({
+      CopySource: `${this.bucket}/${key}`,
+      Bucket: this.bucket,
+      Key: newKey,
+    });
+    await this.s3.send(copyCommand);
     const deleteCommand = new DeleteObjectCommand({
       Bucket: this.bucket,
       Key: key,

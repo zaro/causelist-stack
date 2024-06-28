@@ -48,7 +48,7 @@ async function convertCasesToText(
     caseStore.eachKey((o) => {
       c++;
       if (c % 1000 == 0) {
-        log.info("1000 keys loaded...");
+        log.info(`${c} keys loaded...`);
       }
       if (!o.Key) return;
       const match = o.Key.match(/\/(\d+)\//);

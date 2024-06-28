@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../schemas/user.schema.js';
 import { UserRole } from '../interfaces/users.js';
+import { S3Service } from '../s3/s3.service.js';
 
 @Injectable()
 export class DbCommand {
@@ -15,6 +16,7 @@ export class DbCommand {
   constructor(
     @InjectModel(User.name)
     protected userModel: Model<User>,
+    protected s3Service: S3Service,
   ) {}
 
   @Command({
@@ -77,5 +79,54 @@ export class DbCommand {
     user.role = isAdmin ? UserRole.Admin : UserRole.Lawyer;
     await user.save();
     this.log.log(`Done!`);
+  }
+
+  @Command({
+    command: 'db:case-stats',
+    describe: 'Show case files stats',
+  })
+  async caseStats() {
+    const keyPairs: Record<
+      string,
+      { metaKey?: string; htmlKey?: string; textKey?: string; pdf?: string }
+    > = {};
+    const stats: { html: number; text: number; meta: number; pdf: number } = {
+      html: 0,
+      text: 0,
+      pdf: 0,
+      meta: 0,
+    };
+    const start = Date.now();
+    await this.s3Service.eachFile({ prefix: 'cases/files/' }, (o) => {
+      const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
+      if (caseId) {
+        if (!keyPairs[caseId]) {
+          keyPairs[caseId] = {};
+        }
+        if (file === 'html') {
+          keyPairs[caseId].htmlKey = o.Key;
+          stats.html++;
+        }
+        if (file === 'text') {
+          keyPairs[caseId].textKey = o.Key;
+          stats.text++;
+        }
+        if (file === 'meta.json') {
+          keyPairs[caseId].metaKey = o.Key;
+          stats.meta++;
+        }
+        if (file === 'pdf') {
+          keyPairs[caseId].pdf = o.Key;
+          stats.pdf++;
+        }
+      }
+    });
+    const end = Date.now();
+    this.log.log(`Case files stats:`);
+    this.log.log(`Meta files: ${stats.meta}`);
+    this.log.log(`Html files: ${stats.html}`);
+    this.log.log(`Text files: ${stats.text}`);
+    this.log.log(`Pdf  files: ${stats.pdf}`);
+    this.log.log(`Took: ${(end - start) / 1000} s`);
   }
 }

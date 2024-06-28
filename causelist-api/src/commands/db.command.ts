@@ -86,10 +86,6 @@ export class DbCommand {
     describe: 'Show case files stats',
   })
   async caseStats() {
-    const keyPairs: Record<
-      string,
-      { metaKey?: string; htmlKey?: string; textKey?: string; pdf?: string }
-    > = {};
     const stats: { html: number; text: number; meta: number; pdf: number } = {
       html: 0,
       text: 0,
@@ -97,30 +93,27 @@ export class DbCommand {
       meta: 0,
     };
     const start = Date.now();
-    await this.s3Service.eachFile({ prefix: 'cases/files/' }, (o) => {
-      const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
-      if (caseId) {
-        if (!keyPairs[caseId]) {
-          keyPairs[caseId] = {};
+    await this.s3Service.eachFile(
+      { prefix: 'cases/files/' },
+      (o) => {
+        const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
+        if (caseId) {
+          if (file === 'html') {
+            stats.html++;
+          }
+          if (file === 'text') {
+            stats.text++;
+          }
+          if (file === 'meta.json') {
+            stats.meta++;
+          }
+          if (file === 'pdf') {
+            stats.pdf++;
+          }
         }
-        if (file === 'html') {
-          keyPairs[caseId].htmlKey = o.Key;
-          stats.html++;
-        }
-        if (file === 'text') {
-          keyPairs[caseId].textKey = o.Key;
-          stats.text++;
-        }
-        if (file === 'meta.json') {
-          keyPairs[caseId].metaKey = o.Key;
-          stats.meta++;
-        }
-        if (file === 'pdf') {
-          keyPairs[caseId].pdf = o.Key;
-          stats.pdf++;
-        }
-      }
-    });
+      },
+      true,
+    );
     const end = Date.now();
     this.log.log(`Case files stats:`);
     this.log.log(`Meta files: ${stats.meta}`);
@@ -146,29 +139,33 @@ export class DbCommand {
       }
     > = {};
     this.log.log('Start loading s3 data...');
-    await this.s3Service.eachFile({ prefix: 'cases/files/' }, (o) => {
-      const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
-      if (caseId) {
-        if (!keyPairs[caseId]) {
-          keyPairs[caseId] = {};
+    await this.s3Service.eachFile(
+      { prefix: 'cases/files/' },
+      (o) => {
+        const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
+        if (caseId) {
+          if (!keyPairs[caseId]) {
+            keyPairs[caseId] = {};
+          }
+          if (file === 'html') {
+            keyPairs[caseId].htmlKey = o.Key;
+          }
+          if (file === 'text') {
+            keyPairs[caseId].textKey = o.Key;
+          }
+          if (file === 'meta.json') {
+            keyPairs[caseId].metaKey = o.Key;
+          }
+          if (file === 'pdf') {
+            keyPairs[caseId].pdf = o.Key;
+          }
+          if (file === 'original') {
+            keyPairs[caseId].original = o.Key;
+          }
         }
-        if (file === 'html') {
-          keyPairs[caseId].htmlKey = o.Key;
-        }
-        if (file === 'text') {
-          keyPairs[caseId].textKey = o.Key;
-        }
-        if (file === 'meta.json') {
-          keyPairs[caseId].metaKey = o.Key;
-        }
-        if (file === 'pdf') {
-          keyPairs[caseId].pdf = o.Key;
-        }
-        if (file === 'original') {
-          keyPairs[caseId].original = o.Key;
-        }
-      }
-    });
+      },
+      true,
+    );
     this.log.log('Done loading s3 data!');
     const casesWithNoPdf = Object.entries(keyPairs).filter(([caseId, d]) => {
       return !d.pdf;

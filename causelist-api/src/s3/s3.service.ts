@@ -12,6 +12,7 @@ import {
   DeleteObjectCommand,
   CopyObjectCommand,
   _Object,
+  ListObjectsV2CommandOutput,
 } from '@aws-sdk/client-s3';
 import { ConfiguredRetryStrategy } from '@aws-sdk/util-retry';
 
@@ -134,7 +135,8 @@ export class S3Service {
 
   async eachFile(
     req: S3ListRequest,
-    handler?: (o: _Object) => void,
+    handler: (o: _Object) => void,
+    responseHandler?: true | ((o: ListObjectsV2CommandOutput) => void),
   ): Promise<void> {
     const command = new ListObjectsV2Command({
       Bucket: this.bucket,
@@ -142,6 +144,22 @@ export class S3Service {
       Prefix: req.prefix,
     });
     let result = await this.s3.send(command);
+    if (responseHandler === true) {
+      let count = 0;
+      responseHandler = process.stdout.isTTY
+        ? (listPage: ListObjectsV2CommandOutput) => {
+            count += listPage.KeyCount;
+            if (listPage.IsTruncated) {
+              process.stdout.write(`\r[S3.eachFile] Received ${count} keys...`);
+            } else {
+              process.stdout.write('\r');
+            }
+          }
+        : undefined;
+    }
+    if (responseHandler) {
+      responseHandler(result);
+    }
     for (const e of result.Contents) {
       handler(e);
     }
@@ -153,6 +171,9 @@ export class S3Service {
         ContinuationToken: result.NextContinuationToken,
       });
       result = await this.s3.send(nextCommand);
+      if (responseHandler) {
+        responseHandler(result);
+      }
       for (const e of result.Contents) {
         handler(e);
       }

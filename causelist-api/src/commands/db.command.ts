@@ -1,4 +1,4 @@
-import { Command, Positional } from 'nestjs-command/dist/index.js';
+import { Command, Positional, Option } from 'nestjs-command/dist/index.js';
 import { Injectable, Logger } from '@nestjs/common';
 import * as util from 'node:util';
 import * as child_process from 'node:child_process';
@@ -93,22 +93,25 @@ export class DbCommand {
       meta: 0,
     };
     const start = Date.now();
+    const re = /\/(\d+)\/([^\/]+)/;
     await this.s3Service.eachFile(
       { prefix: 'cases/files/' },
       (o) => {
-        const [_, caseId, file] = o.Key?.match(/\/(\d+)\/([^\/]+)/);
+        const [_, caseId, file] = re.exec(o.Key);
         if (caseId) {
-          if (file === 'html') {
-            stats.html++;
-          }
-          if (file === 'text') {
-            stats.text++;
-          }
-          if (file === 'meta.json') {
-            stats.meta++;
-          }
-          if (file === 'pdf') {
-            stats.pdf++;
+          switch (file) {
+            case 'html':
+              stats.html++;
+              break;
+            case 'text':
+              stats.text++;
+              break;
+            case 'meta.json':
+              stats.meta++;
+              break;
+            case 'pdf':
+              stats.pdf++;
+              break;
           }
         }
       },
@@ -127,7 +130,14 @@ export class DbCommand {
     command: 'db:fix-pdfs',
     describe: 'Fix pdf files incorrectly uploaded as original ',
   })
-  async fixPdf() {
+  async fixPdf(
+    @Option({
+      name: 'print-only',
+      describe: 'Only print the case ids with missing pdfs',
+      type: 'boolean',
+    })
+    printOnly: boolean,
+  ) {
     const keyPairs: Record<
       string,
       {
@@ -171,6 +181,14 @@ export class DbCommand {
       return !d.pdf;
     });
     this.log.log(`${casesWithNoPdf.length} cases with no pdf!`);
+    if (printOnly) {
+      this.log.log(
+        `The following caseId have missing pdf (the first 100 result only)`,
+      );
+      for (const [caseId, keys] of casesWithNoPdf.slice(0, 100)) {
+        this.log.log(`  case : ${caseId}, got : ${JSON.stringify(keys)}`);
+      }
+    }
     for (const [caseId, keys] of casesWithNoPdf) {
       const contentType = await this.s3Service.getFileMimeType(keys.original);
       if (contentType == 'application/pdf') {

@@ -100,6 +100,15 @@ export class S3Service {
     this.accessKey = configService.getOrThrow('S3_ACCESS_KEY');
     this.secretKey = configService.getOrThrow('S3_SECRET');
     const debugLog = configService.get('S3_DEBUG_LOG');
+    const debugLogger = (level: string, content: any[]) => {
+      if (level === 'ERROR') {
+        console.error('[ERROR] ', ...content);
+      } else if (level === 'WARN') {
+        console.warn('[WARN] ', ...content);
+      } else {
+        console.log(`[${level}] `, ...content);
+      }
+    };
 
     this.s3 = new S3Client({
       forcePathStyle: true,
@@ -115,11 +124,10 @@ export class S3Service {
       ),
       logger: debugLog
         ? {
-            trace: (...content: any[]) => this.log.debug(content.join(' ')),
-            debug: (...content: any[]) => this.log.debug(content.join(' ')),
-            info: (...content: any[]) => this.log.log(content.join(' ')),
-            warn: (...content: any[]) => this.log.warn(content.join(' ')),
-            error: (...content: any[]) => this.log.error(content.join(' ')),
+            debug: (...content: any[]) => debugLogger('DEBUG', content),
+            info: (...content: any[]) => debugLogger('INFO', content),
+            warn: (...content: any[]) => debugLogger('WARN', content),
+            error: (...content: any[]) => debugLogger('ERROR', content),
           }
         : undefined,
     });

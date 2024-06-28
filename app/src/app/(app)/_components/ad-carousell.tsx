@@ -28,45 +28,46 @@ function CarouselItem(props: CarouselItemProps) {
   );
 }
 
-export function AdCarousel() {
-  var items = [
-    {
-      img: Image1,
-      description: "Image 1 description",
-    },
-    {
-      img: Image2,
-      description: "Image 2 description",
-    },
-    {
-      img: Image3,
-      description: "Image 3 description",
-    },
-    {
-      img: Image4,
-      description: "Image 3 description",
-    },
-    {
-      img: Image5,
-      description: "Image 3 description",
-    },
-    {
-      img: Image6,
-      description: "Image 3 description",
-    },
-    {
-      img: Image7,
-      description: "Image 3 description",
-    },
-  ];
+const items = [
+  {
+    img: Image1,
+    description: "Image 1 description",
+  },
+  {
+    img: Image2,
+    description: "Image 2 description",
+  },
+  {
+    img: Image3,
+    description: "Image 3 description",
+  },
+  {
+    img: Image4,
+    description: "Image 3 description",
+  },
+  {
+    img: Image5,
+    description: "Image 3 description",
+  },
+  {
+    img: Image6,
+    description: "Image 3 description",
+  },
+  {
+    img: Image7,
+    description: "Image 3 description",
+  },
+];
 
-  return (
-    <Box sx={{ width: "90%" }}>
-      <Carousel indicatorContainerProps={{ style: { paddingTop: "10px" } }}>
-        {items.map((item, i) => (
-          <CarouselItem key={i} {...item} />
-        ))}
-      </Carousel>
-    </Box>
-  );
+export function AdCarousel() {
+  return <></>;
+  // return (
+  //   <Box sx={{ width: "90%" }}>
+  //     <Carousel indicatorContainerProps={{ style: { paddingTop: "10px" } }}>
+  //       {items.map((item, i) => (
+  //         <CarouselItem key={i} {...item} />
+  //       ))}
+  //     </Carousel>
+  //   </Box>
+  // );
 }

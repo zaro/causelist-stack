@@ -21,6 +21,9 @@ spec:
         image: minio/minio:latest
         imagePullPolicy: IfNotPresent
         args: ["server",  "/data",  "--console-address", ":9090"]
+        env:
+          - name: MINIO_SCANNER_SPEED
+            value: slowest
         ports:
         - name: http
           containerPort: 9000

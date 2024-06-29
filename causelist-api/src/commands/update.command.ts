@@ -98,16 +98,7 @@ export class UpdateCommand {
           }
         }
       },
-      (r) => {
-        console.log(
-          '>>> IsTruncated=',
-          r.IsTruncated,
-          ' ateampts=',
-          r.$metadata?.attempts,
-          ' Next token=',
-          r.NextContinuationToken,
-        );
-      },
+      true,
     );
 
     let chunk: CaseIndex[] = [];

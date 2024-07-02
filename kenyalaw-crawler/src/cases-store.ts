@@ -67,6 +67,24 @@ export class CasesStore {
     }
   }
 
+  async hasContent(caseId: string, content: string): Promise<boolean> {
+    const command = new HeadObjectCommand({
+      Bucket: this.bucket,
+      Key: this.casesPrefix + caseId + "/" + content,
+    });
+
+    try {
+      const response = await this.s3.send(command);
+      const result = await response;
+      return true;
+    } catch (e: any) {
+      if (e.$metadata.httpStatusCode != 404) {
+        this.logError(`getCaseRecord(${caseId}):`, e);
+      }
+      return false;
+    }
+  }
+
   async getCaseRecord(caseId: string): Promise<CaseMetadata | null> {
     const command = new GetObjectCommand({
       Bucket: this.bucket,

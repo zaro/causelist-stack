@@ -18,6 +18,8 @@ export interface ReqUserData {
   id: string;
   description: CaseMetadata;
   missingSequenceCount?: number;
+  single?: boolean;
+  force?: boolean;
 }
 
 router.addDefaultHandler<ReqUserData>(async ({ log, request }) => {
@@ -27,20 +29,27 @@ router.addDefaultHandler<ReqUserData>(async ({ log, request }) => {
 router.addHandler<ReqUserData>(
   "case",
   async ({ request, response, $, log, enqueueLinks }) => {
-    const { id, missingSequenceCount = 0 } = request.userData;
+    const {
+      id,
+      missingSequenceCount = 0,
+      single = false,
+      force = false,
+    } = request.userData;
 
-    const enqueueNext = (id: string, notFound: boolean = false) => {
-      const nextId = parseInt(id, 10) + 1;
-      return enqueueLinks({
-        urls: [getCaseUrl(nextId)],
-        label: "case",
-        userData: {
-          id: nextId,
-          missingSequenceCount: notFound ? missingSequenceCount + 1 : 0,
-        },
-        baseUrl,
-      });
-    };
+    const enqueueNext = single
+      ? () => {}
+      : (id: string, notFound: boolean = false) => {
+          const nextId = parseInt(id, 10) + 1;
+          return enqueueLinks({
+            urls: [getCaseUrl(nextId)],
+            label: "case",
+            userData: {
+              id: nextId,
+              missingSequenceCount: notFound ? missingSequenceCount + 1 : 0,
+            },
+            baseUrl,
+          });
+        };
 
     if (response.url === "http://kenyalaw.org/caselaw/") {
       if (missingSequenceCount >= MAX_MISSING_TO_STOP) {
@@ -53,7 +62,10 @@ router.addHandler<ReqUserData>(
       return;
     }
 
-    const exists = await caseStore.hasCaseRecord(id);
+    let exists = await caseStore.hasCaseRecord(id);
+    if (force) {
+      exists = exists && (await caseStore.hasContent(id, "pdf"));
+    }
     if (exists) {
       log.warning(`Case ${id} already processed`);
       await enqueueNext(id);

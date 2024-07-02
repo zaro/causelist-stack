@@ -10,12 +10,28 @@ import { CookieJar } from "tough-cookie";
 
 import { ReqUserData, getCaseUrl, router, caseStore } from "./routes-cases.js";
 import { DOWNLOAD_MIME_TYPES } from "./file-types.js";
-import { url } from "inspector";
 
 // This functionality is optional!
 // log.setLevel(LogLevel.DEBUG);
 
 const getStartRequest = async () => {
+  let forceIdsString = process.env.CRAWL_FORCE_IDS;
+  if (forceIdsString) {
+    let forceIds = forceIdsString.split(/,/).map((e) => e.trim());
+
+    return forceIds.map(
+      (id) =>
+        ({
+          url: getCaseUrl(id),
+          label: "case",
+          userData: {
+            id: id,
+            single: true,
+            force: true,
+          },
+        } as RequestOptions<ReqUserData>)
+    );
+  }
   let startId = process.env.CRAWL_START_ID;
   if (!startId) {
     const lastDownloadedCaseId = await caseStore.lastCaseId();

@@ -206,7 +206,7 @@ export class S3Service {
     const result: _Object[] = [];
     let index = 0;
     await this.eachFile(req, (o) => {
-      if (contentFilter(o, index++)) {
+      if (!contentFilter || contentFilter(o, index++)) {
         result.push(o);
       }
     });

@@ -86,11 +86,22 @@ export class DbCommand {
     describe: 'Show case files stats',
   })
   async caseStats() {
-    const stats: { html: number; text: number; meta: number; pdf: number } = {
+    const stats: {
+      html: number;
+      text: number;
+      meta: number;
+      pdf: number;
+      htmlBytes: number;
+      textBytes: number;
+      pdfBytes: number;
+    } = {
       html: 0,
       text: 0,
       pdf: 0,
       meta: 0,
+      htmlBytes: 0,
+      textBytes: 0,
+      pdfBytes: 0,
     };
     const start = Date.now();
     const re = /\/(\d+)\/([^\/]+)/;
@@ -102,15 +113,18 @@ export class DbCommand {
           switch (file) {
             case 'html':
               stats.html++;
+              stats.htmlBytes += o.Size;
               break;
             case 'text':
               stats.text++;
+              stats.textBytes += o.Size;
               break;
             case 'meta.json':
               stats.meta++;
               break;
             case 'pdf':
               stats.pdf++;
+              stats.pdfBytes += o.Size;
               break;
           }
         }
@@ -123,6 +137,10 @@ export class DbCommand {
     this.log.log(`Html files: ${stats.html}`);
     this.log.log(`Text files: ${stats.text}`);
     this.log.log(`Pdf  files: ${stats.pdf}`);
+    this.log.log(`Average file size:`);
+    this.log.log(`Html: ${stats.htmlBytes / stats.html}`);
+    this.log.log(`Text: ${stats.textBytes / stats.text}`);
+    this.log.log(`Pdf : ${stats.pdfBytes / stats.pdf}`);
     this.log.log(`Took: ${(end - start) / 1000} s`);
   }
 

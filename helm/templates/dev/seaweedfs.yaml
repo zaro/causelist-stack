@@ -1,0 +1,165 @@
+### This one seems to be the fastest
+{{ if (and .Values.useDevMode 0) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: seaweedfs-config
+  labels:
+{{ include "causelist-stack.labels" (list . "seaweedfs" ) | indent 4 }}
+data:
+  config.json: |-
+    {
+      "identities": [
+        {
+          "name": "admin",
+          "credentials": [
+            {
+              "accessKey": "minioadmin",
+              "secretKey": "minioadmin"
+            }
+          ],
+          "actions": [
+            "Admin",
+            "Read",
+            "ReadAcp",
+            "List",
+            "Tagging",
+            "Write",
+            "WriteAcp"
+          ]
+        }
+      ]
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seaweedfs
+  labels:
+{{ include "causelist-stack.labels" (list . "seaweedfs" ) | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "causelist-stack.selectorLabels" (list . "seaweedfs" ) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      labels:
+        {{- include "causelist-stack.selectorLabels" (list . "seaweedfs" ) | nindent 8 }}
+    spec:
+      containers:
+      - name: seaweedfs
+        image: chrislusf/seaweedfs
+        args: ["server",  "-s3",  "-s3.config=/etc/config.json"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8333
+        - name: console
+          containerPort: 3901
+        volumeMounts:
+        - name: seaweedfs-data
+          mountPath: /data
+        - name: etc
+          mountPath: /etc/config.json
+          subPath: config.json
+      volumes:
+        - name: etc
+          configMap:
+            name: seaweedfs-config
+        - name: seaweedfs-data
+          persistentVolumeClaim:
+            claimName: seaweedfs-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: seaweedfs-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 30Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: seaweedfs
+  labels:
+{{ include "causelist-stack.labels"  (list . "seaweedfs" ) | indent 4 }}
+spec:
+  ports:
+  - port: 8333
+    name: seaweedfs-http
+  - port: 3901
+    name: seaweedfs-console
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "seaweedfs" ) | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: seaweedfs-nodeport
+  labels:
+{{ include "causelist-stack.labels"  (list . "seaweedfs" ) | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 8333
+    nodePort: 30833
+    name: seaweedfs-nodeport-api
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "seaweedfs" ) | nindent 4 }}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: seaweedfs-ingress
+  labels:
+{{ include "causelist-stack.labels" (list . "seaweedfs" ) | indent 4 }}
+  annotations:
+{{- if (not (hasSuffix "tilt" .Values.ingress.appsMainDomain)) }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Gid Ninjas ONLY [-_-]~'
+{{- end }}
+  {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+{{- if .Values.ingress.tlsEnabled }}
+  tls:
+    - hosts:
+        - "seaweedfs-api.{{ .Values.ingress.appsMainDomain }}"
+        - "seaweedfs.{{ .Values.ingress.appsMainDomain }}"
+      secretName: seaweedfs-tls-certficates-secret
+{{- end }}
+  rules:
+    - host: "seaweedfs-api.{{ .Values.ingress.appsMainDomain }}"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: seaweedfs
+                port:
+                  number: 3900
+    - host: "seaweedfs.{{ .Values.ingress.appsMainDomain }}"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: seaweedfs
+                port:
+                  number: 3901
+{{ end }}

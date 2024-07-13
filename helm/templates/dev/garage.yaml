@@ -1,0 +1,161 @@
+### Very hard to make ai keys automatically
+{{ if (and .Values.useDevMode 0) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: garage-config
+  labels:
+{{ include "causelist-stack.labels" (list . "garage" ) | indent 4 }}
+data:
+  garage.toml: |-
+    metadata_dir = "/mnt/meta"
+    data_dir = "/mnt/data"
+
+    replication_mode = "none"
+
+    rpc_bind_addr = "[::]:3901"
+    rpc_secret = "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec"
+
+    bootstrap_peers = []
+
+    [s3_api]
+    s3_region = "garage"
+    api_bind_addr = "[::]:3900"
+    root_domain = ".s3.causelist.tilt"
+
+    [s3_web]
+    bind_addr = "[::]:3901"
+    root_domain = ".web.causelist.tilt"
+    index = "index.html"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: garage
+  labels:
+{{ include "causelist-stack.labels" (list . "garage" ) | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "causelist-stack.selectorLabels" (list . "garage" ) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      labels:
+        {{- include "causelist-stack.selectorLabels" (list . "garage" ) | nindent 8 }}
+    spec:
+      containers:
+      - name: garage
+        image: dxflrs/garage:v1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 3900
+        - name: console
+          containerPort: 3901
+        volumeMounts:
+        - name: garage-data
+          mountPath: /mnt/
+        - name: etc
+          mountPath: /etc/garage.toml
+          subPath: garage.toml
+      volumes:
+        - name: etc
+          configMap:
+            name: garage-config
+        - name: garage-data
+          persistentVolumeClaim:
+            claimName: garage-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: garage-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 30Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: garage
+  labels:
+{{ include "causelist-stack.labels"  (list . "garage" ) | indent 4 }}
+spec:
+  ports:
+  - port: 3900
+    name: garage-http
+  - port: 3901
+    name: garage-console
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "garage" ) | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: garage-nodeport
+  labels:
+{{ include "causelist-stack.labels"  (list . "garage" ) | indent 4 }}
+spec:
+  type: NodePort
+  ports:
+  - port: 3900
+    nodePort: 30390
+    name: garage-nodeport-api
+  selector:
+    {{- include "causelist-stack.selectorLabels" (list . "garage" ) | nindent 4 }}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: garage-ingress
+  labels:
+{{ include "causelist-stack.labels" (list . "garage" ) | indent 4 }}
+  annotations:
+{{- if (not (hasSuffix "tilt" .Values.ingress.appsMainDomain)) }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Gid Ninjas ONLY [-_-]~'
+{{- end }}
+  {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+{{- if .Values.ingress.tlsEnabled }}
+  tls:
+    - hosts:
+        - "garage-api.{{ .Values.ingress.appsMainDomain }}"
+        - "garage.{{ .Values.ingress.appsMainDomain }}"
+      secretName: garage-tls-certficates-secret
+{{- end }}
+  rules:
+    - host: "garage-api.{{ .Values.ingress.appsMainDomain }}"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: garage
+                port:
+                  number: 3900
+    - host: "garage.{{ .Values.ingress.appsMainDomain }}"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: garage
+                port:
+                  number: 3901
+{{ end }}

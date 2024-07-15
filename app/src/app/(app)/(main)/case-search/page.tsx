@@ -1,7 +1,8 @@
 "use client";
 import Stack from "@mui/material/Stack";
 import CaseSearchBox from "./case-search-box";
-import { AdCarousel } from "../../_components/ad-carousell-books.tsx";
+import { AdCarouselBooks } from "../../_components/ad-carousell-books.tsx";
+import { AdCarouselFirms } from "../../_components/ad-carousell-firms.tsx";
 
 export default function Page() {
   return (
@@ -11,7 +12,8 @@ export default function Page() {
       minHeight="80vh"
     >
       <CaseSearchBox initialSearchText="" />
-      <AdCarousel />
+      <AdCarouselBooks />
+      <AdCarouselFirms />
     </Stack>
   );
 }

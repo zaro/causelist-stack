@@ -29,7 +29,7 @@ import { AppButtonLink } from "../../_components/app-link.tsx";
 import Centered from "../../_components/centered.tsx";
 import InAppNotice from "../../_components/in-app-notice.tsx";
 import SubscriptionRequired from "../../_components/subscription-required.tsx";
-import { AdCarousel } from "../../_components/ad-carousell.tsx";
+import { AdCarousel } from "../../_components/ad-carousell-books.tsx";
 
 const CaseListItem = styled(ListItem)(({ theme }) => ({
   borderWidth: "1px",

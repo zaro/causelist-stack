@@ -1,7 +1,7 @@
 "use client";
 import Stack from "@mui/material/Stack";
 import CaseSearchBox from "./case-search-box";
-import { AdCarousel } from "../../_components/ad-carousell.tsx";
+import { AdCarousel } from "../../_components/ad-carousell-books.tsx";
 
 export default function Page() {
   return (

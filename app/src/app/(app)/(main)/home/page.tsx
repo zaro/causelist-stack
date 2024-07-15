@@ -16,7 +16,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { appStore } from "../../_store/index.ts";
 import ManageSearch from "@mui/icons-material/ManageSearch";
-import { AdCarousel } from "../../_components/ad-carousell.tsx";
+import { AdCarouselBooks } from "../../_components/ad-carousell-books.tsx";
+import { AdCarouselFirms } from "../../_components/ad-carousell-firms.tsx";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -128,7 +129,8 @@ export default function Page() {
       </Card>
 
       <InAppNotice />
-      <AdCarousel />
+      <AdCarouselBooks />
+      <AdCarouselFirms />
     </Stack>
   );
 }
